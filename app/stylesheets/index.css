@@ -1,3 +1,18 @@
-body {
-    padding-top: 20px;
+html, body {
+    padding-top: 10px;
+    height: 100%;
+}
+
+#app-container {
+    height: 100%;
+}
+
+#progress-indicator {
+    position: relative;
+    top: 30%;
+    text-align: center;
+}
+
+#progress-indicator #progress-text {
+    color: darkgray;
 }
