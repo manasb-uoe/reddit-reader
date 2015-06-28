@@ -23,6 +23,14 @@ html, body {
 
 /* Navbar */
 
+#subreddits-dropdown-container {
+    min-width: 280px;
+}
+
 #subreddits-dropdown-container .subreddits-dropdown-item {
+    cursor: pointer;
+}
+
+#subreddits-dropdown-container #add-favourite-button {
     cursor: pointer;
 }

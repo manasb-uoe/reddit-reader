@@ -13,7 +13,8 @@ require.config({
         jquery: "./libs/jquery-2.1.4.min",
         swig: "./libs/swig.min",
         bootstrap: "./libs/bootstrap.min",
-        text: "./libs/text"
+        text: "./libs/text",
+        localStorage: "./libs/backbone.localStorage-min"
     },
     shim: {
         backbone: {
