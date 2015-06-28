@@ -3,9 +3,10 @@
  */
 
 define([
+    "underscore",
     "backbone",
-    "underscore"
-], function (Backbone, _) {
+    "views/nav"
+], function (_, Backbone, navView) {
     "use strict";
 
     var AppRouter = Backbone.Router.extend({
@@ -19,6 +20,9 @@ define([
 
     var init = function () {
         var appRouter = new AppRouter();
+
+        // render navigation bar view
+        navView.render();
 
         // begin monitoring hashchange events and dispatching routes
         Backbone.history.start();
