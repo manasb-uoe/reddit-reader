@@ -5,24 +5,29 @@
 define([
     "underscore",
     "backbone",
-    "views/nav"
-], function (_, Backbone, navView) {
+    "views/nav",
+    "views/posts"
+], function (_, Backbone, navView, postsView) {
     "use strict";
 
     var AppRouter = Backbone.Router.extend({
         routes: {
-            "": "showIndex"
+            "r/(:subreddit)": "showPosts",
+            "*any": "defaultAction"
         },
-        showIndex: function () {
-            console.log("render index page");
+        showPosts: function (subreddit) {
+            postsView.render(subreddit);
+        },
+        defaultAction: function () {
+            this.navigate("#/r/");
         }
     });
 
     var init = function () {
-        var appRouter = new AppRouter();
-
         // render navigation bar view
         navView.render();
+
+        var appRouter = new AppRouter();
 
         // begin monitoring hashchange events and dispatching routes
         Backbone.history.start();
