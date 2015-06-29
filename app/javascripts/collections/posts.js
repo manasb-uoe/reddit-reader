@@ -19,8 +19,13 @@ define([
                 success: function (response) {
                     var posts = [];
                     response.data.children.forEach(function (post) {
+                        // replace default thumbnails with urls
+                        if (["", "default", "self", "nsfw"].indexOf(post.data.thumbnail) > -1) {
+                            post.data.thumbnail = undefined;
+                        }
                         posts.push(post.data);
                     });
+
                     self.reset(posts);
                 },
                 error: function (error) {

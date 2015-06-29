@@ -7,11 +7,12 @@ define([
     "jquery",
     "backbone",
     "collections/posts",
+    "views/posts_item",
     "swig",
     "text!../../templates/posts_page.html",
     "text!../../templates/error.html"
 
-], function (_, $, Backbone, postsCollection, swig, postsTemplate, errorTemplate) {
+], function (_, $, Backbone, postsCollection, PostItemView, swig, postsTemplate, errorTemplate) {
     "use strict";
 
     var PostsView = Backbone.View.extend({
@@ -37,10 +38,11 @@ define([
             var self = this;
             postsCollection.each(function (post) {
                 self.addPost(post);
-            })
+            });
         },
         addPost: function (post) {
-            this.$postsContainer.append(post.get("title"));
+            var postItem = new PostItemView({model: post});
+            this.$postsContainer.append(postItem.render().el);
         },
         showErrorMessage: function (error) {
             this.$progressIndicator.hide();

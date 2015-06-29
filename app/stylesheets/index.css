@@ -1,10 +1,6 @@
-html, body {
-    padding-top: 10px;
-    height: 100%;
-}
-
-#app-container {
-    height: 100%;
+body {
+    background-color: #f6f9fa;
+    overflow-y: scroll;
 }
 
 
@@ -35,4 +31,49 @@ html, body {
 
 #subreddits-dropdown-container #add-favourite-button {
     cursor: pointer;
+}
+
+
+/* Posts */
+
+.post {
+    padding: 10px;
+    margin: 20px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    background-color: white;
+}
+
+.post .right-col {
+    text-align: right;
+}
+
+.post .title {
+    color: black;
+    font-size: 110%;
+}
+
+.post ._thumbnail {
+    height: 100px;
+    width: 100px;
+    padding: 4px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+}
+
+.post .score {
+    font-size: 130%;
+    color: darkgray;
+    font-weight: bold;
+}
+
+.post .author, .subreddit {
+    color: #0a68b4 !important;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.post .buttons-container {
+    margin-top: 5px;
 }
