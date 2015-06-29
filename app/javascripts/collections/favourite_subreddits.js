@@ -14,13 +14,6 @@ define([
         fetch: function () {
             Backbone.Collection.prototype.fetch.call(this);
 
-            // add Front page as the first item
-            if (this.length == 0) {
-                var frontPage = new SubredditModel({display_name: "Front page", isSelected: true});
-                this.add(frontPage, {at: 0});
-                frontPage.save();
-            }
-
             this.trigger("reset");
         }
     });

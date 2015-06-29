@@ -24,7 +24,7 @@ html, body {
 /* Navbar */
 
 #subreddits-dropdown-container {
-    min-width: 280px;
+    min-width: 200px;
 }
 
 #subreddits-dropdown-container .subreddits-dropdown-item {

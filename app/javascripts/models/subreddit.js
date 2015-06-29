@@ -9,9 +9,7 @@ define([
     "use strict";
 
     var SubredditModel = Backbone.Model.extend({
-        defaults: {
-            isSelected: false
-        }
+
     });
 
     return SubredditModel;
