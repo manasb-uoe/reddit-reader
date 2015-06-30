@@ -41,7 +41,7 @@ define([
 
             postsCollection.fetch(this.subreddit, this.sort);
 
-            this.$currentSubreddit.text(this.subreddit);
+            this.updateCurrentSubreddit();
             this.refreshSortTabs(this.subreddit, this.sort);
             this.$morePostsButton.hide();
         },
@@ -94,6 +94,10 @@ define([
             this.$morePostsButton.html("No more posts to load :(");
             this.$morePostsButton.prop("disabled", true);
             console.log("disabled");
+        },
+        updateCurrentSubreddit: function () {
+            var text = this.subreddit != "Front page" ? "Subreddit: " + "r/" + this.subreddit : this.subreddit;
+            this.$currentSubreddit.text(text);
         }
     });
 
