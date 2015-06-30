@@ -14,7 +14,8 @@ require.config({
         swig: "./libs/swig.min",
         bootstrap: "./libs/bootstrap.min",
         text: "./libs/text",
-        localStorage: "./libs/backbone.localStorage-min"
+        localStorage: "./libs/backbone.localStorage-min",
+        moment: "./libs/moment-with-locales.min"
     },
     shim: {
         backbone: {

@@ -6,8 +6,9 @@ define([
     "underscore",
     "jquery",
     "backbone",
-    "models/post"
-], function (_, $, Backbone, PostModel) {
+    "models/post",
+    "moment"
+], function (_, $, Backbone, PostModel, moment) {
     var PostsCollection = Backbone.Collection.extend({
         model: PostModel,
         initialize: function () {
@@ -37,6 +38,10 @@ define([
                         if (["", "default", "self", "nsfw"].indexOf(post.data.thumbnail) > -1) {
                             post.data.thumbnail = undefined;
                         }
+
+                        // humanize timestamp
+                        post.data.created_utc = moment.utc(moment.unix(post.data.created_utc)).locale("en").fromNow();
+
                         posts.push(post.data);
                     });
 
