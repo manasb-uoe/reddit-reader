@@ -10,10 +10,24 @@ define([
 ], function (_, $, Backbone, PostModel) {
     var PostsCollection = Backbone.Collection.extend({
         model: PostModel,
+        initialize: function () {
+            this.subreddit = null;
+            this.sort = null;
+            this.after = null;
+        },
         fetch: function (subreddit, sort) {
+            // reset after value if subreddit or sort has been changed
+            if (this.subreddit != subreddit || this.sort != sort) {
+                this.after = null;
+                console.log("setting after to null");
+            }
+
+            this.subreddit = subreddit;
+            this.sort = sort;
+
             var self = this;
             $.ajax({
-                url: self.generateURL(subreddit, sort),
+                url: self.generateURL(),
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -26,19 +40,36 @@ define([
                         posts.push(post.data);
                     });
 
-                    self.reset(posts);
+                    if (self.after != null) {
+                        self.add(posts);
+                    } else {
+                        self.reset(posts);
+                    }
+
+                    self.after = response.data.after;
+
+                    if (self.after == null) {
+                        self.trigger("no.more.posts.to.load");
+                    }
                 },
                 error: function (error) {
                     self.trigger("error", error);
                 }
             });
         },
-        generateURL: function (subreddit, sort) {
+        generateURL: function () {
             var baseUrl = "http://www.reddit.com";
-            subreddit = subreddit == "Front page" ?  "/" : "/r/" + subreddit;
+            var subreddit = this.subreddit == "Front page" ?  "/" : "/r/" + this.subreddit;
 
-            console.log(baseUrl + subreddit + "/" + sort + ".json");
-            return baseUrl + subreddit + "/" + sort + ".json";
+            var url = baseUrl + subreddit + "/" + this.sort + ".json";
+
+            if (this.after != null) {
+                url = url + "?after=" + this.after;
+            }
+
+            console.log(url);
+
+            return url;
         }
     });
 

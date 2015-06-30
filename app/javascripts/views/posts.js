@@ -18,10 +18,18 @@ define([
     var PostsView = Backbone.View.extend({
         el: "#content",
         initialize: function () {
+            this.subreddit = null;
+            this.sort = null;
+
             postsCollection.on("reset", this.addAllPosts, this);
+            postsCollection.on("update", this.addAllPosts, this);
             postsCollection.on("error", this.showErrorMessage, this);
+            postsCollection.on("no.more.posts.to.load", this.allPostsLoaded, this);
         },
         render: function (subreddit, sort) {
+            this.subreddit = subreddit;
+            this.sort = sort;
+
             this.$el.html(postsTemplate);
 
             this.$progressIndicator = $("#progress-indicator");
@@ -29,12 +37,16 @@ define([
             this.$errorContainer = $("#posts-error-container");
             this.$currentSubreddit = $("#current-subreddit");
             this.$sortTabsContainer = $("#posts-sort-tabs-container");
+            this.$morePostsButton = $("#more-posts-button");
 
-            postsCollection.fetch(subreddit, sort);
+            postsCollection.fetch(this.subreddit, this.sort);
 
-            this.$currentSubreddit.text(subreddit);
-
-            this.refreshSortTabs(subreddit, sort);
+            this.$currentSubreddit.text(this.subreddit);
+            this.refreshSortTabs(this.subreddit, this.sort);
+            this.$morePostsButton.hide();
+        },
+        events: {
+            "click #more-posts-button": "loadMorePosts"
         },
         refreshSortTabs: function (subreddit, sort) {
             var tabs = ['hot', 'new', 'rising', 'controversial', 'top'];
@@ -49,8 +61,13 @@ define([
         },
         addAllPosts: function () {
             this.$progressIndicator.hide();
+
             this.$postsContainer.empty();
             this.$postsContainer.show();
+
+            this.$morePostsButton.prop("disabled", false);
+            this.$morePostsButton.html("Load more");
+            this.$morePostsButton.show();
 
             var self = this;
             postsCollection.each(function (post) {
@@ -67,6 +84,16 @@ define([
 
             this.$errorContainer.html(swig.render(errorTemplate, {locals: {error: error.status}}));
             this.$errorContainer.show();
+        },
+        loadMorePosts: function () {
+            postsCollection.fetch(this.subreddit, this.sort);
+            this.$morePostsButton.prop("disabled", true);
+            this.$morePostsButton.html("Loading...");
+        },
+        allPostsLoaded: function () {
+            this.$morePostsButton.html("No more posts to load :(");
+            this.$morePostsButton.prop("disabled", true);
+            console.log("disabled");
         }
     });
 
