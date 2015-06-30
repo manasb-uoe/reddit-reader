@@ -34,38 +34,66 @@ body {
 }
 
 
-/* Posts */
+/* Posts page */
+
+.posts-page-header {
+    margin-top: 0;
+    vertical-align: middle;
+}
+
+.posts-page-header #current-subreddit {
+    color: #0a68b4;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.posts-page-header .right-col {
+    text-align: right;
+    vertical-align: middle;
+}
 
 .post {
-    padding: 10px;
+    padding: 15px;
     margin: 20px 0;
-    border: 1px solid #e0e0e0;
+    /*border: 1px solid #e0e0e0;*/
     border-radius: 3px;
     background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    position: relative;
+}
+
+.post .left-col {
+    float: left;
+    width: 85px;
 }
 
 .post .right-col {
-    text-align: right;
+    width: 100%;
 }
 
 .post .title {
     color: black;
-    font-size: 110%;
+    font-size: 130%;
 }
 
 .post ._thumbnail {
-    height: 100px;
-    width: 100px;
+    height: 75px;
+    width: 75px;
     padding: 4px;
     background-color: #ffffff;
     border: 1px solid #dddddd;
     border-radius: 3px;
+    display: block;
 }
 
 .post .score {
-    font-size: 130%;
-    color: darkgray;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #eee;
     font-weight: bold;
+    padding: 5px;
+    border-bottom-left-radius: 3px
 }
 
 .post .author, .subreddit {
@@ -74,6 +102,11 @@ body {
     text-decoration: none;
 }
 
-.post .buttons-container {
-    margin-top: 5px;
+.post .bottom-row .bottom-left-col {
+    float: left;
+}
+
+.post .bottom-row .bottom-right-col {
+    text-align: right;
+    width: 100%;
 }

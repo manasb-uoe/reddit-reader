@@ -27,8 +27,11 @@ define([
             this.$progressIndicator = $("#progress-indicator");
             this.$postsContainer = $("#posts-container");
             this.$errorContainer = $("#posts-error-container");
+            this.$currentSubreddit = $("#current-subreddit");
 
-            postsCollection.fetch(subreddit != null ? subreddit : "Front page");
+            postsCollection.fetch(subreddit);
+
+            this.$currentSubreddit.text(subreddit);
         },
         addAllPosts: function () {
             this.$progressIndicator.hide();

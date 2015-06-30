@@ -1,20 +1,24 @@
 <div class="post">
-    <div class="row">
-        <div class="col-md-10 col-xs-9">
-            <span class="score">{{score}} </span> <span class="author">{{author}} </span><span>in</span> <span><a class="subreddit" href="#/r/{{subreddit}}">r/{{subreddit}}</a></span>
-            <br>
-            <a class="title" href="{{url}}">{{ title }}</a>
-            <br>
-            <span class="num-comments">{{num_comments}} comments</span> • <span class="domain">{{domain}}</span> • <span class="created-at">{{created_utc}}</span>
-            <div class="buttons-container">
+    <div class="score">{{score}}</div>
+    <div class="left-col {% if !thumbnail %} hidden {% endif %}">
+        <img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}">
+    </div>
+    <div class="right-col">
+        <span class="author">{{author}} </span><span>in</span> <span><a class="subreddit" href="#/r/{{subreddit}}">r/{{subreddit}}</a></span>
+        <br>
+        <a class="title" href="{{url}}">{{ title }}</a>
+
+        <br>
+
+        <div class="bottom-row">
+            <div class="bottom-left-col">
+                <span class="num-comments">{{num_comments}} comments</span> • <span class="domain">{{domain}}</span> • <span class="created-at">{{created_utc}}</span>
+            </div>
+            <div class="bottom-right-col">
                 <button class="btn btn-default btn-sm" id="upvote-button"><span class="glyphicon glyphicon-arrow-up"></span></button>
                 <button class="btn btn-default btn-sm" id="downvote-button"><span class="glyphicon glyphicon-arrow-down"></span></button>
                 <button class="btn btn-default btn-sm" id="comments-button"><span class="glyphicon glyphicon-comment"></span></button>
             </div>
         </div>
-        <div class="col-md-2 col-xs-3 right-col">
-            <img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}">
-        </div>
     </div>
-</div>
 </div>

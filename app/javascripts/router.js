@@ -16,6 +16,7 @@ define([
             "*any": "defaultAction"
         },
         showPosts: function (subreddit) {
+            subreddit = subreddit != null ? subreddit : "Front page";
             postsView.render(subreddit);
         },
         defaultAction: function () {
