@@ -12,15 +12,25 @@ define([
 
     var AppRouter = Backbone.Router.extend({
         routes: {
-            "r/(:subreddit)": "showPosts",
+            "(:sort)": "showFrontPage",
+            "r/:subreddit(/:sort)": "showSubreddit",
             "*any": "defaultAction"
         },
-        showPosts: function (subreddit) {
+        showFrontPage: function (sort) {
+            console.log("front: " + sort);
+            var subreddit = "Front page";
+            sort = sort != null ? sort : "hot";
+
+            postsView.render(subreddit, sort);
+        },
+        showSubreddit: function (subreddit, sort) {
             subreddit = subreddit != null ? subreddit : "Front page";
-            postsView.render(subreddit);
+            sort = sort != null ? sort : "hot";
+
+            postsView.render(subreddit, sort);
         },
         defaultAction: function () {
-            this.navigate("#/r/");
+            this.navigate("#/");
         }
     });
 

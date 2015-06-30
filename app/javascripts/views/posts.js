@@ -21,17 +21,31 @@ define([
             postsCollection.on("reset", this.addAllPosts, this);
             postsCollection.on("error", this.showErrorMessage, this);
         },
-        render: function (subreddit) {
+        render: function (subreddit, sort) {
             this.$el.html(postsTemplate);
 
             this.$progressIndicator = $("#progress-indicator");
             this.$postsContainer = $("#posts-container");
             this.$errorContainer = $("#posts-error-container");
             this.$currentSubreddit = $("#current-subreddit");
+            this.$sortTabsContainer = $("#posts-sort-tabs-container");
 
-            postsCollection.fetch(subreddit);
+            postsCollection.fetch(subreddit, sort);
 
             this.$currentSubreddit.text(subreddit);
+
+            this.refreshSortTabs(subreddit, sort);
+        },
+        refreshSortTabs: function (subreddit, sort) {
+            var tabs = ['hot', 'new', 'rising', 'controversial', 'top'];
+            var template = [
+                '{% for tab in tabs %}',
+                '<li role="presentation" class="posts-sort-tab {% if tab == sort %} active {% endif %}">',
+                '<a {% if subreddit == "Front page" %} href="#/{{tab}}" {% else %} href="#/r/{{subreddit}}/{{tab}}" {% endif %}>{{tab}}</a>',
+                '</li>',
+                '{% endfor %}'
+            ].join('');
+            this.$sortTabsContainer.html(swig.render(template, {locals: {subreddit: subreddit, sort: sort, tabs: tabs}}));
         },
         addAllPosts: function () {
             this.$progressIndicator.hide();

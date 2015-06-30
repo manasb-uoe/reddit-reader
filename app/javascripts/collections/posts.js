@@ -10,10 +10,10 @@ define([
 ], function (_, $, Backbone, PostModel) {
     var PostsCollection = Backbone.Collection.extend({
         model: PostModel,
-        fetch: function (subreddit) {
+        fetch: function (subreddit, sort) {
             var self = this;
             $.ajax({
-                url: self.generateURL(subreddit),
+                url: self.generateURL(subreddit, sort),
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -33,11 +33,12 @@ define([
                 }
             });
         },
-        generateURL: function (subreddit) {
+        generateURL: function (subreddit, sort) {
             var baseUrl = "http://www.reddit.com";
             subreddit = subreddit == "Front page" ?  "/" : "/r/" + subreddit;
 
-            return baseUrl + subreddit + ".json";
+            console.log(baseUrl + subreddit + "/" + sort + ".json");
+            return baseUrl + subreddit + "/" + sort + ".json";
         }
     });
 
