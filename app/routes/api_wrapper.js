@@ -9,8 +9,6 @@ var request = require("request");
 var apiBaseUrl = "http://www.reddit.com";
 
 router.post("/login", function (req, res, next) {
-    console.log({user: req.body.username, psswd: req.body.password, api_type: "json"});
-
     request.post(
         apiBaseUrl + "/api/login",
         {form: {user: req.body.username, passwd: req.body.password, api_type: "json"}},
@@ -20,6 +18,20 @@ router.post("/login", function (req, res, next) {
             res.json(httpResponse.headers["set-cookie"]);
         }
     );
+});
+
+router.post("/user/subreddits", function (req, res, next) {
+    var options = {
+        url: apiBaseUrl + "/reddits/mine.json?limit=100",
+        headers: {
+            Cookie: req.body.session
+        }
+    };
+    request.get(options, function (err, httpResponse, body) {
+        if (err) return next(err);
+
+        res.json(body);
+    });
 });
 
 

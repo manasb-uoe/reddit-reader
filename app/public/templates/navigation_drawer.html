@@ -1,20 +1,22 @@
-<div class="navigation-drawer">
+<div class=" navigation-drawer">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        {% for key, values in subreddits %}
-        <div class="panel panel-default">
-            <div class="panel-heading drawer-heading" role="tab" id="{{key}}-heading">
-                <h4 class="panel-title">
-                    <a class="drawer-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{loop.index}}-collapse" aria-expanded="true" aria-controls="{{loop.index}}-collapse">
-                        {{key}}
-                    </a>
-                </h4>
-            </div>
-            <div id="{{loop.index}}-collapse" class="panel-collapse collapse {% if loop.index == 1 %} in {% endif %}" role="tabpanel" aria-labelledby="{{loop.index}}-heading">
-                {% for subreddit in values %}
-                <div class="subreddit"><a class="name" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a></div>
-                {% endfor %}
-            </div>
-        </div>
+        {% for key, values in categories %}
+            {% if values.length > 0 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading drawer-heading" role="tab" id="{{key}}-heading">
+                        <div class="panel-title">
+                            <a class="drawer-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{loop.index}}-collapse" aria-expanded="true" aria-controls="{{loop.index}}-collapse">
+                                {{key}}
+                            </a>
+                        </div>
+                    </div>
+                    <div id="{{loop.index}}-collapse" class="panel-collapse collapse {% if loop.index == 1 %} in {% endif %}" role="tabpanel" aria-labelledby="{{loop.index}}-heading">
+                        {% for subreddit in values %}
+                        <div class="subreddit"><a class="name" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a></div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>

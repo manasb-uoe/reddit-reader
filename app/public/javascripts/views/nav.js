@@ -21,11 +21,13 @@ define([
         initialize: function () {
             this.popularSubreddits = new SubredditsCollection({type: "popular10"});
             this.defaultSubreddits = new SubredditsCollection({type: "default"});
+            this.userSubreddits = new SubredditsCollection({type: "user"});
 
             favouritesCollection.on("reset", this.refreshSubredditsDropdown, this);
             loginModalView.on("login.success", this.render, this);
             this.popularSubreddits.on("reset", this.refreshDrawerContent, this);
             this.defaultSubreddits.on("reset", this.refreshDrawerContent, this);
+            this.userSubreddits.on("reset", this.refreshDrawerContent, this);
         },
         render: function () {
             var compiledTemplate = swig.render(navBarTemplate, {locals: {username: localStorage.getItem("username")}});
@@ -38,7 +40,7 @@ define([
             favouritesCollection.fetch();
             this.popularSubreddits.fetch();
             this.defaultSubreddits.fetch();
-
+            this.userSubreddits.fetch();
 
             this.isDrawerVisible = false;
         },
@@ -90,10 +92,14 @@ define([
             }
         },
         refreshDrawerContent: function () {
-            //var self = this;
-            console.log("refrsehsh");
             var compiledTemplate = swig.render(drawerTemplate, {
-                locals: {subreddits: {"Popular Subreddits": this.popularSubreddits.toJSON(), "Default Subreddits": this.defaultSubreddits.toJSON()}}
+                locals: {
+                    categories: {
+                        "My Subscriptions": this.userSubreddits.toJSON(),
+                        "Popular Subreddits": this.popularSubreddits.toJSON(),
+                        "Default Subreddits": this.defaultSubreddits.toJSON()
+                    }
+                }
             });
             this.$drawer.html(compiledTemplate);
         }
