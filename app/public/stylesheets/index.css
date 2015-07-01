@@ -48,7 +48,7 @@ body {
 }
 
 
-/* Control panel */
+/* Navigation drawer */
 
 .navigation-drawer-container {
     position: fixed;
@@ -57,7 +57,7 @@ body {
     left: 0;
     width: 300px;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
     margin-left: -300px;
     z-index: 1000;
 }
@@ -70,6 +70,35 @@ body {
 .navigation-drawer-container .navigation-drawer .subreddit-form {
     padding: 5px;
     width: 100%;
+}
+
+.navigation-drawer-container .navigation-drawer .drawer-heading {
+    background-color: #0c84e4;
+    color: white;
+    text-align: center;
+}
+
+.navigation-drawer-container .navigation-drawer .drawer-title {
+    text-decoration: none;
+}
+
+.navigation-drawer-container .navigation-drawer .subreddit {
+    padding-left: 20px;
+    padding-top: 5px;
+    font-size: 110%;
+}
+
+.navigation-drawer-container .navigation-drawer .subreddit .name {
+    color: black;
+    font-weight: normal;
+}
+
+.navigation-drawer-container .navigation-drawer .subreddit:hover {
+    background-color: #f5f5f5;
+}
+
+.navigation-drawer-container .navigation-drawer a {
+display: block;
 }
 
 

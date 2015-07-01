@@ -7,18 +7,25 @@ define([
     "jquery",
     "backbone",
     "collections/favourite_subreddits",
+    "collections/subreddits",
     "views/login_modal",
     "swig",
     "text!../../templates/navigation_bar.html",
+    "text!../../templates/navigation_drawer.html",
     "bootstrap"
-], function (_, $, Backbone, favouritesCollection, loginModalView, swig, navBarTemplate) {
+], function (_, $, Backbone, favouritesCollection, SubredditsCollection, loginModalView, swig, navBarTemplate, drawerTemplate) {
     "use strict";
 
     var NavView = Backbone.View.extend({
         el: "#navigation-bar-container",
         initialize: function () {
+            this.popularSubreddits = new SubredditsCollection({type: "popular10"});
+            this.defaultSubreddits = new SubredditsCollection({type: "default"});
+
             favouritesCollection.on("reset", this.refreshSubredditsDropdown, this);
             loginModalView.on("login.success", this.render, this);
+            this.popularSubreddits.on("reset", this.refreshDrawerContent, this);
+            this.defaultSubreddits.on("reset", this.refreshDrawerContent, this);
         },
         render: function () {
             var compiledTemplate = swig.render(navBarTemplate, {locals: {username: localStorage.getItem("username")}});
@@ -29,6 +36,9 @@ define([
             this.$brandIcon = $(".brand-glyphicon");
 
             favouritesCollection.fetch();
+            this.popularSubreddits.fetch();
+            this.defaultSubreddits.fetch();
+
 
             this.isDrawerVisible = false;
         },
@@ -78,6 +88,14 @@ define([
 
                 this.isDrawerVisible = true;
             }
+        },
+        refreshDrawerContent: function () {
+            //var self = this;
+            console.log("refrsehsh");
+            var compiledTemplate = swig.render(drawerTemplate, {
+                locals: {subreddits: {"Popular Subreddits": this.popularSubreddits.toJSON(), "Default Subreddits": this.defaultSubreddits.toJSON()}}
+            });
+            this.$drawer.html(compiledTemplate);
         }
     });
 
