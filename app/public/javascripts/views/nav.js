@@ -7,19 +7,21 @@ define([
     "jquery",
     "backbone",
     "collections/favourite_subreddits",
+    "views/login_modal",
     "swig",
     "text!../../templates/navigation_bar.html",
     "bootstrap"
-], function (_, $, Backbone, favouritesCollection, swig, navBarTemplate) {
+], function (_, $, Backbone, favouritesCollection, loginModalView, swig, navBarTemplate) {
     "use strict";
 
     var NavView = Backbone.View.extend({
         el: "#navigation-bar-container",
         initialize: function () {
             favouritesCollection.on("reset", this.refreshSubredditsDropdown, this);
+            loginModalView.on("login.success", this.render, this);
         },
         render: function () {
-            var compiledTemplate = swig.render(navBarTemplate);
+            var compiledTemplate = swig.render(navBarTemplate, {locals: {username: localStorage.getItem("username")}});
             this.$el.html(compiledTemplate);
 
             this.$dropdownSubredditsContainer = $("#subreddits-dropdown-container");
