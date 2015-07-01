@@ -5,21 +5,6 @@ body {
 }
 
 
-/* Progress indicator */
-
-#progress-indicator {
-    position: absolute;
-    top: 30%;
-    left: 0;
-    right: 0;
-    text-align: center;
-}
-
-#progress-indicator #progress-text {
-    color: darkgray;
-}
-
-
 /* Navbar */
 
 .navbar-brand {
@@ -103,6 +88,15 @@ display: block;
 
 
 /* Posts page */
+
+#progress-indicator {
+    margin-top: 10%;
+    text-align: center;
+}
+
+#posts-error-container {
+    margin-top: 10%;
+}
 
 .posts-page-header {
     margin-top: 0;

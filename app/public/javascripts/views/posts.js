@@ -59,6 +59,7 @@ define([
         },
         addAllPosts: function () {
             this.$progressIndicator.hide();
+            this.$errorContainer.hide();
 
             this.$postsContainer.empty();
             this.$postsContainer.show();
