@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -7,15 +7,22 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#/r/">Reddit Reader</a>
+            <a class="navbar-brand"><span class="glyphicon glyphicon-menu-hamburger brand-glyphicon"></span> Reddit Reader</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-left">
-                <li class="dropdown">
+                <li class="dropdown hidden">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Favourite Subreddits<span class="caret"></span></a>
                     <ul class="dropdown-menu" id="subreddits-dropdown-container"></ul>
                 </li>
             </ul>
+            <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="subreddit-input" placeholder="Jump to a subreddit">
+                        <button class="btn btn-default btn-sm">Go</button>
+                    </div>
+            </form>
+
             <ul class="nav navbar-nav navbar-right">
                 {% if username %}
                 <li class="dropdown">
@@ -31,3 +38,10 @@
         </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->
 </nav>
+
+<div class="navigation-drawer-container" id="navigation-drawer-container">
+    <div class="navigation-drawer">
+
+
+    </div>
+</div>

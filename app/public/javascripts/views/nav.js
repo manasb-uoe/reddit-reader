@@ -25,8 +25,15 @@ define([
             this.$el.html(compiledTemplate);
 
             this.$dropdownSubredditsContainer = $("#subreddits-dropdown-container");
+            this.$drawer = $("#navigation-drawer-container");
+            this.$brandIcon = $(".brand-glyphicon");
 
             favouritesCollection.fetch();
+
+            this.isDrawerVisible = false;
+        },
+        events: {
+            "click .navbar-brand": "toggleDrawer"
         },
         refreshSubredditsDropdown: function () {
             this.$dropdownSubredditsContainer.empty();
@@ -50,6 +57,27 @@ define([
 
             var addFavouriteTemplate = '<li><a id="add-favourite-button"><span class="glyphicon glyphicon-plus"></span>  Add Favourite</a></li>';
             this.$dropdownSubredditsContainer.append(addFavouriteTemplate);
+        },
+        toggleDrawer: function () {
+            if (this.isDrawerVisible) {
+                this.$drawer.animate({
+                    marginLeft: "-300px"
+                }, 300);
+
+                this.$brandIcon.addClass("glyphicon-menu-hamburger");
+                this.$brandIcon.removeClass("glyphicon-chevron-left");
+
+                this.isDrawerVisible = false;
+            } else {
+                this.$drawer.animate({
+                    marginLeft: "0"
+                }, 300);
+
+                this.$brandIcon.removeClass("glyphicon-menu-hamburger");
+                this.$brandIcon.addClass("glyphicon-chevron-left");
+
+                this.isDrawerVisible = true;
+            }
         }
     });
 

@@ -1,6 +1,7 @@
 body {
     background-color: #f6f9fa;
     overflow-y: scroll;
+    margin-top: 80px;
 }
 
 
@@ -21,6 +22,15 @@ body {
 
 /* Navbar */
 
+.navbar-brand {
+    cursor: pointer;
+}
+
+.brand-glyphicon {
+    font-size: small;
+    top: -2px;
+}
+
 #subreddits-dropdown-container {
     min-width: 200px;
 }
@@ -35,6 +45,31 @@ body {
 
 #login-button {
     cursor: pointer;
+}
+
+
+/* Control panel */
+
+.navigation-drawer-container {
+    position: fixed;
+    top: 66px;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-left: -300px;
+    z-index: 1000;
+}
+
+.navigation-drawer-container .navigation-drawer {
+    height: 100%;
+    overflow: auto;
+}
+
+.navigation-drawer-container .navigation-drawer .subreddit-form {
+    padding: 5px;
+    width: 100%;
 }
 
 
