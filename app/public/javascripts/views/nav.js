@@ -36,6 +36,7 @@ define([
             this.$dropdownSubredditsContainer = $("#subreddits-dropdown-container");
             this.$drawer = $("#navigation-drawer-container");
             this.$brandIcon = $(".brand-glyphicon");
+            this.$subredditInput = $("#subreddit-input");
 
             favouritesCollection.fetch();
             this.popularSubreddits.fetch();
@@ -45,7 +46,9 @@ define([
             this.isDrawerVisible = false;
         },
         events: {
-            "click .navbar-brand": "toggleDrawer"
+            "click .navbar-brand": "toggleDrawer",
+            "keypress #subreddit-input": "jumpToSubreddit",
+            "click #subreddit-go-button": "jumpToSubreddit"
         },
         refreshSubredditsDropdown: function () {
             this.$dropdownSubredditsContainer.empty();
@@ -102,6 +105,12 @@ define([
                 }
             });
             this.$drawer.html(compiledTemplate);
+        },
+        jumpToSubreddit: function (event) {
+            if (event.which == 1 || event.which == 13) {
+                event.preventDefault();
+                Backbone.history.navigate("/r/" + this.$subredditInput.val(), {trigger: true});
+            }
         }
     });
 
