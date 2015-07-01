@@ -6,8 +6,9 @@ define([
     "underscore",
     "backbone",
     "views/nav",
-    "views/posts"
-], function (_, Backbone, navView, postsView) {
+    "views/posts",
+    "views/login_modal"
+], function (_, Backbone, navView, postsView, loginModalView) {
     "use strict";
 
     var AppRouter = Backbone.Router.extend({
@@ -35,8 +36,8 @@ define([
     });
 
     var init = function () {
-        // render navigation bar view
         navView.render();
+        loginModalView.render();
 
         var appRouter = new AppRouter();
 

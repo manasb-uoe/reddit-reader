@@ -1,2 +1,5 @@
 # jetbrains config files
 .idea/
+
+# npm modules
+node_modules/
