@@ -41,7 +41,9 @@ define([
             favouritesCollection.fetch();
             this.popularSubreddits.fetch();
             this.defaultSubreddits.fetch();
-            this.userSubreddits.fetch();
+            if (localStorage.getItem("username")) {
+                this.userSubreddits.fetch();
+            }
 
             this.isDrawerVisible = false;
         },

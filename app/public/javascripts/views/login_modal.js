@@ -43,13 +43,11 @@ define([
                     method: "POST",
                     data: {username: username, password: password},
                     success: function (response) {
-                        if (response.length < 3) {
+                        if (response.status == "error") {
                             self.$errorContainer.show();
                             self.$errorContainer.html("<strong>Error! </strong>Username or password is incorrect.");
                         } else {
-                            // store session token and username in local storage
                             localStorage.setItem("username", username);
-                            localStorage.setItem("session", response[2].split(";")[0]);
 
                             self.trigger("login.success");
 
