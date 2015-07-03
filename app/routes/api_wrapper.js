@@ -6,19 +6,26 @@ var express = require('express');
 var router = express.Router();
 var request = require("request");
 var LocalStorage = require("node-localstorage").LocalStorage;
+var moment = require("moment");
 
 
 var localStorage = new LocalStorage("./session_store");
 var apiBaseUrl = "http://www.reddit.com";
+var userAgent = "RedditReaderBackbone by enthusiast_94";
 
 
 router.post("/login", function (req, res, next) {
     if (!req.body.username || !req.body.password) return next(new Error("Username and password are required"));
 
-    request.post(
-        apiBaseUrl + "/api/login",
-        {form: {user: req.body.username, passwd: req.body.password, api_type: "json"}},
-        function (err, httpResponse) {
+    var options = {
+        url: apiBaseUrl + "/api/login",
+        form: {user: req.body.username, passwd: req.body.password, api_type: "json"},
+        headers: {
+            "User-Agent": userAgent
+        }
+    };
+
+    request.post(options, function (err, httpResponse) {
             if (err) return next(err);
 
             var setCookie = httpResponse.headers["set-cookie"];
@@ -44,6 +51,7 @@ router.get("/user/subreddits", function (req, res, next) {
     var options = {
         url: apiBaseUrl + "/reddits/mine.json?limit=100",
         headers: {
+            "User-Agent": userAgent,
             Cookie: session
         }
     };
@@ -64,15 +72,22 @@ router.get("/user/subreddits", function (req, res, next) {
 
 router.get("/subreddits/:filter", function (req, res, next) {
     var urls = {
-        default: "http://www.reddit.com/subreddits/default.json?limit=100",
-        popular10: "http://www.reddit.com/subreddits/popular.json?limit=10"
+        default: apiBaseUrl + "/subreddits/default.json?limit=100",
+        popular10: apiBaseUrl + "/subreddits/popular.json?limit=10"
     };
 
     var filter = req.params["filter"];
 
     if (Object.keys(urls).indexOf(filter) == -1) return next(new Error("Allowed filters are: " + Object.keys(urls)));
 
-    request.get(urls[filter], function (err, httpResponse, body) {
+    var options = {
+        url: urls[filter],
+        headers: {
+            "User-Agent": userAgent
+        }
+    };
+
+    request.get(options, function (err, httpResponse, body) {
         if (err) return next(err);
 
         var json = JSON.parse(body);
@@ -82,6 +97,69 @@ router.get("/subreddits/:filter", function (req, res, next) {
         });
 
         res.json(subreddits);
+    });
+});
+
+
+router.get("/posts/:subreddit?", function (req, res, next) {
+    var username = req.query["username"];
+
+    var session = undefined;
+    if (username) {
+        session = localStorage.getItem(username);
+        if (!session) return next(new Error("No session found for provided username"));
+    }
+
+    var subreddit = req.params["subreddit"];
+    var sort = req.query["sort"] || "hot";
+    var after = req.query["after"] || null;
+
+    // build posts url
+    var postsUrl = undefined;
+    if (!subreddit) {
+        postsUrl = apiBaseUrl + "/" + sort + ".json";
+    } else {
+        postsUrl = apiBaseUrl + "/r/" + subreddit + "/" + sort + ".json";
+    }
+    if (after) {
+        postsUrl +=  "?after=" + after;
+    }
+
+    console.log(session);
+
+    var options = {
+        url: postsUrl,
+        headers: {
+            "User-Agent": userAgent,
+            Cookie: session
+        }
+    };
+
+    console.log(postsUrl);
+
+    request.get(options, function (err, httpResponse, body) {
+        if (err) return next(err);
+
+        var json = JSON.parse(body);
+
+        if (json.error) {
+            res.json(json);
+        } else {
+            var posts = [];
+            json.data.children.forEach(function (post) {
+                // replace default thumbnails with urls
+                if (["", "default", "self", "nsfw"].indexOf(post.data.thumbnail) > -1) {
+                    post.data.thumbnail = undefined;
+                }
+
+                // humanize timestamp
+                post.data.created_utc = moment.utc(moment.unix(post.data.created_utc)).locale("en").fromNow();
+
+                posts.push(post.data);
+            });
+
+            res.json({posts: posts, after: json.data.after});
+        }
     });
 });
 

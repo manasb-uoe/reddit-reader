@@ -80,6 +80,7 @@ define([
         showErrorMessage: function (error) {
             this.$progressIndicator.hide();
             this.$postsContainer.hide();
+            this.$morePostsButton.hide();
 
             this.$errorContainer.html(swig.render(errorTemplate, {locals: {error: error.status}}));
             this.$errorContainer.show();
