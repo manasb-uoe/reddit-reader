@@ -31,10 +31,29 @@ router.post("/login", function (req, res, next) {
             var setCookie = httpResponse.headers["set-cookie"];
 
             if (setCookie.length < 3) {
-                res.json({status: "failure"});
+                res.json({status: "error"});
             } else {
-                localStorage.setItem(req.body.username, setCookie[2].split(";")[0]);
-                res.json({status: "success"});
+                var session = setCookie[2].split(";")[0];
+                console.log(session);
+                options = {
+                    url: apiBaseUrl + "/api/me.json",
+                    headers: {
+                        "User-Agent": userAgent,
+                        Cookie: session
+                    }
+                };
+
+                request.get(options, function (err, httpResponse, body) {
+                    if (err) return next(err);
+
+                    var json = JSON.parse(body);
+                    if (json.data) {
+                        localStorage.setItem(req.body.username, JSON.stringify({session: session, modhash: json.data.modhash}));
+                        res.json({status: "success"});
+                    } else {
+                        res.json({status: "error"});
+                    }
+                });
             }
         }
     );
@@ -45,14 +64,14 @@ router.get("/user/subreddits", function (req, res, next) {
     var username = req.query.username;
     if (!username) return next(new Error("No username provided"));
 
-    var session = localStorage.getItem(username);
-    if (!session) return next(new Error("No session found for provided username"));
+    var userData = localStorage.getItem(username);
+    if (!userData) return next(new Error("No session found for provided username"));
 
     var options = {
         url: apiBaseUrl + "/reddits/mine.json?limit=100",
         headers: {
             "User-Agent": userAgent,
-            Cookie: session
+            Cookie: JSON.parse(userData).session
         }
     };
 
@@ -106,8 +125,9 @@ router.get("/posts/:subreddit?", function (req, res, next) {
 
     var session = undefined;
     if (username) {
-        session = localStorage.getItem(username);
-        if (!session) return next(new Error("No session found for provided username"));
+        var userData = localStorage.getItem(username);
+        if (!userData) return next(new Error("No session found for provided username"));
+        session = JSON.parse(userData).session;
     }
 
     var subreddit = req.params["subreddit"];
@@ -125,7 +145,7 @@ router.get("/posts/:subreddit?", function (req, res, next) {
         postsUrl +=  "?after=" + after;
     }
 
-    console.log(session);
+    console.log(userData);
 
     var options = {
         url: postsUrl,
@@ -162,6 +182,11 @@ router.get("/posts/:subreddit?", function (req, res, next) {
         }
     });
 });
+
+
+//router.post("/vote/", function (req, res, next) {
+//
+//});
 
 
 module.exports = router;
