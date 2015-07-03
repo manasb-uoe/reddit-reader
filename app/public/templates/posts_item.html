@@ -1,5 +1,5 @@
 <div class="post">
-    <div class="score">{{score}}</div>
+    <div class="score {% if likes == 1 %} upvoted-score {% elif likes == -1 %} downvoted-score {% endif %}">{{score}}</div>
     <div class="left-col {% if !thumbnail %} hidden {% endif %}">
         <img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}">
     </div>
@@ -15,9 +15,9 @@
                 <span class="num-comments">{{num_comments}} comments</span> • <span class="domain">{{domain}}</span> • <span class="created-at">{{created_utc}}</span>
             </div>
             <div class="bottom-right-col">
-                <button class="btn btn-default btn-sm" id="upvote-button"><span class="glyphicon glyphicon-arrow-up"></span></button>
-                <button class="btn btn-default btn-sm" id="downvote-button"><span class="glyphicon glyphicon-arrow-down"></span></button>
-                <button class="btn btn-default btn-sm" id="comments-button"><span class="glyphicon glyphicon-comment"></span></button>
+                <button class="btn btn-default btn-sm upvote-button {% if likes == 1 %} upvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-up"></span></button>
+                <button class="btn btn-default btn-sm downvote-button {% if likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
+                <button class="btn btn-default btn-sm comments-button"><span class="glyphicon glyphicon-comment"></span></button>
             </div>
         </div>
     </div>

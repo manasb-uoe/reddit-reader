@@ -34,7 +34,7 @@ router.post("/login", function (req, res, next) {
                 res.json({status: "error"});
             } else {
                 var session = setCookie[2].split(";")[0];
-                console.log(session);
+
                 options = {
                     url: apiBaseUrl + "/api/me.json",
                     headers: {
@@ -62,7 +62,7 @@ router.post("/login", function (req, res, next) {
 
 router.get("/user/subreddits", function (req, res, next) {
     var username = req.query.username;
-    if (!username) return next(new Error("No username provided"));
+    if (!username) return next(new Error("Username is required"));
 
     var userData = localStorage.getItem(username);
     if (!userData) return next(new Error("No session found for provided username"));
@@ -145,8 +145,6 @@ router.get("/posts/:subreddit?", function (req, res, next) {
         postsUrl +=  "?after=" + after;
     }
 
-    console.log(userData);
-
     var options = {
         url: postsUrl,
         headers: {
@@ -155,15 +153,13 @@ router.get("/posts/:subreddit?", function (req, res, next) {
         }
     };
 
-    console.log(postsUrl);
-
     request.get(options, function (err, httpResponse, body) {
         if (err) return next(err);
 
         var json = JSON.parse(body);
 
         if (json.error) {
-            res.send(parseInt(json.error));
+            res.sendStatus(parseInt(json.error));
         } else {
             var posts = [];
             json.data.children.forEach(function (post) {
@@ -175,6 +171,15 @@ router.get("/posts/:subreddit?", function (req, res, next) {
                 // humanize timestamp
                 post.data.created_utc = moment.utc(moment.unix(post.data.created_utc)).locale("en").fromNow();
 
+                // replace 'likes' with 1,0 or -1 so that it's easy to use its value while rendering templates
+                if (post.data.likes) {
+                    post.data.likes = 1;
+                } else if (post.data.likes == null) {
+                    post.data.likes = 0;
+                } else {
+                    post.data.likes = -1;
+                }
+
                 posts.push(post.data);
             });
 
@@ -184,9 +189,37 @@ router.get("/posts/:subreddit?", function (req, res, next) {
 });
 
 
-//router.post("/vote/", function (req, res, next) {
-//
-//});
+router.post("/vote", function (req, res, next) {
+    var postId = req.body.id;
+    var dir = req.body.dir;
+    var username = req.body.username;
+
+    if (!postId || !dir) return next(new Error("Post id and vote direction are required parameters"));
+    if (!username) return next(new Error("Username is required"));
+
+    var userData = localStorage.getItem(username);
+    if (!userData) return next(new Error("No session found for provided username"));
+
+    userData = JSON.parse(userData);
+
+    var options = {
+        url: apiBaseUrl + "/api/vote",
+        form: {id: postId, dir: dir, uh: userData.modhash, api_type: "json"},
+        headers: {
+            "User-Agent": userAgent,
+            Cookie: userData.session
+        }
+    };
+
+    request.post(options, function (err, httpResponse) {
+        if (err) return next(err);
+
+        if (httpResponse.statusCode != 200) {
+            return next(new Error("Vote failed with status code: " + httpResponse.statusCode));
+        }
+    });
+
+});
 
 
 module.exports = router;

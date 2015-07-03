@@ -163,6 +163,17 @@ display: block;
     padding: 5px;
     border-bottom-left-radius: 3px;
     color: #0a68b4;
+    /*font-size: 130%;*/
+}
+
+.post .upvoted-score {
+    font-weight: bold;
+    color: #ff8b60
+}
+
+.post .downvoted-score {
+    font-weight: bold;
+    color: #9494ff
 }
 
 .post .author, .subreddit {
@@ -178,6 +189,16 @@ display: block;
 .post .bottom-row .bottom-right-col {
     text-align: right;
     width: 100%;
+}
+
+.post .upvoted-button {
+    background-color: #ff8b60;
+    color: white;
+}
+
+.post .downvoted-button {
+    background-color: #9494ff;
+    color: white;
 }
 
 #more-posts-button {
