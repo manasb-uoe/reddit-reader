@@ -2,4 +2,10 @@
 .idea/
 
 # npm modules
-node_modules/
+app/node_modules/
+
+# batch scripts
+app/start_reddit_reader_backbone.bat
+
+# session store
+app/session_store/
