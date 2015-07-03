@@ -143,7 +143,7 @@ router.get("/posts/:subreddit?", function (req, res, next) {
         var json = JSON.parse(body);
 
         if (json.error) {
-            res.json(json);
+            res.send(parseInt(json.error));
         } else {
             var posts = [];
             json.data.children.forEach(function (post) {
