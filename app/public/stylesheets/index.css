@@ -162,6 +162,10 @@ display: block;
     font-weight: bold;
 }
 
+.post .comments-link {
+    color: #666666;
+}
+
 .post .upvoted-score {
     font-weight: bold;
     color: #ff8b60

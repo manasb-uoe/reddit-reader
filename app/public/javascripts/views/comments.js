@@ -8,16 +8,18 @@ define([
     "backbone",
     "collections/comments",
     "views/comments_item",
+    "views/posts_item",
+    "models/post",
     "swig",
     "text!../../templates/comments_page.html",
     "text!../../templates/error.html"
-], function ($, _, Backbone, commentsCollection, CommentsItemView, swig, commentsTemplate, errorTemplate) {
+], function ($, _, Backbone, commentsCollection, CommentsItemView, PostsItemView, PostModel, swig, commentsTemplate, errorTemplate) {
     "use strict";
 
     var CommentsView = Backbone.View.extend({
         el: "#content",
         initialize: function () {
-            commentsCollection.on("reset", this.addAllComments, this);
+            commentsCollection.on("reset", this.addAllCommentsAndPost, this);
             commentsCollection.on("error", this.showErrorMessage, this);
         },
         render: function (subreddit, postId, sort) {
@@ -31,24 +33,31 @@ define([
             this.$commentsContainer = $("#comments-container");
             this.$errorContainer = $("#comments-error-container");
             this.$sortTabsContainer = $("#comments-sort-tabs-container");
+            this.$postContainer = $("#post-container");
 
             this.reset();
         },
-        addAllComments: function () {
+        addAllCommentsAndPost: function () {
             this.$progressIndicator.hide();
             this.$errorContainer.hide();
 
             this.$commentsContainer.empty();
             this.$commentsContainer.show();
 
+            this.addSelectedPost();
+
             var self = this;
-            commentsCollection.each(function (comment, pos) {
+            commentsCollection.each(function (comment) {
                 self.addComment(comment);
             });
         },
         addComment: function (comment) {
             var commentsItem = new CommentsItemView({model: comment});
             this.$commentsContainer.append(commentsItem.render().el);
+        },
+        addSelectedPost: function () {
+            var postItem = new PostsItemView({model: new PostModel(commentsCollection.post)});
+            this.$postContainer.html(postItem.render().el);
         },
         showErrorMessage: function (error) {
             this.$progressIndicator.hide();

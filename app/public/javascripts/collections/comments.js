@@ -17,10 +17,11 @@ define([
                 url: self.url,
                 method: "GET",
                 dataType: "json",
-                data: {subreddit: subreddit, id: postId, sort: sort},
+                data: {subreddit: subreddit, id: postId, sort: sort, username: localStorage.getItem("username")},
                 timeout: 3000,
                 success: function (response) {
-                    self.reset(response);
+                    self.post = response.post;
+                    self.reset(response.comments);
                 },
                 error: function (jqXHR, textStatus, error) {
                     if (textStatus == "timeout") {
@@ -34,7 +35,7 @@ define([
                     }
                 }
             });
-        },
+        }
 
     });
 

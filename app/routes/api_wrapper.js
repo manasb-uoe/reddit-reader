@@ -251,6 +251,18 @@ router.get("/comments", function (req, res, next) {
 
         var json = JSON.parse(body);
 
+        /**
+         * Parse post
+         */
+
+        var post = json[0].data.children[0].data;
+        post.created_utc = moment.unix(post.created_utc).locale("en").fromNow();
+
+
+        /**
+         * Parse comments
+         */
+
         var comments = [];
 
         var parseComments = function (thread, level) {
@@ -277,7 +289,7 @@ router.get("/comments", function (req, res, next) {
             parseComments(thread, 0);
         });
 
-        res.json(comments);
+        res.json({post: post, comments: comments});
 
     });
 
