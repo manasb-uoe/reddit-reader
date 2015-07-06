@@ -222,4 +222,66 @@ router.post("/vote", function (req, res, next) {
 });
 
 
+router.get("/comments", function (req, res, next) {
+    var subreddit = req.query["subreddit"];
+    var postId = req.query["id"];
+    var sort = req.query["sort"] || "best";
+    var username = req.query["username"];
+
+    if (!subreddit || !postId) return next(new Error("'subreddit' and 'id' are required query parameters"));
+
+    var userData = undefined;
+    if (username) {
+        userData = localStorage.getItem(username);
+        if (!userData) return next(new Error("No session found for provided username"));
+
+        userData = JSON.parse(userData);
+    }
+
+    var options = {
+        url: apiBaseUrl + "/r/" + subreddit + "/comments/" + postId + "/.json?sort=" + sort,
+        headers: {
+            "User-Agent": userAgent,
+            Cookie: userData ? userData.session : undefined
+        }
+    };
+
+    request.get(options, function (err, httpResponse, body) {
+        if (err) return next(err);
+
+        var json = JSON.parse(body);
+
+        var comments = [];
+
+        var parseComments = function (thread, level) {
+            if (thread.kind == "t1") {
+                comments.push({
+                    body: thread.data.body_html,
+                    score: thread.data.score,
+                    likes: thread.data.likes,
+                    author: thread.data.author,
+                    name: thread.data.name,
+                    created_utc: moment.utc(moment.unix(thread.data.created_utc)).locale("en").fromNow(),
+                    level: level});
+
+                if (thread.data.replies) {
+                    level++;
+                    thread.data.replies.data.children.forEach(function (thread) {
+                        parseComments(thread, level);
+                    });
+                }
+            }
+        };
+
+        json[1].data.children.forEach(function (thread) {
+            parseComments(thread, 0);
+        });
+
+        res.json(comments);
+
+    });
+
+});
+
+
 module.exports = router;
