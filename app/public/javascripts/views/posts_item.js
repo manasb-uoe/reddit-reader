@@ -26,9 +26,12 @@ define([
             "click .downvote-button": "vote"
         },
         vote: function (event) {
+            var $scoreText = $(event.target).parents(".post").find(".score");
+
             if ($(event.target).attr("class").indexOf("up") > -1) {
                 if (this.model.get("likes") == -1 || this.model.get("likes") == 0) {
                     this.model.set("likes", 1);
+                    $scoreText.text(parseInt($scoreText.text()) + 1);
                 } else {
                     this.model.set("likes", 0);
                 }
@@ -40,19 +43,29 @@ define([
                 }
             }
 
+            this.voteAjax();
+        },
+        voteAjax: function () {
+            var self = this;
             $.ajax({
                 url: "/api/vote/",
                 method: "POST",
-                data: {id: this.model.get("name"), dir: this.model.get("likes"), username: localStorage.getItem("username")},
+                data: {id: self.model.get("name"), dir: self.model.get("likes"), username: localStorage.getItem("username")},
+                timeout: 3000,
                 success: function () {
                     console.log("success");
                 },
-                error: function (err) {
-                    console.log(err);
+                error: function (jqXHR, textStatus) {
+                    if (textStatus == "timeout") {
+                        setTimeout(function () {
+                            self.voteAjax();
+                        }, 1000);
+                    } else {
+                        console.log(textStatus);
+                    }
                 }
             });
         }
-
     });
 
     return PostItemView;

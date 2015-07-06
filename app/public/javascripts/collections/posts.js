@@ -29,11 +29,15 @@ define([
                 postsUrl += "&username=" + localStorage.getItem("username");
             }
 
+            this.fetchPostsAjax(postsUrl);
+        },
+        fetchPostsAjax: function (postsUrl) {
             var self = this;
             $.ajax({
                 url: postsUrl,
                 method: "GET",
                 dataType: "json",
+                timeout: 3000,
                 success: function (response) {
                     if (self.after != null) {
                         self.add(response.posts);
@@ -47,8 +51,16 @@ define([
                         self.trigger("no.more.posts.to.load");
                     }
                 },
-                error: function (error) {
-                    self.trigger("error", error);
+                error: function (jqXHR, textStatus, error) {
+                    if (textStatus == "timeout") {
+                        console.log("timed out");
+                        setTimeout(function () {
+                            self.fetchPostsAjax(postsUrl);
+                        }, 1000);
+
+                    } else {
+                        self.trigger("error", error);
+                    }
                 }
             });
         }

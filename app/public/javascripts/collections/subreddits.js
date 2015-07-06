@@ -22,15 +22,27 @@ define([
             this.type = this.type ? this.type : "default";
 
             var self = this;
-
             $.ajax({
                 url: self.type == "user" ? self.urls[this.type] + "?username=" + localStorage.getItem("username") : self.urls[this.type],
                 method: "GET",
                 dataType: "json",
+                timeout: 3000,
                 success: function (subreddits) {
                     self.reset(subreddits);
+                },
+                error: function (jqXHR, textStatus) {
+                    if (textStatus == "timeout") {
+                        setTimeout(function () {
+                            self.fetch();
+                        }, 1000);
+                    } else {
+                        console.log(textStatus);
+                    }
                 }
             });
+        },
+        fetchSubredditsAjax: function () {
+
         }
     });
 
