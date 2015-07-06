@@ -156,14 +156,10 @@ display: block;
 }
 
 .post .score {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background-color: #eee;
+    background-color: #f5f5f5;
     padding: 5px;
     border-bottom-left-radius: 3px;
-    color: #0a68b4;
-    /*font-size: 130%;*/
+    font-weight: bold;
 }
 
 .post .upvoted-score {
@@ -208,4 +204,70 @@ display: block;
 
 .posts-sort-tab {
     text-transform: capitalize;
+}
+
+
+/* Comments page */
+
+.comments-page-header {
+    margin-bottom: 20px;
+}
+
+#comments-progress-indicator {
+    margin-top: 10%;
+    text-align: center;
+}
+
+#comments-error-container {
+    margin-top: 10%;
+}
+
+#comments-container {
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    margin-bottom: 30px;
+}
+
+.comment {
+    border-left: 2px solid dodgerblue;
+    padding: 5px 5px 5px 10px;
+    display: flex;
+}
+
+.comment .left-col {
+    margin-right: 10px;
+    width: 20px;
+}
+
+.comment .btn-sm {
+    padding: 2px 4px;
+    font-size: 80%;
+}
+
+.comment-first {
+    background-color: #fafafa;
+    border-left: none;
+    padding-left: 5px;
+    margin-top: 10px;
+}
+
+.comment .upvoted-score {
+    font-weight: bold;
+    color: #ff8b60
+}
+
+.comment .downvoted-score {
+    font-weight: bold;
+    color: #9494ff
+}
+
+.comment .author {
+    color: #0a68b4 !important;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.comment .body {
+    font-size: 120%;
 }

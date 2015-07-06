@@ -1,0 +1,13 @@
+<div class="comment {%if level == 0%} comment-first {%endif%}" style="margin-left: {{leftPadding}}px;">
+    <div class="left-col">
+        <button class="btn btn-default btn-sm btn-block"><span class="glyphicon glyphicon-arrow-up"></span></button>
+        <button class="btn btn-default btn-sm btn-block"><span class="glyphicon glyphicon-arrow-down"></span></button>
+    </div>
+    <div class="right-col">
+        <span class="score"><strong>{{score}} points</strong></span> •
+        <span class="author">{{author}} </span> •
+        <span class="created">{{created_utc}}</span>
+        <br>
+        <span class="body"></span>
+    </div>
+</div>
