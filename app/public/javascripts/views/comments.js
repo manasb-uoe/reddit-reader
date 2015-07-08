@@ -9,17 +9,20 @@ define([
     "collections/comments",
     "views/comments_item",
     "views/posts_item",
+    "views/thread_navigator",
     "models/post",
     "swig",
     "text!../../templates/comments_page.html",
     "text!../../templates/error.html"
-], function ($, _, Backbone, commentsCollection, CommentsItemView, PostsItemView, PostModel, swig, commentsTemplate, errorTemplate) {
+], function ($, _, Backbone, commentsCollection, CommentsItemView, PostsItemView, ThreadNavigatorView, PostModel, swig, commentsTemplate, errorTemplate) {
     "use strict";
 
     var CommentsView = Backbone.View.extend({
         el: "#content",
         initialize: function () {
-            commentsCollection.on("reset", this.addAllCommentsAndPost, this);
+            commentsCollection.on("reset", this.addSelectedPost, this);
+            commentsCollection.on("reset", this.addAllComments, this);
+            commentsCollection.on("reset", this.initThreadNavigator, this);
             commentsCollection.on("error", this.showErrorMessage, this);
         },
         render: function (subreddit, postId, sort) {
@@ -37,17 +40,18 @@ define([
 
             this.reset();
         },
-        addAllCommentsAndPost: function () {
+        addAllComments: function () {
             this.$progressIndicator.hide();
             this.$errorContainer.hide();
 
             this.$commentsContainer.empty();
             this.$commentsContainer.show();
 
-            this.addSelectedPost();
-
             var self = this;
-            commentsCollection.each(function (comment) {
+            commentsCollection.each(function (comment, pos) {
+                if (pos != 0 && comment.get("level") == 0) {
+                    self.$commentsContainer.append("<hr class='thread-separator'>");
+                }
                 self.addComment(comment);
             });
         },
@@ -58,6 +62,11 @@ define([
         addSelectedPost: function () {
             var postItem = new PostsItemView({model: new PostModel(commentsCollection.post)});
             this.$postContainer.html(postItem.render().el);
+        },
+        initThreadNavigator: function () {
+            var threadNavigator = new ThreadNavigatorView({comments: commentsCollection});
+            threadNavigator.render();
+            threadNavigator.setVisible(true);
         },
         showErrorMessage: function (error) {
             this.$progressIndicator.hide();

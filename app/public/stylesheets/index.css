@@ -7,13 +7,27 @@ body {
 
 /* Navbar */
 
+.navbar {
+    background-color: #4285f4 !important;
+    box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
+    border: none;
+}
+
 .navbar-brand {
     cursor: pointer;
+    color: white !important;
+}
+
+.navbar a {
+    color: white !important;
+}
+
+.navbar .dropdown-item {
+    color: #999999 !important;
 }
 
 .brand-glyphicon {
     font-size: small;
-    top: -2px;
 }
 
 #subreddits-dropdown-container {
@@ -91,13 +105,13 @@ display: block;
 
 #posts-page-container {
     background-color: white;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
     margin-bottom: 30px;
 }
 
 #posts-sort-tabs-container .active a {
-    background-color: #158cba;
-    color: white;
+    background-color: #4285f4 !important;
+    color: white !important;
 }
 
 #progress-indicator {
@@ -150,7 +164,6 @@ display: block;
 .post .title {
     color: #0a68b4;
     font-size: 140%;
-    font-weight: 400;
 }
 
 .post ._thumbnail {
@@ -213,13 +226,13 @@ display: block;
 
 #comments-page-container {
     background-color: white;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
     margin-bottom: 30px;
 }
 
 #comments-sort-tabs-container .active a {
-    background-color: #158cba;
-    color: white;
+    background-color: #4285f4 !important;
+    color: white !important;
 }
 
 .comments-page-header {
@@ -243,7 +256,7 @@ display: block;
 }
 
 .comment {
-    border-left: 2px solid dodgerblue;
+    border-left: 2px solid #4285f4;
     padding: 5px 5px 5px 10px;
 }
 
@@ -263,7 +276,7 @@ display: block;
 }
 
 .comment-first {
-    background-color: #fafafa;
+    background-color: #f1f1f1;
     border-left: none;
     padding-left: 5px;
     margin-top: 10px;
@@ -287,4 +300,22 @@ display: block;
 
 .comment .body {
     font-size: 120%;
+}
+
+#thread-navigator-container {
+    position: fixed;
+    top: 77px;
+    right: 20px;
+    margin-top: -200px;
+    background-color: white;
+    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+    padding: 10px;
+}
+
+#navigate-down-button {
+    margin-right: 10px;
+}
+
+#thread-indicator {
+    margin-right: 10px;
 }
