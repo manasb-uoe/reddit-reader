@@ -1,8 +1,8 @@
 <div class="post">
     <div class="left-col">
         <div class="score text-center {% if likes == 1 %} upvoted-score {% elif likes == -1 %} downvoted-score {% endif %}">{{score}}</div>
-        <button class="btn btn-link btn-sm upvote-button {% if likes == 1 %} upvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-up"></span></button>
-        <button class="btn btn-link btn-sm downvote-button {% if likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
+        <button class="btn btn-default btn-sm upvote-button {% if likes == 1 %} upvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-up"></span></button>
+        <button class="btn btn-default btn-sm downvote-button {% if likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
     </div>
     <div class="middle-col {% if !thumbnail %} hidden {% endif %}">
         <img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}">
@@ -10,7 +10,7 @@
     <div class="right-col">
         <a class="title" href="{{url}}">{{ title }}</a>
         <br>
-        <span class="author">{{author}} </span><span>in</span> <span><a class="subreddit" href="#/r/{{subreddit}}">r/{{subreddit}}</a></span>
+        <span class="author">{{author}} </span><span>in</span><span><a class="subreddit" href="#/r/{{subreddit}}"> r/{{subreddit}}</a></span>
         <br>
         <span class="num-comments"><a class="comments-link" href="#/r/{{subreddit}}/comments/{{id}}">{{num_comments}} comments</a></span> • <span class="domain">{{domain}}</span> • <span class="created-at">{{created_utc}}</span>
     </div>
