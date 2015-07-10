@@ -5,7 +5,7 @@
         <button class="btn btn-default btn-sm downvote-button {% if likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
     </div>
     <div class="middle-col {% if !thumbnail %} hidden {% endif %}">
-        <img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}">
+        <a href="{{url}}"><img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}"></a>
     </div>
     <div class="right-col">
         <a class="title" href="{{url}}">{{ title }}</a>

@@ -1,15 +1,117 @@
-body {
-    background-color: #f6f9fa;
-    overflow-y: scroll;
-    margin-top: 80px;
+.sidebar-wrapper {
+    position: fixed;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    overflow-y: auto;
+    background: #222d32;
+    transition: all 0.5s ease;
+}
+
+.sidebar-wrapper .header {
+    background-color: #367fa9;
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar-wrapper .header .title {
+    color: white;
+    font-size: 140%;
+}
+
+.sidebar-wrapper .header .subtitle {
+    color: rgba(255,255,255,0.5);
+    font-size: 100%;
+}
+
+.sidebar-wrapper .jump-to-subreddit-form {
+    padding: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar-wrapper .jump-to-subreddit-form #subreddit-input {
+    background-color: #374850;
+    border: 1px solid transparent;
+    height: 35px;
+    width: 100%;
+    color: rgba(255,255,255,0.8);
+    border-radius: 2px;
+    font-size: 90%;
+    padding: 10px;
+    transition: all .3s ease-in-out;
+}
+
+.sidebar-wrapper .menu {
+
+}
+
+.sidebar-wrapper .menu .header {
+    color: #4b646f;
+    text-transform: uppercase;
+    background-color: #1a2226;
+    padding: 10px 15px;
+    font-size: 80%;
+    text-align: left;
+}
+
+.sidebar-wrapper .menu .item .title {
+    color: #b8c7ce;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar-wrapper .menu .item .title:hover {
+    border-left: 3px solid #367fa9;
+    color: white;
+}
+
+.sidebar-wrapper .menu .item .subitem {
+    color: #8aa4af;
+    background-color: #2c3b41;
+    font-size: 90%;
+    padding: 7px 35px;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar-wrapper .menu .item .subitem:hover {
+    color: white;
+}
+
+.sidebar-wrapper .menu .glyphicon {
+    margin-right: 7px;
+}
+
+.content-wrapper {
+    position: relative;
+    padding: 15px;
+    margin-left: 0;
+    transition: all 0.5s ease;
+}
+
+@media(min-width:768px) {
+    .sidebar-wrapper {
+        left: 0;
+    }
+
+    .content-wrapper {
+        margin-left: 250px;
+    }
 }
 
 
 /* Navbar */
 
 .navbar {
-    background-color: #4285f4 !important;
-    box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
+    background-color: #3c8dbc !important;
+    /*box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);*/
     border: none;
 }
 
@@ -97,17 +199,11 @@ body {
 }
 
 .navigation-drawer-container .navigation-drawer a {
-display: block;
+    display: block;
 }
 
 
 /* Posts page */
-
-#posts-page-container {
-    background-color: white;
-    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
-    margin-bottom: 30px;
-}
 
 #posts-sort-tabs-container .active a {
     background-color: #4285f4 !important;
@@ -130,7 +226,6 @@ display: block;
 }
 
 .posts-page-header #current-subreddit {
-    vertical-align: middle;
     display: inline-block;
     margin-bottom: 10px;
     padding: 10px;
@@ -147,14 +242,14 @@ display: block;
 }
 
 .post .left-col {
-    margin-right: 5px;
+    margin-right: 10px;
     height: 75px;
     float: left;
 }
 
 .post .middle-col {
     float: left;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .post .right-col {
@@ -163,7 +258,7 @@ display: block;
 
 .post .title {
     color: #0a68b4;
-    font-size: 140%;
+    font-size: 135%;
 }
 
 .post ._thumbnail {
@@ -177,8 +272,10 @@ display: block;
 }
 
 .post .score {
-    font-size: 150%;
-    font-weight: 300;
+    font-size: 135%;
+    font-weight: 400;
+    color: #666666;
+    margin-bottom: 3px;
 }
 
 .post .comments-link {
@@ -223,12 +320,6 @@ display: block;
 
 
 /* Comments page */
-
-#comments-page-container {
-    background-color: white;
-    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
-    margin-bottom: 30px;
-}
 
 #comments-sort-tabs-container .active a {
     background-color: #4285f4 !important;

@@ -10,103 +10,50 @@ define([
     "collections/subreddits",
     "views/login_modal",
     "swig",
-    "text!../../templates/navigation_bar.html",
-    "text!../../templates/navigation_drawer.html",
+    "text!../../templates/sidebar.html",
+    "text!../../templates/sidebar_menu.html",
     "bootstrap"
-], function (_, $, Backbone, favouritesCollection, SubredditsCollection, loginModalView, swig, navBarTemplate, drawerTemplate) {
+], function (_, $, Backbone, favouritesCollection, SubredditsCollection, loginModalView, swig, sidebarTemplate, sidebarMenu) {
     "use strict";
 
     var NavView = Backbone.View.extend({
-        el: "#navigation-bar-container",
+        el: "#sidebar",
         initialize: function () {
             this.popularSubreddits = new SubredditsCollection({type: "popular10"});
             this.defaultSubreddits = new SubredditsCollection({type: "default"});
             this.userSubreddits = new SubredditsCollection({type: "user"});
 
-            favouritesCollection.on("reset", this.refreshSubredditsDropdown, this);
             loginModalView.on("login.success", this.render, this);
-            this.popularSubreddits.on("reset", this.refreshDrawerContent, this);
-            this.defaultSubreddits.on("reset", this.refreshDrawerContent, this);
-            this.userSubreddits.on("reset", this.refreshDrawerContent, this);
+            this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
+            this.defaultSubreddits.on("reset", this.refreshSidebarMenu, this);
+            this.userSubreddits.on("reset", this.refreshSidebarMenu, this);
         },
         render: function () {
-            var compiledTemplate = swig.render(navBarTemplate, {locals: {username: localStorage.getItem("username")}});
-            this.$el.html(compiledTemplate);
+            this.$el.html(sidebarTemplate);
 
-            this.$dropdownSubredditsContainer = $("#subreddits-dropdown-container");
-            this.$drawer = $("#navigation-drawer-container");
-            this.$brandIcon = $(".brand-glyphicon");
             this.$subredditInput = $("#subreddit-input");
+            this.$menu = $("#menu-accordion");
 
-            favouritesCollection.fetch();
-            this.popularSubreddits.fetch();
+            this.refreshSidebarMenu();
+
             this.defaultSubreddits.fetch();
             if (localStorage.getItem("username")) {
                 this.userSubreddits.fetch();
             }
-
-            this.isDrawerVisible = false;
         },
         events: {
-            "click .navbar-brand": "toggleDrawer",
             "keypress #subreddit-input": "jumpToSubreddit",
             "click #subreddit-go-button": "jumpToSubreddit"
         },
-        refreshSubredditsDropdown: function () {
-            this.$dropdownSubredditsContainer.empty();
-
-            var self = this;
-            favouritesCollection.each(function (subreddit, pos) {
-                if (pos == 0) {
-                    var header = '<li class="dropdown-header">FAVOURITE SUBREDDITS</li>'
-                    self.$dropdownSubredditsContainer.append(header);
-                }
-
-                var template = "<li><a {% if display_name == \'Front page\'%} href = '#/r/' {% else%} href = '#/r/{{ display_name }}' {% endif %} class='subreddits-dropdown-item' data-name='{{ display_name }}'>{{ display_name }}</a></li>";
-                var compiledTemplate = swig.render(template, {locals: subreddit.toJSON()});
-                self.$dropdownSubredditsContainer.append(compiledTemplate);
-            });
-
-            if (favouritesCollection.length > 0) {
-                var separator = '<li role="separator" class="divider"></li>';
-                this.$dropdownSubredditsContainer.append(separator);
-            }
-
-            var addFavouriteTemplate = '<li><a id="add-favourite-button"><span class="glyphicon glyphicon-plus"></span>  Add Favourite</a></li>';
-            this.$dropdownSubredditsContainer.append(addFavouriteTemplate);
-        },
-        toggleDrawer: function () {
-            if (this.isDrawerVisible) {
-                this.$drawer.animate({
-                    marginLeft: "-300px"
-                }, 300);
-
-                this.$brandIcon.addClass("glyphicon-menu-hamburger");
-                this.$brandIcon.removeClass("glyphicon-chevron-left");
-
-                this.isDrawerVisible = false;
-            } else {
-                this.$drawer.animate({
-                    marginLeft: "0"
-                }, 300);
-
-                this.$brandIcon.removeClass("glyphicon-menu-hamburger");
-                this.$brandIcon.addClass("glyphicon-chevron-left");
-
-                this.isDrawerVisible = true;
-            }
-        },
-        refreshDrawerContent: function () {
-            var compiledTemplate = swig.render(drawerTemplate, {
+        refreshSidebarMenu: function () {
+            var compiledTemplate = swig.render(sidebarMenu, {
                 locals: {
-                    categories: {
-                        "My Subscriptions": this.userSubreddits.toJSON(),
-                        "Popular Subreddits": this.popularSubreddits.toJSON(),
-                        "Default Subreddits": this.defaultSubreddits.toJSON()
-                    }
+                    username: localStorage.getItem("username"),
+                    defaults: this.defaultSubreddits.toJSON(),
+                    subs: this.userSubreddits.toJSON()
                 }
             });
-            this.$drawer.html(compiledTemplate);
+            this.$menu.html(compiledTemplate);
         },
         jumpToSubreddit: function (event) {
             if (event.which == 1 || event.which == 13) {
