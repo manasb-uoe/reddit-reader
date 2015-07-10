@@ -25,9 +25,9 @@ define([
             var compiledTemplate = swig.render(postItemTemplate, {locals: {comment: this.model.toJSON(), postAuthor: this.postAuthor}});
             this.$el.html(compiledTemplate);
 
-            // decode comment body html before adding to document
-            var decoded = $("<div>").html(this.model.get("body")).text();
-            this.$el.find(".body").html(decoded);
+            // decode comment body html and add to corresponding div
+            var decodedBody = $("<div>").html(this.model.get("body")).text();
+            this.$el.find(".body").html(decodedBody);
 
             return this;
         },
