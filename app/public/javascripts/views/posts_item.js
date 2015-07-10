@@ -43,28 +43,7 @@ define([
                 }
             }
 
-            this.voteAjax();
-        },
-        voteAjax: function () {
-            var self = this;
-            $.ajax({
-                url: "/api/vote/",
-                method: "POST",
-                data: {id: self.model.get("name"), dir: self.model.get("likes"), username: localStorage.getItem("username")},
-                timeout: 3000,
-                success: function () {
-                    console.log("success");
-                },
-                error: function (jqXHR, textStatus) {
-                    if (textStatus == "timeout") {
-                        setTimeout(function () {
-                            self.voteAjax();
-                        }, 1000);
-                    } else {
-                        console.log(textStatus);
-                    }
-                }
-            });
+            this.model.vote();
         }
     });
 
