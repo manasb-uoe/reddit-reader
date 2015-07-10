@@ -8,11 +8,12 @@
         <a href="{{url}}"><img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}"></a>
     </div>
     <div class="right-col">
-        <a class="title" href="{{url}}">{{ title }}</a>
+        <a class="title" href="{% if is_self %} #/r/{{subreddit}}/comments/{{id}} {% else %} {{url}} {% endif %}">{{ title }}</a>
         <br>
         <span class="author">{{author}} </span><span>in</span><span><a class="subreddit" href="#/r/{{subreddit}}"> r/{{subreddit}}</a></span>
         <br>
         <span class="num-comments"><a class="comments-link" href="#/r/{{subreddit}}/comments/{{id}}">{{num_comments}} comments</a></span> • <span class="domain">{{domain}}</span> • <span class="created-at">{{created_utc}}</span>
     </div>
     <div style="clear:both"></div>
+    <div class="self-text"></div>
 </div>

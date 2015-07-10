@@ -12,12 +12,23 @@ define([
     "use strict";
 
     var PostItemView = Backbone.View.extend({
-        initialize: function () {
+        initialize: function (options) {
+            this.model = options.model;
+            this.shouldShowSelfText = options.shouldShowSelfText || false;
+
             this.model.on("change:likes", this.render, this);
         },
         render: function () {
             var compiledTemplate = swig.render(postItemTemplate, {locals: this.model.toJSON()});
             this.$el.html(compiledTemplate);
+
+            if (this.shouldShowSelfText) {
+                // decode comment self text and add to corresponding div
+                var decodedSelfText = $("<div>").html(this.model.get("selftext_html")).text();
+                this.$el.find(".self-text").html(decodedSelfText);
+            } else {
+                this.$el.find(".self-text").hide();
+            }
 
             return this;
         },

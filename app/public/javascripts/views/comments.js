@@ -60,7 +60,8 @@ define([
             this.$commentsContainer.append(commentsItem.render().el);
         },
         addSelectedPost: function () {
-            var postItem = new PostsItemView({model: new PostModel(commentsCollection.post)});
+            var postModel = new PostModel(commentsCollection.post);
+            var postItem = new PostsItemView({model: postModel, shouldShowSelfText: postModel.get("is_self")});
             this.$postContainer.html(postItem.render().el);
         },
         initThreadNavigator: function () {

@@ -308,6 +308,12 @@
     color: #9494ff;
 }
 
+.post .self-text {
+    border: 1px solid darkgray;
+    border-radius: 3px;
+    padding: 5px;
+}
+
 #more-posts-button {
     margin-top: 10px;
     margin-bottom: 30px;
