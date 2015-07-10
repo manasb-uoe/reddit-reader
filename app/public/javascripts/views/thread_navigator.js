@@ -38,11 +38,11 @@ define([
         setVisible: function (shouldVisible) {
             if (shouldVisible) {
                 this.$el.animate({
-                    marginTop: "0"
+                    marginBottom: "0"
                 }, 500);
             } else {
                 this.$el.animate({
-                    marginTop: -this.$el.height() - 200
+                    marginBottom: -this.$el.height() - 100
                 }, 500);
             }
         },
@@ -54,7 +54,7 @@ define([
             }
 
             var $targetDiv = $("#comments-container").find("[data-name='" + this.threads[this.currentThread].get("name") + "']");
-            $("html,body").animate({scrollTop: $targetDiv.offset().top - 65}, 200);
+            $("html,body").animate({scrollTop: $targetDiv.offset().top - 15}, 200);
 
             this.render();
             this.updateControlsVisiblity();
