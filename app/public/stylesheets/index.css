@@ -1,3 +1,6 @@
+
+/* Sidebar */
+
 .sidebar-wrapper {
     position: fixed;
     left: -250px;
@@ -40,10 +43,6 @@
     font-size: 90%;
     padding: 10px;
     transition: all .3s ease-in-out;
-}
-
-.sidebar-wrapper .menu {
-
 }
 
 .sidebar-wrapper .menu .header {
@@ -395,6 +394,14 @@
     color: #0a68b4 !important;
     font-weight: bold;
     text-decoration: none;
+}
+
+.comment .post-author {
+    color: white !important;
+    background-color: #0a68b4;
+    border-radius: 2px;
+    padding: 2px;
+    font-weight: normal;
 }
 
 .comment .body {

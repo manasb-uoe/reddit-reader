@@ -12,14 +12,17 @@ define([
     "use strict";
 
     var CommentsItemView = Backbone.View.extend({
-        initialize: function () {
+        initialize: function (options) {
+            this.postAuthor = options.postAuthor;
+            this.mode = options.model;
+
             this.model.on("change:likes", this.render, this);
         },
         render: function () {
             // add left padding depending on comment level
             this.model.set("leftPadding", this.model.get("level") * 15);
 
-            var compiledTemplate = swig.render(postItemTemplate, {locals: this.model.toJSON()});
+            var compiledTemplate = swig.render(postItemTemplate, {locals: {comment: this.model.toJSON(), postAuthor: this.postAuthor}});
             this.$el.html(compiledTemplate);
 
             // decode comment body html before adding to document

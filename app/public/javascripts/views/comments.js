@@ -56,7 +56,7 @@ define([
             });
         },
         addComment: function (comment) {
-            var commentsItem = new CommentsItemView({model: comment});
+            var commentsItem = new CommentsItemView({model: comment, postAuthor: commentsCollection.post.author});
             this.$commentsContainer.append(commentsItem.render().el);
         },
         addSelectedPost: function () {
