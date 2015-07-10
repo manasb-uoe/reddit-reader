@@ -256,7 +256,23 @@ router.get("/comments", function (req, res, next) {
          */
 
         var post = json[0].data.children[0].data;
+
+        // replace default thumbnails with urls
+        if (["", "default", "self", "nsfw"].indexOf(post.thumbnail) > -1) {
+            post.thumbnail = undefined;
+        }
+
+        // humanize timestamp
         post.created_utc = moment.unix(post.created_utc).locale("en").fromNow();
+
+        // replace 'likes' with 1,0 or -1 so that it's easy to use its value while rendering templates
+        if (post.likes) {
+            post.likes = 1;
+        } else if (post.likes == null) {
+            post.likes = 0;
+        } else {
+            post.likes = -1;
+        }
 
 
         /**
@@ -267,14 +283,28 @@ router.get("/comments", function (req, res, next) {
 
         var parseComments = function (thread, level) {
             if (thread.kind == "t1") {
-                comments.push({
-                    body: thread.data.body_html,
+                var comment = {body: thread.data.body_html,
                     score: thread.data.score,
                     likes: thread.data.likes,
                     author: thread.data.author,
                     name: thread.data.name,
-                    created_utc: moment.utc(moment.unix(thread.data.created_utc)).locale("en").fromNow(),
-                    level: level});
+                    created_utc: thread.data.created_utc,
+                    level: level
+                };
+
+                // humanize timestamp
+                comment.created_utc = moment.utc(moment.unix(comment.created_utc)).locale("en").fromNow();
+
+                // replace 'likes' with 1,0 or -1 so that it's easy to use its value while rendering templates
+                if (comment.likes) {
+                    post.likes = 1;
+                } else if (comment.likes == null) {
+                    comment.likes = 0;
+                } else {
+                    comment.likes = -1;
+                }
+
+                comments.push(comment);
 
                 if (thread.data.replies) {
                     level++;

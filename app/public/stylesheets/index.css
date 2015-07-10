@@ -383,6 +383,14 @@
     color: #9494ff
 }
 
+.comment .upvoted-button {
+    color: #ff8b60;
+}
+
+.comment .downvoted-button {
+    color: #9494ff;
+}
+
 .comment .author {
     color: #0a68b4 !important;
     font-weight: bold;

@@ -12,6 +12,9 @@ define([
     "use strict";
 
     var CommentsItemView = Backbone.View.extend({
+        initialize: function () {
+            this.model.on("change:likes", this.render, this);
+        },
         render: function () {
             // add left padding depending on comment level
             this.model.set("leftPadding", this.model.get("level") * 15);
@@ -24,6 +27,30 @@ define([
             this.$el.find(".body").html(decoded);
 
             return this;
+        },
+        events: {
+            "click .upvote-button": "vote",
+            "click .downvote-button": "vote"
+        },
+        vote: function (event) {
+            var $scoreText = $(event.target).parents(".comment").find(".score");
+
+            if ($(event.target).attr("class").indexOf("up") > -1) {
+                if (this.model.get("likes") == -1 || this.model.get("likes") == 0) {
+                    this.model.set("likes", 1);
+                    $scoreText.text(parseInt($scoreText.text()) + 1);
+                } else {
+                    this.model.set("likes", 0);
+                }
+            } else {
+                if (this.model.get("likes") == 1 || this.model.get("likes") == 0) {
+                    this.model.set("likes", -1);
+                } else {
+                    this.model.set("likes", 0);
+                }
+            }
+
+            this.model.vote();
         }
     });
 

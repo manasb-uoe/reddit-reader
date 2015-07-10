@@ -1,10 +1,10 @@
 <div class="comment {%if level == 0%} comment-first {%endif%}" data-name="{{name}}" style="margin-left: {{leftPadding}}px;">
     <div class="left-col">
-        <button class="btn btn-default btn-sm btn-block"><span class="glyphicon glyphicon-arrow-up"></span></button>
-        <button class="btn btn-default btn-sm btn-block"><span class="glyphicon glyphicon-arrow-down"></span></button>
+        <button class="btn btn-default btn-sm upvote-button {% if likes == 1 %} upvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-up"></span></button>
+        <button class="btn btn-default btn-sm downvote-button {% if likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
     </div>
     <div class="right-col">
-        <span class="score"><strong>{{score}} points</strong></span> •
+        <span class="score {% if likes == 1 %} upvoted-score {% elif likes == -1 %} downvoted-score {% endif %}"><strong>{{score}} points</strong></span> •
         <span class="author">{{author}} </span> •
         <span class="created">{{created_utc}}</span>
         <br>
