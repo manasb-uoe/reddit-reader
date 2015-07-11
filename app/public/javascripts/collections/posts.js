@@ -37,7 +37,7 @@ define([
                 url: postsUrl,
                 method: "GET",
                 dataType: "json",
-                timeout: 3000,
+                timeout: 6000,
                 success: function (response) {
                     if (self.after != null) {
                         self.add(response.posts);

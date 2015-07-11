@@ -18,7 +18,7 @@ define([
                 method: "GET",
                 dataType: "json",
                 data: {subreddit: subreddit, id: postId, sort: sort, username: localStorage.getItem("username")},
-                timeout: 3000,
+                timeout: 6000,
                 success: function (response) {
                     self.post = response.post;
                     self.reset(response.comments);
