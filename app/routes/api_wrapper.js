@@ -10,7 +10,7 @@ var moment = require("moment");
 
 
 var localStorage = new LocalStorage("./session_store");
-var apiBaseUrl = "http://www.reddit.com";
+var apiBaseUrl = "https://www.reddit.com";
 var userAgent = "RedditReaderBackbone by enthusiast_94";
 
 
