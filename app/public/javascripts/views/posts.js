@@ -26,10 +26,7 @@ define([
             postsCollection.on("error", this.showErrorMessage, this);
             postsCollection.on("no.more.posts.to.load", this.allPostsLoaded, this);
         },
-        render: function (subreddit, sort) {
-            this.subreddit = subreddit;
-            this.sort = sort;
-
+        render: function (subreddit, sort, username) {
             this.$el.html(postsTemplate);
 
             this.$progressIndicator = $("#progress-indicator");
@@ -39,13 +36,23 @@ define([
             this.$sortTabsContainer = $("#posts-sort-tabs-container");
             this.$morePostsButton = $("#more-posts-button");
 
-            postsCollection.fetch(this.subreddit, this.sort, false);
-
             this.$progressIndicator.show();
             this.$postsContainer.hide();
-            this.updateCurrentSubreddit();
-            this.refreshSortTabs(this.subreddit, this.sort);
+            this.updateCurrentSubreddit(subreddit);
+            this.refreshSortTabs(subreddit, sort);
             this.$morePostsButton.hide();
+
+            // if same posts are requested as last time (from the same user), do not fetch them again
+            if (subreddit == this.subreddit && sort == this.sort && username == this.username) {
+                this.addAllPosts();
+            } else {
+                this.subreddit = subreddit;
+                this.sort = sort;
+                this.username = username;
+
+                postsCollection.fetch(this.subreddit, this.sort, false);
+            }
+
         },
         events: {
             "click #more-posts-button": "loadMorePosts"
@@ -98,8 +105,8 @@ define([
             this.$morePostsButton.html("No more posts to load :(");
             this.$morePostsButton.prop("disabled", true);
         },
-        updateCurrentSubreddit: function () {
-            var text = this.subreddit != "Front page" ? "Subreddit: " + "r/" + this.subreddit : this.subreddit;
+        updateCurrentSubreddit: function (subreddit) {
+            var text = subreddit != "Front page" ? "Subreddit: " + "r/" + subreddit : subreddit;
             this.$currentSubreddit.text(text);
         }
     });

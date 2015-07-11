@@ -24,7 +24,7 @@ define([
             var subreddit = "Front page";
             sort = sort != null ? sort : "hot";
 
-            postsView.render(subreddit, sort);
+            postsView.render(subreddit, sort, localStorage.getItem("username"));
         },
         showSubreddit: function (subreddit, sort) {
             subreddit = subreddit != null ? subreddit : "Front page";
