@@ -37,24 +37,28 @@ define([
             "click .downvote-button": "vote"
         },
         vote: function (event) {
-            var $scoreText = $(event.target).parents(".post").find(".score");
+            if (localStorage.getItem("username")) {
+                var $scoreText = $(event.target).parents(".post").find(".score");
 
-            if ($(event.target).attr("class").indexOf("up") > -1) {
-                if (this.model.get("likes") == -1 || this.model.get("likes") == 0) {
-                    this.model.set("likes", 1);
-                    $scoreText.text(parseInt($scoreText.text()) + 1);
+                if ($(event.target).attr("class").indexOf("up") > -1) {
+                    if (this.model.get("likes") == -1 || this.model.get("likes") == 0) {
+                        this.model.set("likes", 1);
+                        $scoreText.text(parseInt($scoreText.text()) + 1);
+                    } else {
+                        this.model.set("likes", 0);
+                    }
                 } else {
-                    this.model.set("likes", 0);
+                    if (this.model.get("likes") == 1 || this.model.get("likes") == 0) {
+                        this.model.set("likes", -1);
+                    } else {
+                        this.model.set("likes", 0);
+                    }
                 }
+
+                this.model.vote();
             } else {
-                if (this.model.get("likes") == 1 || this.model.get("likes") == 0) {
-                    this.model.set("likes", -1);
-                } else {
-                    this.model.set("likes", 0);
-                }
+                alert("You are not authorized to perform this action.");
             }
-
-            this.model.vote();
         }
     });
 
