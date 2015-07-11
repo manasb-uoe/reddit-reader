@@ -42,7 +42,6 @@ define([
             "click #logout-button": "logout"
         },
         refreshSidebarMenu: function () {
-            console.log("refreshing sidebar menu");
             var compiledTemplate = swig.render(sidebarMenu, {
                 locals: {
                     username: localStorage.getItem("username"),
@@ -59,9 +58,8 @@ define([
             }
         },
         logout: function () {
-            localStorage.removeItem("username");
-            localStorage.removeItem("session");
-            localStorage.removeItem("modhash");
+            // clear cache
+            localStorage.clear();
 
             this.render();
 
