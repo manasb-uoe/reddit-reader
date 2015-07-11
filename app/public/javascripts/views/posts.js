@@ -39,7 +39,7 @@ define([
             this.$sortTabsContainer = $("#posts-sort-tabs-container");
             this.$morePostsButton = $("#more-posts-button");
 
-            postsCollection.fetch(this.subreddit, this.sort);
+            postsCollection.fetch(this.subreddit, this.sort, false);
 
             this.$progressIndicator.show();
             this.$postsContainer.hide();
@@ -90,14 +90,13 @@ define([
             this.$errorContainer.show();
         },
         loadMorePosts: function () {
-            postsCollection.fetch(this.subreddit, this.sort);
+            postsCollection.fetch(this.subreddit, this.sort, true);
             this.$morePostsButton.prop("disabled", true);
             this.$morePostsButton.html("Loading...");
         },
         allPostsLoaded: function () {
             this.$morePostsButton.html("No more posts to load :(");
             this.$morePostsButton.prop("disabled", true);
-            console.log("disabled");
         },
         updateCurrentSubreddit: function () {
             var text = this.subreddit != "Front page" ? "Subreddit: " + "r/" + this.subreddit : this.subreddit;

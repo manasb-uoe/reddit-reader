@@ -6,15 +6,11 @@ define([
     "underscore",
     "jquery",
     "backbone",
-    "models/post",
-    "views/login_modal"
-], function (_, $, Backbone, PostModel, loginModalView) {
+    "models/post"
+], function (_, $, Backbone, PostModel) {
     var PostsCollection = Backbone.Collection.extend({
         model: PostModel,
-        initialize: function () {
-            loginModalView.on("login.success", this.refresh, this);
-        },
-        fetch: function (subreddit, sort) {
+        fetch: function (subreddit, sort, shouldLoadMore) {
             // reset 'after' value if subreddit or sort has been changed
             if (this.subreddit != subreddit || this.sort != sort) {
                 this.after = undefined;
@@ -22,10 +18,11 @@ define([
 
             this.subreddit = subreddit;
             this.sort = sort;
+            this.shouldLoadMore = shouldLoadMore;
 
             // build posts url
             var postsUrl = this.subreddit == "Front page" ? "/api/posts?sort=" + this.sort : "/api/posts/" + this.subreddit + "?sort=" + this.sort;
-            if (this.after) {
+            if (shouldLoadMore && this.after) {
                 postsUrl += "&after=" + this.after;
             }
             if (localStorage.getItem("username")) {
@@ -42,8 +39,10 @@ define([
                 dataType: "json",
                 timeout: 6000,
                 success: function (response) {
-                    if (self.after != null) {
-                        self.add(response.posts);
+                    if (self.shouldLoadMore) {
+                        if (self.after != null) {
+                            self.add(response.posts);
+                        }
                     } else {
                         self.reset(response.posts);
                     }
@@ -66,14 +65,6 @@ define([
                     }
                 }
             });
-        },
-        refresh: function () {
-            console.log("refreshing posts coll");
-            this.subreddit = undefined;
-            this.sort = undefined;
-            this.after = undefined;
-
-            this.reset({silent: true});
         }
     });
 
