@@ -42,24 +42,30 @@ define([
                     url: "/api/login",
                     method: "POST",
                     data: {username: username, password: password},
+                    timeout: 6000,
                     success: function (response) {
-                        if (response.status == "error") {
-                            self.$errorContainer.show();
-                            self.$errorContainer.html("<strong>Error! </strong>Username or password is incorrect.");
-                        } else {
+                        if (response.success) {
                             localStorage.setItem("username", username);
+                            localStorage.setItem("session", response.session);
+                            localStorage.setItem("modhash", response.modhash);
 
                             self.trigger("login.success");
 
                             self.$modal.modal("hide");
+
+                            // reload current page
+                            Backbone.history.loadUrl();
+                        } else {
+                            self.$errorContainer.show();
+                            self.$errorContainer.html("<strong>Error! </strong>Username or password is incorrect.");
                         }
 
                         self.$submitButton.prop("disabled", false);
                         self.$submitButton.html("Submit");
                     },
-                    error: function (error) {
+                    error: function (jqXHR, textStatus) {
                         self.$errorContainer.show();
-                        self.$errorContainer.html(error.statusText);
+                        self.$errorContainer.html(textStatus);
 
                         self.$submitButton.prop("disabled", false);
                         self.$submitButton.html("Submit");

@@ -6,25 +6,22 @@ define([
     "underscore",
     "jquery",
     "backbone",
-    "collections/favourite_subreddits",
     "collections/subreddits",
     "views/login_modal",
     "swig",
     "text!../../templates/sidebar.html",
     "text!../../templates/sidebar_menu.html",
     "bootstrap"
-], function (_, $, Backbone, favouritesCollection, SubredditsCollection, loginModalView, swig, sidebarTemplate, sidebarMenu) {
+], function (_, $, Backbone, SubredditsCollection, loginModalView, swig, sidebarTemplate, sidebarMenu) {
     "use strict";
 
     var NavView = Backbone.View.extend({
         el: "#sidebar",
         initialize: function () {
-            this.popularSubreddits = new SubredditsCollection({type: "popular10"});
-            this.defaultSubreddits = new SubredditsCollection({type: "default"});
+            this.defaultSubreddits = new SubredditsCollection({type: "defaults"});
             this.userSubreddits = new SubredditsCollection({type: "user"});
 
             loginModalView.on("login.success", this.render, this);
-            this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.defaultSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.userSubreddits.on("reset", this.refreshSidebarMenu, this);
         },
@@ -46,6 +43,7 @@ define([
             "click #subreddit-go-button": "jumpToSubreddit"
         },
         refreshSidebarMenu: function () {
+            console.log("refreshing sidebar menu");
             var compiledTemplate = swig.render(sidebarMenu, {
                 locals: {
                     username: localStorage.getItem("username"),

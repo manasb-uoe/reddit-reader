@@ -6,15 +6,18 @@ define([
     "underscore",
     "jquery",
     "backbone",
-    "models/post"
-], function (_, $, Backbone, PostModel) {
+    "models/post",
+    "views/login_modal"
+], function (_, $, Backbone, PostModel, loginModalView) {
     var PostsCollection = Backbone.Collection.extend({
         model: PostModel,
+        initialize: function () {
+            loginModalView.on("login.success", this.refresh, this);
+        },
         fetch: function (subreddit, sort) {
             // reset 'after' value if subreddit or sort has been changed
             if (this.subreddit != subreddit || this.sort != sort) {
                 this.after = undefined;
-                console.log("setting after to undef");
             }
 
             this.subreddit = subreddit;
@@ -26,7 +29,7 @@ define([
                 postsUrl += "&after=" + this.after;
             }
             if (localStorage.getItem("username")) {
-                postsUrl += "&username=" + localStorage.getItem("username");
+                postsUrl += "&session=" + localStorage.getItem("session");
             }
 
             this.fetchPostsAjax(postsUrl);
@@ -63,6 +66,14 @@ define([
                     }
                 }
             });
+        },
+        refresh: function () {
+            console.log("refreshing posts coll");
+            this.subreddit = undefined;
+            this.sort = undefined;
+            this.after = undefined;
+
+            this.reset({silent: true});
         }
     });
 

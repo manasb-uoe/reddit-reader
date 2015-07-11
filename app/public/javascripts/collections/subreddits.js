@@ -14,19 +14,16 @@ define([
         },
         model: SubredditModel,
         urls: {
-            default: "/api/subreddits/default",
-            popular10: "/api/subreddits/popular10",
-            user: "/api/user/subreddits"
+            defaults: "/api/subreddits/defaults",
+            user: "/api/subreddits/user"
         },
         fetch: function () {
-            this.type = this.type ? this.type : "default";
-
             var self = this;
             $.ajax({
-                url: self.type == "user" ? self.urls[this.type] + "?username=" + localStorage.getItem("username") : self.urls[this.type],
+                url: self.type == "user" ? self.urls[this.type] + "?session=" + localStorage.getItem("session") : self.urls[this.type],
                 method: "GET",
                 dataType: "json",
-                timeout: 3000,
+                timeout: 6000,
                 success: function (subreddits) {
                     self.reset(subreddits);
                 },
@@ -40,9 +37,6 @@ define([
                     }
                 }
             });
-        },
-        fetchSubredditsAjax: function () {
-
         }
     });
 

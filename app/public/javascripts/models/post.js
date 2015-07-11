@@ -14,7 +14,8 @@ define([
             $.post("/api/vote", {
                 id: this.get("name"),
                 dir: this.get("likes"),
-                username: localStorage.getItem("username")
+                session: localStorage.getItem("session"),
+                modhash: localStorage.getItem("modhash")
             });
         }
     });

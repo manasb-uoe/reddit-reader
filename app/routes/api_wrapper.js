@@ -5,11 +5,8 @@
 var express = require('express');
 var router = express.Router();
 var request = require("request");
-var LocalStorage = require("node-localstorage").LocalStorage;
 var moment = require("moment");
 
-
-var localStorage = new LocalStorage("./session_store");
 var apiBaseUrl = "https://www.reddit.com";
 var userAgent = "RedditReaderBackbone by enthusiast_94";
 
@@ -31,7 +28,7 @@ router.post("/login", function (req, res, next) {
             var setCookie = httpResponse.headers["set-cookie"];
 
             if (setCookie.length < 3) {
-                res.json({status: "error"});
+                res.json({success: false});
             } else {
                 var session = setCookie[2].split(";")[0];
 
@@ -48,10 +45,9 @@ router.post("/login", function (req, res, next) {
 
                     var json = JSON.parse(body);
                     if (json.data) {
-                        localStorage.setItem(req.body.username, JSON.stringify({session: session, modhash: json.data.modhash}));
-                        res.json({status: "success"});
+                        res.json({success: true, session: session, modhash: json.data.modhash});
                     } else {
-                        res.json({status: "error"});
+                        res.json({success: false});
                     }
                 });
             }
@@ -60,41 +56,13 @@ router.post("/login", function (req, res, next) {
 });
 
 
-router.get("/user/subreddits", function (req, res, next) {
-    var username = req.query.username;
-    if (!username) return next(new Error("Username is required"));
-
-    var userData = localStorage.getItem(username);
-    if (!userData) return next(new Error("No session found for provided username"));
-
-    var options = {
-        url: apiBaseUrl + "/reddits/mine.json?limit=100",
-        headers: {
-            "User-Agent": userAgent,
-            Cookie: JSON.parse(userData).session
-        }
-    };
-
-    request.get(options, function (err, httpResponse, body) {
-        if (err) return next(err);
-
-        var json = JSON.parse(body);
-        var subreddits = [];
-        json.data.children.forEach(function (subreddit) {
-            subreddits.push(subreddit.data);
-        });
-
-        res.json(subreddits);
-    });
-});
-
-
 router.get("/subreddits/:filter", function (req, res, next) {
     var urls = {
-        default: apiBaseUrl + "/subreddits/default.json?limit=100",
-        popular10: apiBaseUrl + "/subreddits/popular.json?limit=10"
+        defaults: apiBaseUrl + "/subreddits/default.json?limit=100",
+        user: apiBaseUrl + "/reddits/mine.json?limit=100"
     };
 
+    var session = req.query.session;
     var filter = req.params["filter"];
 
     if (Object.keys(urls).indexOf(filter) == -1) return next(new Error("Allowed filters are: " + Object.keys(urls)));
@@ -102,7 +70,8 @@ router.get("/subreddits/:filter", function (req, res, next) {
     var options = {
         url: urls[filter],
         headers: {
-            "User-Agent": userAgent
+            "User-Agent": userAgent,
+            Cookie: session
         }
     };
 
@@ -121,18 +90,10 @@ router.get("/subreddits/:filter", function (req, res, next) {
 
 
 router.get("/posts/:subreddit?", function (req, res, next) {
-    var username = req.query["username"];
-
-    var session = undefined;
-    if (username) {
-        var userData = localStorage.getItem(username);
-        if (!userData) return next(new Error("No session found for provided username"));
-        session = JSON.parse(userData).session;
-    }
-
-    var subreddit = req.params["subreddit"];
-    var sort = req.query["sort"] || "hot";
-    var after = req.query["after"] || null;
+    var session = req.query.session;
+    var subreddit = req.params.subreddit;
+    var sort = req.query.sort || "hot";
+    var after = req.query.after || null;
 
     // build posts url
     var postsUrl = undefined;
@@ -192,57 +153,40 @@ router.get("/posts/:subreddit?", function (req, res, next) {
 router.post("/vote", function (req, res, next) {
     var postId = req.body.id;
     var dir = req.body.dir;
-    var username = req.body.username;
+    var session = req.body.session;
+    var modhash = req.body.modhash;
 
-    if (!postId || !dir) return next(new Error("Post id and vote direction are required parameters"));
-    if (!username) return next(new Error("Username is required"));
-
-    var userData = localStorage.getItem(username);
-    if (!userData) return next(new Error("No session found for provided username"));
-
-    userData = JSON.parse(userData);
+    if (!session || !modhash) return next(new Error("Session and modhash are required parameters for voting"));
 
     var options = {
         url: apiBaseUrl + "/api/vote",
-        form: {id: postId, dir: dir, uh: userData.modhash, api_type: "json"},
+        form: {id: postId, dir: dir, uh: modhash, api_type: "json"},
         headers: {
             "User-Agent": userAgent,
-            Cookie: userData.session
+            Cookie: session
         }
     };
 
     request.post(options, function (err, httpResponse) {
         if (err) return next(err);
 
-        if (httpResponse.statusCode != 200) {
-            return next(new Error("Vote failed with status code: " + httpResponse.statusCode));
-        }
+        res.json({success: httpResponse.statusCode == 200});
     });
 
 });
 
 
 router.get("/comments", function (req, res, next) {
-    var subreddit = req.query["subreddit"];
-    var postId = req.query["id"];
-    var sort = req.query["sort"] || "best";
-    var username = req.query["username"];
-
-    if (!subreddit || !postId) return next(new Error("'subreddit' and 'id' are required query parameters"));
-
-    var userData = undefined;
-    if (username) {
-        userData = localStorage.getItem(username);
-        if (!userData) return next(new Error("No session found for provided username"));
-
-        userData = JSON.parse(userData);
-    }
+    var subreddit = req.query.subreddit;
+    var postId = req.query.id;
+    var sort = req.query.sort || "best";
+    var session = req.query.session;
 
     var options = {
         url: apiBaseUrl + "/r/" + subreddit + "/comments/" + postId + "/.json?sort=" + sort,
         headers: {
             "User-Agent": userAgent,
-            Cookie: userData ? userData.session : undefined
+            Cookie: session
         }
     };
 

@@ -17,7 +17,7 @@ define([
                 url: self.url,
                 method: "GET",
                 dataType: "json",
-                data: {subreddit: subreddit, id: postId, sort: sort, username: localStorage.getItem("username")},
+                data: {subreddit: subreddit, id: postId, sort: sort, session: localStorage.getItem("session")},
                 timeout: 6000,
                 success: function (response) {
                     self.post = response.post;

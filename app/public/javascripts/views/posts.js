@@ -8,12 +8,11 @@ define([
     "backbone",
     "collections/posts",
     "views/posts_item",
-    "views/login_modal",
     "swig",
     "text!../../templates/posts_page.html",
     "text!../../templates/error.html"
 
-], function (_, $, Backbone, postsCollection, PostItemView, loginModalView, swig, postsTemplate, errorTemplate) {
+], function (_, $, Backbone, postsCollection, PostItemView, swig, postsTemplate, errorTemplate) {
     "use strict";
 
     var PostsView = Backbone.View.extend({
@@ -26,7 +25,6 @@ define([
             postsCollection.on("update", this.addAllPosts, this);
             postsCollection.on("error", this.showErrorMessage, this);
             postsCollection.on("no.more.posts.to.load", this.allPostsLoaded, this);
-            loginModalView.on("login.success", this.reset, this);
         },
         render: function (subreddit, sort) {
             this.subreddit = subreddit;
@@ -41,7 +39,13 @@ define([
             this.$sortTabsContainer = $("#posts-sort-tabs-container");
             this.$morePostsButton = $("#more-posts-button");
 
-            this.reset();
+            postsCollection.fetch(this.subreddit, this.sort);
+
+            this.$progressIndicator.show();
+            this.$postsContainer.hide();
+            this.updateCurrentSubreddit();
+            this.refreshSortTabs(this.subreddit, this.sort);
+            this.$morePostsButton.hide();
         },
         events: {
             "click #more-posts-button": "loadMorePosts"
@@ -98,15 +102,6 @@ define([
         updateCurrentSubreddit: function () {
             var text = this.subreddit != "Front page" ? "Subreddit: " + "r/" + this.subreddit : this.subreddit;
             this.$currentSubreddit.text(text);
-        },
-        reset: function () {
-            postsCollection.fetch(this.subreddit, this.sort);
-
-            this.$progressIndicator.show();
-            this.$postsContainer.hide();
-            this.updateCurrentSubreddit();
-            this.refreshSortTabs(this.subreddit, this.sort);
-            this.$morePostsButton.hide();
         }
     });
 
