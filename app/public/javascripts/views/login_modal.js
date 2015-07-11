@@ -51,6 +51,8 @@ define([
 
                             self.trigger("login.success");
 
+                            self.$usernameInput.val("");
+                            self.$passwordInput.val("");
                             self.$modal.modal("hide");
 
                             // reload current page
