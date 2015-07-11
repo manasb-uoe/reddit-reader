@@ -34,13 +34,12 @@ define([
             this.refreshSidebarMenu();
 
             this.defaultSubreddits.fetch();
-            if (localStorage.getItem("username")) {
-                this.userSubreddits.fetch();
-            }
+            this.userSubreddits.fetch();
         },
         events: {
             "keypress #subreddit-input": "jumpToSubreddit",
-            "click #subreddit-go-button": "jumpToSubreddit"
+            "click #subreddit-go-button": "jumpToSubreddit",
+            "click #logout-button": "logout"
         },
         refreshSidebarMenu: function () {
             console.log("refreshing sidebar menu");
@@ -58,6 +57,15 @@ define([
                 event.preventDefault();
                 Backbone.history.navigate("/r/" + this.$subredditInput.val(), {trigger: true});
             }
+        },
+        logout: function () {
+            localStorage.removeItem("username");
+            localStorage.removeItem("session");
+            localStorage.removeItem("modhash");
+
+            this.render();
+
+            Backbone.history.loadUrl();
         }
     });
 
