@@ -20,10 +20,12 @@ define([
         initialize: function () {
             this.defaultSubreddits = new SubredditsCollection({type: "defaults"});
             this.userSubreddits = new SubredditsCollection({type: "user"});
+            this.popularSubreddits = new SubredditsCollection({type: "popular"});
 
             loginModalView.on("login.success", this.render, this);
             this.defaultSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.userSubreddits.on("reset", this.refreshSidebarMenu, this);
+            this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
         },
         render: function () {
             this.$el.html(sidebarTemplate);
@@ -35,6 +37,7 @@ define([
 
             this.defaultSubreddits.fetch();
             this.userSubreddits.fetch();
+            this.popularSubreddits.fetch();
         },
         events: {
             "keypress #subreddit-input": "jumpToSubreddit",
@@ -46,6 +49,7 @@ define([
                 locals: {
                     username: localStorage.getItem("username"),
                     defaults: this.defaultSubreddits.toJSON(),
+                    popular: this.popularSubreddits.toJSON(),
                     subs: this.userSubreddits.toJSON()
                 }
             });

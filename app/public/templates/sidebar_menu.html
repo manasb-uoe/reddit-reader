@@ -14,6 +14,19 @@
 
 
 <div class="header">Subreddits</div>
+<!--Subscribed subreddites-->
+<div class="item">
+    <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#subs-collapse" aria-expanded="true" aria-controls="subs-collapse"><span class="glyphicon glyphicon-star"></span> Subscriptions</a>
+    <div class="subitems-container collapse" id="subs-collapse" >
+        {% if subs.length > 0 %}
+        {% for subreddit in subs %}
+        <a class="subitem collapse" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a>
+        {% endfor %}
+        {% else %}
+        <div class="subitem collapse" data-toggle="modal" data-target="#login-modal">Login to view subscriptions</div>
+        {%endif%}
+    </div>
+</div>
 <!--Default subreddits-->
 <div class="item">
     <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#defaults-collapse" aria-expanded="true" aria-controls="defaults-collapse"><span class="glyphicon glyphicon-list-alt"></span> Default</a>
@@ -23,16 +36,12 @@
         {% endfor %}
     </div>
 </div>
-<!--Subscribed subreddites-->
+<!--Popular subreddits-->
 <div class="item">
-    <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#subs-collapse" aria-expanded="true" aria-controls="subs-collapse"><span class="glyphicon glyphicon-star"></span> Subscriptions</a>
-    <div class="subitems-container collapse" id="subs-collapse" >
-        {% if subs.length > 0 %}
-            {% for subreddit in subs %}
-                <a class="subitem collapse" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a>
-            {% endfor %}
-        {% else %}
-            <div class="subitem collapse" data-toggle="modal" data-target="#login-modal">Login to view subscriptions</div>
-        {%endif%}
+    <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#popular-collapse" aria-expanded="true" aria-controls="popular-collapse"><span class="glyphicon glyphicon-thumbs-up"></span> Popular</a>
+    <div class="subitems-container collapse" id="popular-collapse">
+        {% for subreddit in popular %}
+        <a class="subitem collapse" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a>
+        {% endfor %}
     </div>
 </div>

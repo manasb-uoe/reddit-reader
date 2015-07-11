@@ -16,7 +16,8 @@ define([
         model: SubredditModel,
         urls: {
             defaults: "/api/subreddits/defaults",
-            user: "/api/subreddits/user"
+            user: "/api/subreddits/user",
+            popular: "/api/subreddits/popular"
         },
         fetch: function () {
             // if user is not logged in, reset collection without content

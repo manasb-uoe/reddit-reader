@@ -59,7 +59,8 @@ router.post("/login", function (req, res, next) {
 router.get("/subreddits/:filter", function (req, res, next) {
     var urls = {
         defaults: apiBaseUrl + "/subreddits/default.json?limit=100",
-        user: apiBaseUrl + "/reddits/mine.json?limit=100"
+        user: apiBaseUrl + "/reddits/mine.json?limit=100",
+        popular: apiBaseUrl + "/subreddits/popular.json?limit=10"
     };
 
     var session = req.query.session;
