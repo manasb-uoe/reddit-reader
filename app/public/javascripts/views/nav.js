@@ -38,6 +38,11 @@ define([
             this.defaultSubreddits.fetch();
             this.userSubreddits.fetch();
             this.popularSubreddits.fetch();
+
+            var selectedTheme = localStorage.getItem("theme");
+            if (selectedTheme) {
+                this.switchTheme(selectedTheme);
+            }
         },
         events: {
             "keypress #subreddit-input": "jumpToSubreddit",
@@ -77,9 +82,11 @@ define([
             switch(type) {
                 case "light":
                     $darkAppStyle.removeAttr("href");
+                    localStorage.setItem("theme", type);
                     break;
                 case "dark":
                     $darkAppStyle.attr("href", "stylesheets/index.dark.css");
+                    localStorage.setItem("theme", type);
                     break;
                 default:
                     throw new Error("Theme type can only be 'light' or 'dark'");
