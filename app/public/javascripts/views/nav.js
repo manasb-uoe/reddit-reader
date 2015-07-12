@@ -42,7 +42,9 @@ define([
         events: {
             "keypress #subreddit-input": "jumpToSubreddit",
             "click #subreddit-go-button": "jumpToSubreddit",
-            "click #logout-button": "logout"
+            "click #logout-button": "logout",
+            "click #light-theme-button": function () {this.switchTheme("light")},
+            "click #dark-theme-button": function () {this.switchTheme("dark")}
         },
         refreshSidebarMenu: function () {
             var compiledTemplate = swig.render(sidebarMenu, {
@@ -68,6 +70,21 @@ define([
             this.render();
 
             Backbone.history.loadUrl();
+        },
+        switchTheme: function (type) {
+            var $darkAppStyle = $("#dark-app-style");
+
+            switch(type) {
+                case "light":
+                    $darkAppStyle.removeAttr("href");
+                    break;
+                case "dark":
+                    $darkAppStyle.attr("href", "stylesheets/index.dark.css");
+                    break;
+                default:
+                    throw new Error("Theme type can only be 'light' or 'dark'");
+                    break;
+            }
         }
     });
 

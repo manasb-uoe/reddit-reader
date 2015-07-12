@@ -1,0 +1,183 @@
+
+/* General */
+
+body {
+    background-color: #222222;
+}
+
+
+/* Posts page */
+
+#posts-sort-tabs-container a {
+    border-bottom-color: #464545;
+    color: #a5b3b9 !important;
+}
+
+#posts-sort-tabs-container a:hover {
+    background-color: #2e2e2e;
+    border-color: #464545;
+}
+
+#posts-sort-tabs-container .active a {
+    background-color: transparent !important;
+    color: #00bc8c !important;
+    border-color: #464545;
+    border-bottom: transparent;
+}
+
+.post {
+    color: #55727e;
+}
+
+.post .title {
+    color: #a5b3b9;
+}
+
+.post .author, .subreddit {
+    color: #00bc8c !important;
+    font-weight: normal;
+}
+
+.post .score {
+    color: #7a8f98;
+}
+
+.post .btn-default {
+    color: #c2cbcf;
+    background-color: #464545;
+    border-color: #464545;
+}
+
+.post .comments-link {
+    color: #55727e;
+}
+
+.post .self-text {
+    border-color: #464545;
+    color: #a5b3b9;
+}
+
+#more-posts-button {
+    color: #ffffff;
+    background-color: #375a7f;
+    border-color: #253c54;
+}
+
+#more-posts-button:hover {
+    color: #ffffff;
+    background-color: #28415b;
+    border-color: #253c54;
+}
+
+#current-subreddit {
+    background-color: #303030;
+    border: 1px solid transparent;
+    color: #a5b3b9;
+}
+
+
+/* Comments page */
+
+#comments-sort-tabs-container a {
+    border-bottom-color: #464545;
+    color: #a5b3b9 !important;
+}
+
+#comments-sort-tabs-container a:hover {
+    background-color: #2e2e2e;
+    border-color: #464545;
+}
+
+#comments-sort-tabs-container .active a {
+    background-color: transparent !important;
+    color: #00bc8c !important;
+    border-color: #464545;
+    border-bottom: transparent;
+}
+
+#comments-container {
+    background-color: #222222;
+}
+
+.comment {
+    color: #55727e;
+}
+
+.comment .score {
+    /*color: #7a8f98;*/
+}
+
+.comment .author {
+    color: #00bc8c;
+    font-weight: normal;
+}
+
+.comment .body {
+    color: #a5b3b9;
+}
+
+.comment-first {
+    background-color: #2e2e2e;
+}
+
+.comment .btn-default {
+    color: #c2cbcf;
+    background-color: #464545;
+    border-color: #464545;
+}
+
+.thread-separator {
+    border-color: #464545;
+}
+
+#thread-navigator-container {
+    background-color: #464545;
+    box-shadow: none;
+}
+
+#thread-navigator-container .btn-warning {
+    background-color: #00bc8c;
+    border-color: #00bc8c;
+}
+
+
+/* Login modal */
+
+#login-modal .modal-content {
+    background-color: #222222 !important;
+    color: #a5b3b9 !important;
+}
+
+#login-modal .modal-header, .modal-footer {
+    border-color: #464545;
+}
+
+#login-modal .btn-default {
+    color: #ffffff;
+    background-color: #464545;
+    border-color: #464545;
+}
+
+#login-modal .btn-default:hover {
+    color: #ffffff;
+    background-color: #2c2c2c;
+    border-color: #272727;
+}
+
+#login-modal .btn-primary {
+    color: #ffffff;
+    background-color: #375a7f;
+    border-color: #375a7f;
+}
+
+#login-modal .btn-primary:hover {
+    color: #ffffff;
+    background-color: #28415b;
+    border-color: #253c54;
+}
+
+#login-modal .close {
+    text-shadow: none;
+    color: #a5b3b9;
+}
+
