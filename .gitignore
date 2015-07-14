@@ -6,6 +6,10 @@ app/node_modules/
 
 # batch scripts
 app/start_reddit_reader_backbone.bat
+build.js.bat
 
 # session store
 app/session_store/
+
+# js build
+public/javascripts/main.min.js
