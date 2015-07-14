@@ -10,6 +10,3 @@ build.js.bat
 
 # session store
 app/session_store/
-
-# js build
-public/javascripts/main.min.js
