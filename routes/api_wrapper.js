@@ -43,7 +43,12 @@ router.post("/login", function (req, res, next) {
                 request.get(options, function (err, httpResponse, body) {
                     if (err) return next(err);
 
-                    var json = JSON.parse(body);
+                    try {
+                        var json = JSON.parse(body);
+                    } catch (err) {
+                        return next(err);
+                    }
+
                     if (json.data) {
                         res.json({success: true, session: session, modhash: json.data.modhash});
                     } else {
@@ -79,7 +84,12 @@ router.get("/subreddits/:filter", function (req, res, next) {
     request.get(options, function (err, httpResponse, body) {
         if (err) return next(err);
 
-        var json = JSON.parse(body);
+        try {
+            var json = JSON.parse(body);
+        } catch (err) {
+            return next(err);
+        }
+
         var subreddits = [];
         json.data.children.forEach(function (subreddit) {
             subreddits.push(subreddit.data);
@@ -118,7 +128,11 @@ router.get("/posts/:subreddit?", function (req, res, next) {
     request.get(options, function (err, httpResponse, body) {
         if (err) return next(err);
 
-        var json = JSON.parse(body);
+        try {
+            var json = JSON.parse(body);
+        } catch (err) {
+            return next(err);
+        }
 
         if (json.error) {
             res.sendStatus(parseInt(json.error));
@@ -194,7 +208,11 @@ router.get("/comments", function (req, res, next) {
     request.get(options, function (err, httpResponse, body) {
         if (err) return next(err);
 
-        var json = JSON.parse(body);
+        try {
+            var json = JSON.parse(body);
+        } catch (err) {
+            return next(err);
+        }
 
         /**
          * Parse post
