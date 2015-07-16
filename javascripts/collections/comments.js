@@ -6,19 +6,17 @@ define([
     "underscore",
     "jquery",
     "backbone",
+    "reddit",
     "models/comment"
-], function (_, $, Backbone, CommentModel) {
+], function (_, $, Backbone, reddit, CommentModel) {
     var CommentsCollection = Backbone.Collection.extend({
         model: CommentModel,
-        url: "/api/comments",
         fetch: function (subreddit, postId, sort) {
             var self = this;
-            $.ajax({
-                url: self.url,
-                method: "GET",
-                dataType: "json",
-                data: {subreddit: subreddit, id: postId, sort: sort, session: localStorage.getItem("session")},
-                timeout: 6000,
+            reddit.getComments({
+                subreddit: subreddit,
+                id: postId,
+                sort: sort,
                 success: function (response) {
                     self.post = response.post;
                     self.reset(response.comments);
