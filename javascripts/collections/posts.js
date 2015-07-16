@@ -41,7 +41,7 @@ define([
                         self.trigger("no.more.posts.to.load");
                     }
                 },
-                error: function (jqXHR, textStatus, error) {
+                error: function (err, textStatus) {
                     if (textStatus == "timeout") {
                         console.log("timed out");
                         setTimeout(function () {
@@ -49,7 +49,7 @@ define([
                         }, 1000);
 
                     } else {
-                        self.trigger("error", error);
+                        self.trigger("error", err);
                     }
                 }
             });

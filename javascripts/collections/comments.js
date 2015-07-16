@@ -21,7 +21,7 @@ define([
                     self.post = response.post;
                     self.reset(response.comments);
                 },
-                error: function (jqXHR, textStatus, error) {
+                error: function (err, textStatus) {
                     if (textStatus == "timeout") {
                         console.log("timed out");
                         setTimeout(function () {
@@ -29,7 +29,7 @@ define([
                         }, 1000);
 
                     } else {
-                        self.trigger("error", error);
+                        self.trigger("error", err);
                     }
                 }
             });
