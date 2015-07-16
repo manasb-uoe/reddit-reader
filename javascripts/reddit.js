@@ -12,7 +12,7 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             response_type: "token",
             state: state,
             redirect_uri: 'http://localhost:3000/',
-            scope: "identity,mysubreddits,read"
+            scope: "identity,mysubreddits,read,vote"
         });
 
 
@@ -72,8 +72,6 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             if (settings.after) {
                 postsUrl +=  "?after=" + settings.after;
             }
-
-            console.log(postsUrl);
 
             $.ajax({
                 url: postsUrl,
@@ -247,6 +245,30 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
 
                     if (settings.success) settings.success(subreddits);
                 },
+                error: settings.error
+            });
+        },
+        vote: function (options) {
+            var settings = $.extend({
+                error: function (err) {
+                    throw err;
+                }
+            }, options);
+
+            var user = this.getUser();
+            if (!user) throw new Error("Current user is not authenticated");
+
+            if (!settings.itemId || !settings.voteDir) throw new Error("'itemId' and 'voteDir' are required parameters");
+
+            $.ajax({
+                url: authApiBase + "/api/vote",
+                method: "POST",
+                data: {id: settings.itemId, dir: settings.voteDir},
+                timeout: 6000,
+                beforeSend: function (jqXHR) {
+                    jqXHR.setRequestHeader("Authorization", "bearer " + user.accessToken);
+                },
+                success: settings.success,
                 error: settings.error
             });
         }

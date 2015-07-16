@@ -3,19 +3,16 @@
  */
 
 define([
-    "jquery",
-    "underscore",
-    "backbone"
-], function ($, _, Backbone) {
+    "backbone",
+    "reddit"
+], function (Backbone, reddit) {
     "use strict";
 
     var PostModel = Backbone.Model.extend({
         vote: function () {
-            $.post("/api/vote", {
-                id: this.get("name"),
-                dir: this.get("likes"),
-                session: localStorage.getItem("session"),
-                modhash: localStorage.getItem("modhash")
+            reddit.vote({
+                itemId: this.get("name"),
+                voteDir: this.get("likes")
             });
         }
     });
