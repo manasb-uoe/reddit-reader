@@ -1,12 +1,5 @@
 # jetbrains config files
 .idea/
 
-# npm modules
-app/node_modules/
-
 # batch scripts
-app/start_reddit_reader_backbone.bat
-build.js.bat
-
-# session store
-app/session_store/
+build.bat
