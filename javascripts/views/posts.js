@@ -26,7 +26,7 @@ define([
             postsCollection.on("error", this.showErrorMessage, this);
             postsCollection.on("no.more.posts.to.load", this.allPostsLoaded, this);
         },
-        render: function (subreddit, sort, username) {
+        render: function (subreddit, sort, user) {
             this.$el.html(postsTemplate);
 
             this.$progressIndicator = $("#progress-indicator");
@@ -43,14 +43,14 @@ define([
             this.$morePostsButton.hide();
 
             // if same posts are requested as last time (from the same user), do not fetch them again
-            if (subreddit == this.subreddit && sort == this.sort && username == this.username) {
+            if (subreddit == this.subreddit && sort == this.sort && user == this.user) {
                 this.addAllPosts();
             } else {
                 this.subreddit = subreddit;
                 this.sort = sort;
-                this.username = username;
+                this.user = user;
 
-                postsCollection.fetch(this.subreddit, this.sort, false);
+                postsCollection.fetch(this.subreddit, this.sort, false, this.user);
             }
 
         },
@@ -97,7 +97,7 @@ define([
             this.$errorContainer.show();
         },
         loadMorePosts: function () {
-            postsCollection.fetch(this.subreddit, this.sort, true);
+            postsCollection.fetch(this.subreddit, this.sort, true, this.user);
             this.$morePostsButton.prop("disabled", true);
             this.$morePostsButton.html("Loading...");
         },

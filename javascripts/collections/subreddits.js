@@ -40,7 +40,7 @@ define([
             };
 
             // if user is not logged in, reset collection without content
-            if (this.type == "user" && !localStorage.getItem("username")) {
+            if (this.type == "user" && !reddit.getUser()) {
                 this.reset();
             } else {
                 var cachedSubreddits = localStorage.getItem(this.type + "_subreddits");

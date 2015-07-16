@@ -6,13 +6,13 @@ define([
     "underscore",
     "jquery",
     "backbone",
+    "reddit",
     "collections/subreddits",
-    "views/login_modal",
     "swig",
     "text!../../templates/sidebar.html",
     "text!../../templates/sidebar_menu.html",
     "bootstrap"
-], function (_, $, Backbone, SubredditsCollection, loginModalView, swig, sidebarTemplate, sidebarMenu) {
+], function (_, $, Backbone, reddit, SubredditsCollection, swig, sidebarTemplate, sidebarMenu) {
     "use strict";
 
     var NavView = Backbone.View.extend({
@@ -22,7 +22,6 @@ define([
             this.userSubreddits = new SubredditsCollection({type: "user"});
             this.popularSubreddits = new SubredditsCollection({type: "popular"});
 
-            loginModalView.on("login.success", this.render, this);
             this.defaultSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.userSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
@@ -52,9 +51,11 @@ define([
             "click #dark-theme-button": function () {this.switchTheme("dark")}
         },
         refreshSidebarMenu: function () {
+            var user = reddit.getUser();
             var compiledTemplate = swig.render(sidebarMenu, {
                 locals: {
-                    username: localStorage.getItem("username"),
+                    username: user ? user.username : undefined,
+                    authUrl: !user ? reddit.getAuthUrl() : undefined,
                     defaults: this.defaultSubreddits.toJSON(),
                     popular: this.popularSubreddits.toJSON(),
                     subs: this.userSubreddits.toJSON()
@@ -69,8 +70,7 @@ define([
             }
         },
         logout: function () {
-            // clear cache
-            localStorage.clear();
+            reddit.deauth();
 
             this.render();
 

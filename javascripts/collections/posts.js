@@ -11,15 +11,16 @@ define([
 ], function (_, $, Backbone, reddit, PostModel) {
     var PostsCollection = Backbone.Collection.extend({
         model: PostModel,
-        fetch: function (subreddit, sort, shouldLoadMore) {
-            // reset 'after' value if subreddit or sort has been changed
-            if (this.subreddit != subreddit || this.sort != sort) {
+        fetch: function (subreddit, sort, shouldLoadMore, user) {
+            // reset 'after' value if subreddit, sort or user has been changed
+            if (this.subreddit != subreddit || this.sort != sort || this.user != user) {
                 this.after = undefined;
             }
 
             this.subreddit = subreddit;
             this.sort = sort;
             this.shouldLoadMore = shouldLoadMore;
+            this.user = user;
 
             var self = this;
             reddit.getPosts({

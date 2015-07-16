@@ -8,7 +8,7 @@
 </div>
 {% else %}
 <div class="item">
-    <div class="title" data-toggle="modal" data-target="#login-modal"><span class="glyphicon glyphicon-log-in"></span> Login</div>
+    <a href="{{authUrl}}" class="title"><span class="glyphicon glyphicon-log-in"></span> Login</a>
 </div>
 {% endif %}
 
@@ -23,7 +23,7 @@
         <a class="subitem collapse" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a>
         {% endfor %}
         {% else %}
-        <div class="subitem collapse" data-toggle="modal" data-target="#login-modal">Login to view subscriptions</div>
+        <a href="{{authUrl}}" class="subitem collapse">Login to view subscriptions</a>
         {%endif%}
     </div>
 </div>

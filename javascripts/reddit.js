@@ -4,19 +4,53 @@
 
 define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
 
+    var state = "reddit-reader-backbone-state";
     var unAuthApiBase = "https://www.reddit.com";
+    var authApiBase = "https://oauth.reddit.com";
+    var authUrl = unAuthApiBase + "/api/v1/authorize?" + $.param({
+            client_id: '2j6Q8QsS8lrckQ',
+            response_type: "token",
+            state: state,
+            redirect_uri: 'http://localhost:3000/',
+            scope: "identity,mysubreddits,read"
+        });
+
 
     var reddit = {
         getAuthUrl: function () {
-            this.state = (Math.random() + 1).toString(36).substring(2, 5); // random string
+            return authUrl;
+        },
+        getUser: function () {
+            var user = localStorage.getItem("user");
+            if (user) {
+                return JSON.parse(user);
+            } else {
+                return undefined;
+            }
+        },
+        auth: function (options) {
+            if (!options.accessToken || !options.state) throw new Error("'accessToken' and 'state' are required parameters");
 
-            return "https://www.reddit.com/api/v1/authorize?" + $.param({
-                    client_id: '2j6Q8QsS8lrckQ',
-                    response_type: "token",
-                    state: this.state,
-                    redirect_uri: 'http://localhost:3000/',
-                    scope: "identity,mysubreddits"
-                });
+            if (options.state != state) throw new Error("Response state does not match request state");
+
+            $.ajax({
+                url: authApiBase + "/api/v1/me.json",
+                method: "GET",
+                dataType: "json",
+                timeout: 6000,
+                beforeSend: function (jqXHR) {
+                    jqXHR.setRequestHeader("Authorization", "bearer " + options.accessToken);
+                },
+                success: function (response) {
+                    localStorage.setItem("user", JSON.stringify({username: response.name, accessToken: options.accessToken, timestamp: Date.now()}));
+
+                    if (options.success) options.success();
+                },
+                error: options.error
+            });
+        },
+        deauth: function () {
+            localStorage.clear();
         },
         getPosts: function (options) {
             var settings = $.extend({
@@ -26,22 +60,29 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
                 }
             }, options);
 
+            var user = this.getUser();
+
             // build posts url
-            var postsUrl = undefined;
+            var postsUrl = user ? authApiBase : unAuthApiBase;
             if (!settings.subreddit) {
-                postsUrl = unAuthApiBase + "/" + settings.sort + ".json";
+                postsUrl += "/" + settings.sort + ".json";
             } else {
-                postsUrl = unAuthApiBase + "/r/" + settings.subreddit + "/" + settings.sort + ".json";
+                postsUrl += "/r/" + settings.subreddit + "/" + settings.sort + ".json";
             }
             if (settings.after) {
                 postsUrl +=  "?after=" + settings.after;
             }
+
+            console.log(postsUrl);
 
             $.ajax({
                 url: postsUrl,
                 method: "GET",
                 dataType: "json",
                 timeout: 6000,
+                beforeSend: !user ? undefined : function (jqXHR) {
+                    jqXHR.setRequestHeader("Authorization", "bearer " + user.accessToken);
+                },
                 success: function (json) {
                     var posts = [];
 
@@ -74,7 +115,7 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             });
         },
         getComments: function (options) {
-            if (!options.subreddit || !options.id) throw new Error("'subreddit' and 'sort' are required parameters");
+            if (!options.subreddit || !options.id) throw new Error("'subreddit' and 'id' are required parameters");
 
             var settings = $.extend({
                 sort: "best",
@@ -83,11 +124,20 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
                 }
             }, options);
 
+            var user = this.getUser();
+
+            // build comments url
+            var commentsUrl = user ? authApiBase : unAuthApiBase;
+            commentsUrl += "/r/" + settings.subreddit + "/comments/" + settings.id + "/.json?sort=" + settings.sort;
+
             $.ajax({
-                url: unAuthApiBase + "/r/" + settings.subreddit + "/comments/" + settings.id + "/.json?sort=" + settings.sort,
+                url: commentsUrl,
                 method: "GET",
                 dataType: "json",
                 timeout: 6000,
+                beforeSend: !user ? undefined : function (jqXHR) {
+                    jqXHR.setRequestHeader("Authorization", "bearer " + user.accessToken);
+                },
                 success: function (json) {
                     /**
                      * Parse post
@@ -168,9 +218,9 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
         getSubreddits: function (options) {
             var settings = $.extend({
                 urls: {
-                    defaults: unAuthApiBase + "/subreddits/default.json?limit=100",
-                    user: unAuthApiBase + "/reddits/mine.json?limit=100",
-                    popular: unAuthApiBase + "/subreddits/popular.json?limit=10"
+                    defaults: "/subreddits/default.json?limit=100",
+                    user: "/reddits/mine.json?limit=100",
+                    popular: "/subreddits/popular.json?limit=10"
                 },
                 error: function (err) {
                     throw err;
@@ -179,11 +229,16 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
 
             if (Object.keys(settings.urls).indexOf(settings.type) == -1) throw new Error("Allowed types are: " + Object.keys(settings.urls));
 
+            var user = this.getUser();
+
             $.ajax({
-                url: settings.urls[settings.type],
+                url: user ? authApiBase + settings.urls[settings.type] : unAuthApiBase + settings.urls[settings.type],
                 method: "GET",
                 dataType: "json",
                 timeout: 6000,
+                beforeSend: !user ? undefined : function (jqXHR) {
+                    jqXHR.setRequestHeader("Authorization", "bearer " + user.accessToken);
+                },
                 success: function (json) {
                     var subreddits = [];
                     json.data.children.forEach(function (subreddit) {

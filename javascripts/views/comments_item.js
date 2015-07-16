@@ -6,9 +6,10 @@ define([
     "underscore",
     "jquery",
     "backbone",
+    "reddit",
     "swig",
     "text!../../templates/comments_item.html"
-], function (_, $, Backbone, swig, postItemTemplate) {
+], function (_, $, Backbone, reddit, swig, postItemTemplate) {
     "use strict";
 
     var CommentsItemView = Backbone.View.extend({
@@ -36,7 +37,7 @@ define([
             "click .downvote-button": "vote"
         },
         vote: function (event) {
-            if (localStorage.getItem("username")) {
+            if (reddit.getUser()) {
                 var $scoreText = $(event.target).parents(".comment").find(".score");
 
                 if ($(event.target).attr("class").indexOf("up") > -1) {
