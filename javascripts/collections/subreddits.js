@@ -6,20 +6,39 @@ define([
     "underscore",
     "jquery",
     "backbone",
+    "reddit",
     "models/subreddit"
-], function (_, $, Backbone, SubredditModel) {
+], function (_, $, Backbone, reddit, SubredditModel) {
     var SubredditsCollection = Backbone.Collection.extend({
         initialize: function (options) {
             this.type = options.type;
         },
         cacheTimeToLive: 86400000,
         model: SubredditModel,
-        urls: {
-            defaults: "/api/subreddits/defaults",
-            user: "/api/subreddits/user",
-            popular: "/api/subreddits/popular"
-        },
         fetch: function () {
+            var self = this;
+            var getSubreddits = function () {
+                reddit.getSubreddits({
+                    type: self.type,
+                    success: function (response) {
+                        self.reset(response);
+
+                        // cache subreddits along with a timestamp
+                        var subredditsToCache = {timestamp: Date.now(), subreddits: response};
+                        localStorage.setItem(self.type + "_subreddits", JSON.stringify(subredditsToCache));
+                    },
+                    error: function (jqXHR, textStatus, err) {
+                        if (textStatus == "timeout") {
+                            setTimeout(function () {
+                                self.fetch();
+                            }, 1000);
+                        } else {
+                            console.log(textStatus);
+                        }
+                    }
+                });
+            };
+
             // if user is not logged in, reset collection without content
             if (this.type == "user" && !localStorage.getItem("username")) {
                 this.reset();
@@ -31,37 +50,12 @@ define([
                     if ((Date.now() - cachedSubreddits.timestamp) <= this.cacheTimeToLive) {
                         this.reset(cachedSubreddits.subreddits);
                     } else {
-                        this.fetchAjax();
+                        getSubreddits();
                     }
                 } else {
-                    this.fetchAjax();
+                    getSubreddits();
                 }
             }
-        },
-        fetchAjax: function () {
-            var self = this;
-            $.ajax({
-                url: self.type == "user" ? self.urls[this.type] + "?session=" + localStorage.getItem("session") : self.urls[this.type],
-                method: "GET",
-                dataType: "json",
-                timeout: 6000,
-                success: function (subreddits) {
-                    self.reset(subreddits);
-
-                    // cache subreddits along with a timestamp
-                    var subredditsToCache = {timestamp: Date.now(), subreddits: subreddits};
-                    localStorage.setItem(self.type + "_subreddits", JSON.stringify(subredditsToCache));
-                },
-                error: function (jqXHR, textStatus) {
-                    if (textStatus == "timeout") {
-                        setTimeout(function () {
-                            self.fetch();
-                        }, 1000);
-                    } else {
-                        console.log(textStatus);
-                    }
-                }
-            });
         }
     });
 

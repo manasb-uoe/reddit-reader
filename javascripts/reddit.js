@@ -164,6 +164,36 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
                 },
                 error: settings.error
             });
+        },
+        getSubreddits: function (options) {
+            var settings = $.extend({
+                urls: {
+                    defaults: unAuthApiBase + "/subreddits/default.json?limit=100",
+                    user: unAuthApiBase + "/reddits/mine.json?limit=100",
+                    popular: unAuthApiBase + "/subreddits/popular.json?limit=10"
+                },
+                error: function (err) {
+                    throw err;
+                }
+            }, options);
+
+            if (Object.keys(settings.urls).indexOf(settings.type) == -1) throw new Error("Allowed types are: " + Object.keys(settings.urls));
+
+            $.ajax({
+                url: settings.urls[settings.type],
+                method: "GET",
+                dataType: "json",
+                timeout: 6000,
+                success: function (json) {
+                    var subreddits = [];
+                    json.data.children.forEach(function (subreddit) {
+                        subreddits.push(subreddit.data);
+                    });
+
+                    if (settings.success) settings.success(subreddits);
+                },
+                error: settings.error
+            });
         }
     };
 
