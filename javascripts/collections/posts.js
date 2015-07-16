@@ -6,8 +6,9 @@ define([
     "underscore",
     "jquery",
     "backbone",
+    "reddit",
     "models/post"
-], function (_, $, Backbone, PostModel) {
+], function (_, $, Backbone, reddit, PostModel) {
     var PostsCollection = Backbone.Collection.extend({
         model: PostModel,
         fetch: function (subreddit, sort, shouldLoadMore) {
@@ -20,24 +21,11 @@ define([
             this.sort = sort;
             this.shouldLoadMore = shouldLoadMore;
 
-            // build posts url
-            var postsUrl = this.subreddit == "Front page" ? "/api/posts?sort=" + this.sort : "/api/posts/" + this.subreddit + "?sort=" + this.sort;
-            if (shouldLoadMore && this.after) {
-                postsUrl += "&after=" + this.after;
-            }
-            if (localStorage.getItem("username")) {
-                postsUrl += "&session=" + localStorage.getItem("session");
-            }
-
-            this.fetchPostsAjax(postsUrl);
-        },
-        fetchPostsAjax: function (postsUrl) {
             var self = this;
-            $.ajax({
-                url: postsUrl,
-                method: "GET",
-                dataType: "json",
-                timeout: 6000,
+            reddit.getPosts({
+                subreddit: this.subreddit == "Front page" ? undefined : this.subreddit,
+                sort: this.sort,
+                after: this.after,
                 success: function (response) {
                     if (self.shouldLoadMore) {
                         if (self.after != null) {
