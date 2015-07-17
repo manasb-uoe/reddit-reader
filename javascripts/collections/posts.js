@@ -46,7 +46,7 @@ define([
                     if (textStatus == "timeout") {
                         console.log("timed out");
                         setTimeout(function () {
-                            self.fetchPostsAjax(postsUrl);
+                            self.fetch(subreddit ,sort, shouldLoadMore, user);
                         }, 1000);
 
                     } else {
