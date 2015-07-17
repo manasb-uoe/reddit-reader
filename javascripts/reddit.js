@@ -11,7 +11,7 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             client_id: '2j6Q8QsS8lrckQ',
             response_type: "token",
             state: state,
-            redirect_uri: 'http://localhost:3000/',
+            redirect_uri: 'http://enthusiast94.bitbucket.org/reddit-reader/',
             scope: "identity,mysubreddits,read,vote"
         });
 
