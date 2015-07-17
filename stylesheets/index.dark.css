@@ -28,11 +28,12 @@ body {
 }
 
 .post {
-    color: #55727e;
+    color: rgba(255,255,255,0.4);
+    background-color: #292929;
 }
 
 .post .title {
-    color: #a5b3b9;
+    color: rgba(255,255,255,0.7);
 }
 
 .post .author, .subreddit {
@@ -41,7 +42,7 @@ body {
 }
 
 .post .score {
-    color: #7a8f98;
+    color: rgba(255,255,255,0.6);
 }
 
 .post .btn-default {
@@ -51,12 +52,16 @@ body {
 }
 
 .post .comments-link {
-    color: #55727e;
+    color: rgba(255,255,255,0.4);
 }
 
 .post .self-text {
     border-color: #464545;
     color: #a5b3b9;
+}
+
+.post ._thumbnail {
+    border-color: #ffffff;
 }
 
 #more-posts-button {
@@ -108,7 +113,7 @@ body {
 }
 
 .comment {
-    color: #55727e;
+    color: rgba(255,255,255,0.4);
 }
 
 .comment .score {
@@ -121,11 +126,11 @@ body {
 }
 
 .comment .body {
-    color: #a5b3b9;
+    color: rgba(255,255,255,0.7);
 }
 
 .comment-first {
-    background-color: #2e2e2e;
+    background-color: #292929;
 }
 
 .comment .btn-default {

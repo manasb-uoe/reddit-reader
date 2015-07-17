@@ -188,17 +188,19 @@ body {
 .post {
     margin: 15px 0;
     border-radius: 3px;
+    padding: 10px;
+    background: #f9f9f9;
 }
 
 .post .left-col {
-    margin-right: 10px;
+    margin-right: 15px;
     height: 75px;
     float: left;
 }
 
 .post .middle-col {
     float: left;
-    margin-right: 10px;
+    margin-right: 15px;
 }
 
 .post .right-col {
@@ -206,17 +208,18 @@ body {
 }
 
 .post .title {
-    color: #0a68b4;
+    /*color: #0a68b4;*/
+    color: black;
     font-size: 135%;
     margin-bottom: 5px;
 }
 
 .post ._thumbnail {
-    height: 75px;
-    width: 75px;
-    padding: 4px;
-    background-color: #ffffff;
-    border: 1px solid #dddddd;
+    height: 70px;
+    width: 70px;
+    /*padding: 4px;*/
+    /*background-color: #ffffff;*/
+    border: 1px solid #000000;
     border-radius: 3px;
     display: block;
 }
@@ -241,7 +244,7 @@ body {
 }
 
 .post .author, .subreddit {
-    color: #0a68b4 !important;
+    color: rgba(0,0,0,0.6) !important;
     font-weight: bold;
     text-decoration: none;
 }
@@ -319,7 +322,7 @@ body {
 }
 
 .comment-first {
-    background-color: #f1f1f1;
+    background-color: #f9f9f9;
     border-left: none;
     padding-left: 5px;
     margin-top: 10px;
