@@ -7,9 +7,10 @@ define([
     "jquery",
     "backbone",
     "reddit",
+    "views/content_viewer",
     "swig",
     "text!../../templates/posts_item.html"
-], function (_, $, Backbone, reddit, swig, postItemTemplate) {
+], function (_, $, Backbone, reddit, contentViewer, swig, postItemTemplate) {
     "use strict";
 
     var PostItemView = Backbone.View.extend({
@@ -30,6 +31,20 @@ define([
             } else {
                 this.$el.find(".self-text").hide();
             }
+
+            // render post content viewer with media or image preview when user hovers over post thumbnail
+            var media = this.model.get("media");
+            var preview = this.model.get("preview");
+
+            this.$el.find(".thumbnail-link").hover(function (event) {
+                event.preventDefault();
+
+                if (media) {
+                    contentViewer.render({media: media.oembed.html});
+                } else if (preview) {
+                    contentViewer.render({preview: preview.images[0].source.url});
+                }
+            });
 
             return this;
         },
