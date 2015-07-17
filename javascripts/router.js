@@ -60,6 +60,9 @@ define([
             postsView.render(subreddit, sort);
         },
         showComments: function (subreddit, postId, sort) {
+            // remove scroll event handler since it's only needed on posts page
+            $(window).unbind("scroll");
+
             sort = sort != null ? sort : "best";
 
             commentsView.render(subreddit, postId, sort);
