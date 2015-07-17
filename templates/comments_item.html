@@ -4,7 +4,7 @@
         <button class="btn btn-default btn-sm downvote-button {% if comment.likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
     </div>
     <div class="right-col">
-        <span class="score {% if comment.likes == 1 %} upvoted-score {% elif likes == -1 %} downvoted-score {% endif %}"><strong>{{comment.score}} points</strong></span> •
+        <span class="score {% if comment.likes == 1 %} upvoted-score {% elif comment.likes == -1 %} downvoted-score {% endif %}"><strong>{{comment.score}} points</strong></span> •
         <span class="author {% if comment.author == postAuthor %} post-author {% endif %}">{{comment.author}}</span> •
         <span class="created">{{comment.created_utc}}</span>
         <br>
