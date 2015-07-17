@@ -16,10 +16,12 @@ body {
 #posts-sort-tabs-container a:hover {
     background-color: #2e2e2e;
     border-color: #464545;
+    box-shadow: inset 0 -2px 0 #00bc8c;
 }
 
 #posts-sort-tabs-container .active a {
     background-color: transparent !important;
+    box-shadow: inset 0 -2px 0 #00bc8c;
     color: #00bc8c !important;
     border-color: #464545;
     border-bottom: transparent;
@@ -147,6 +149,11 @@ body {
 }
 
 #thread-navigator-container .btn-warning:hover {
+    background-color: #008966;
+    border-color: #008966;
+}
+
+#thread-navigator-container .btn-warning:active {
     background-color: #008966;
     border-color: #008966;
 }
