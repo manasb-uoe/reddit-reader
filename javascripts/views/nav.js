@@ -25,6 +25,14 @@ define([
             this.defaultSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.userSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
+
+            var self = this;
+            $(document).on("access_token_expired", function () {
+                self.render();
+                Backbone.history.loadUrl();
+
+                alert("Session has expired, please login again.");
+            });
         },
         render: function () {
             this.$el.html(sidebarTemplate);

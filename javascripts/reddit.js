@@ -52,6 +52,15 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
         deauth: function () {
             localStorage.clear();
         },
+        checkAccessToken: function (user) {
+            var hasExpired = (Date.now() - user.timestamp) >= 3600000;
+            if (hasExpired) {
+                this.deauth();
+                $(document).trigger("access_token_expired");
+            }
+
+            return !hasExpired;
+        },
         getPosts: function (options) {
             var settings = $.extend({
                 sort: "hot",
@@ -61,6 +70,10 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             }, options);
 
             var user = this.getUser();
+
+            if (user) {
+                if (!this.checkAccessToken(user)) return;
+            }
 
             // build posts url
             var postsUrl = user ? authApiBase : unAuthApiBase;
@@ -123,6 +136,10 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             }, options);
 
             var user = this.getUser();
+
+            if (user) {
+                if (!this.checkAccessToken(user)) return;
+            }
 
             // build comments url
             var commentsUrl = user ? authApiBase : unAuthApiBase;
@@ -229,6 +246,10 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
 
             var user = this.getUser();
 
+            if (user) {
+                if (!this.checkAccessToken(user)) return;
+            }
+
             $.ajax({
                 url: user ? authApiBase + settings.urls[settings.type] : unAuthApiBase + settings.urls[settings.type],
                 method: "GET",
@@ -257,6 +278,10 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
 
             var user = this.getUser();
             if (!user) throw new Error("Current user is not authenticated");
+
+            if (!this.checkAccessToken(user)) return;
+
+            console.log("im through");
 
             if (!settings.itemId || !settings.voteDir) throw new Error("'itemId' and 'voteDir' are required parameters");
 
