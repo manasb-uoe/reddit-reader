@@ -1,10 +1,14 @@
 
+body {
+    font-size: 12px;
+}
+
 /* Sidebar */
 
 .sidebar-wrapper {
     position: fixed;
-    left: -250px;
-    width: 250px;
+    left: -220px;
+    width: 220px;
     height: 100%;
     overflow-y: auto;
     background: #222d32;
@@ -27,6 +31,8 @@
 .sidebar-wrapper .header .subtitle {
     color: rgba(255,255,255,0.5);
     font-size: 100%;
+    text-decoration: none;
+    display: block;
 }
 
 .sidebar-wrapper .jump-to-subreddit-form {
@@ -103,7 +109,7 @@
     }
 
     .content-wrapper {
-        margin-left: 250px;
+        margin-left: 220px;
     }
 }
 
@@ -254,6 +260,7 @@
     border: 1px solid darkgray;
     border-radius: 3px;
     padding: 10px;
+    font-size: 120%;
 }
 
 #more-posts-button {

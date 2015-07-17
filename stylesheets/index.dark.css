@@ -75,6 +75,10 @@ body {
     color: #a5b3b9;
 }
 
+#posts-error-container {
+    color: white;
+}
+
 
 /* Comments page */
 
@@ -86,10 +90,12 @@ body {
 #comments-sort-tabs-container a:hover {
     background-color: #2e2e2e;
     border-color: #464545;
+    box-shadow: inset 0 -2px 0 #00bc8c;
 }
 
 #comments-sort-tabs-container .active a {
     background-color: transparent !important;
+    box-shadow: inset 0 -2px 0 #00bc8c;
     color: #00bc8c !important;
     border-color: #464545;
     border-bottom: transparent;
@@ -140,4 +146,11 @@ body {
     border-color: #00bc8c;
 }
 
+#thread-navigator-container .btn-warning:hover {
+    background-color: #008966;
+    border-color: #008966;
+}
 
+#comments-error-container {
+    color: white;
+}
