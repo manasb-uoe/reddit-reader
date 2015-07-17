@@ -43,6 +43,9 @@ define([
                 var error = param[1].substring("error=".length, param[1].length);
 
                 alert("Authentication failed: " + error);
+
+                navView.render();
+                this.redirectToFrontPage();
             } else {
                 var possibleSorts = ["hot", "new", "rising", "controversial", "top"];
                 if (possibleSorts.indexOf(param) == -1) {
