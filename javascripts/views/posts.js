@@ -54,15 +54,14 @@ define([
             }
 
             // load more posts when user is near the bottom of the page
-            var self = this;
-            $(window).scroll(function () {
-                console.log("scroll");
-                if (($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
-                    if (!$("#more-posts-button").attr("disabled")) {
-                        self.loadMorePosts();
-                    }
-                }
-            });
+            //var self = this;
+            //$(window).scroll(function () {
+            //    if (($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
+            //        if (!$("#more-posts-button").attr("disabled")) {
+            //            self.loadMorePosts();
+            //        }
+            //    }
+            //});
         },
         events: {
             "click #more-posts-button": "loadMorePosts"

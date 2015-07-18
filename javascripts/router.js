@@ -16,8 +16,7 @@ define([
         routes: {
             "(:param)": "showFrontPage",
             "r/:subreddit/comments/:postId(/:sort)": "showComments",
-            "r/:subreddit(/:sort)": "showSubreddit",
-            "*any": "redirectToFrontPage"
+            "r/:subreddit(/:sort)": "showSubreddit"
         },
         showFrontPage: function (param) {
             param = param != null ? param : "hot";
@@ -60,11 +59,11 @@ define([
             subreddit = subreddit != null ? subreddit : "Front page";
             sort = sort != null ? sort : "hot";
 
-            postsView.render(subreddit, sort);
+            postsView.render(subreddit, sort, localStorage.getItem("user"));
         },
         showComments: function (subreddit, postId, sort) {
             // remove scroll event handler since it's only needed on posts page
-            $(window).unbind("scroll");
+            //$(window).unbind("scroll");
 
             sort = sort != null ? sort : "best";
 
