@@ -217,11 +217,14 @@ body {
 .post ._thumbnail {
     height: 70px;
     width: 70px;
-    /*padding: 4px;*/
-    /*background-color: #ffffff;*/
-    border: 1px solid #000000;
+    border: 1px solid transparent;
     border-radius: 3px;
     display: block;
+    transition-duration: 150ms;
+}
+
+.post ._thumbnail:hover  {
+    border-width: 4px;
 }
 
 .post .score {
