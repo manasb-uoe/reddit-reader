@@ -5,9 +5,8 @@
 define([
     "underscore",
     "jquery",
-    "backbone",
-    "swig"
-], function (_, $, Backbone, swig) {
+    "backbone"
+], function (_, $, Backbone) {
     "use strict";
 
     var ContentViewer = Backbone.View.extend({
@@ -23,11 +22,20 @@ define([
             }
 
             this.$el.show();
+
+            // prevent body scrolling while content viewer is being displayed
+            $("body").css({
+                overflow: "hidden"
+            });
         },
         events: {
             "click .mask": function () {
                 this.$el.hide();
                 this.$el.empty();
+
+                $("body").css({
+                    overflow: "auto"
+                });
             }
         }
     });
