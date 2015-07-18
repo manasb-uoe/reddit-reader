@@ -32,11 +32,12 @@ define([
                 this.$el.find(".self-text").hide();
             }
 
-            // render post content viewer with media or image preview when user hovers over post thumbnail
+            // render post content viewer with media or image preview when user clicks on the post thumbnail, giving
+            // priority to embedded media
             var media = this.model.get("media");
             var preview = this.model.get("preview");
 
-            this.$el.find(".thumbnail-link").hover(function (event) {
+            this.$el.find(".thumbnail-link").click(function (event) {
                 event.preventDefault();
 
                 if (media) {
