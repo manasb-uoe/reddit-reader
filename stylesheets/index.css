@@ -12,12 +12,13 @@ body {
     width: 220px;
     height: 100%;
     overflow-y: auto;
-    background: #222d32;
+    background: #f9fafc;
     transition-duration: 400ms;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
 }
 
 .sidebar-wrapper .header {
-    background-color: #375a7f;
+    background-color: #2196f3;
     padding: 15px;
     text-align: center;
     text-decoration: none;
@@ -30,7 +31,7 @@ body {
 }
 
 .sidebar-wrapper .header .subtitle {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.8);
     font-size: 100%;
     text-decoration: none;
     display: block;
@@ -43,11 +44,11 @@ body {
 }
 
 .sidebar-wrapper .jump-to-subreddit-form #subreddit-input {
-    background-color: #374850;
-    border: 1px solid transparent;
+    background-color: #fff;
+    border: 1px solid #ddd;
     height: 35px;
     width: 100%;
-    color: rgba(255,255,255,0.8);
+    color: black;
     border-radius: 2px;
     font-size: 90%;
     padding: 10px;
@@ -56,42 +57,45 @@ body {
 }
 
 .sidebar-wrapper .menu .header {
-    color: #4b646f;
+    color: #848484;
     text-transform: uppercase;
-    background-color: #1a2226;
+    background: #f9fafc;
     padding: 10px 15px;
     font-size: 80%;
     text-align: left;
 }
 
 .sidebar-wrapper .menu .item .title {
-    color: #b8c7ce;
+    color: #444;
     padding: 15px;
     text-align: left;
     cursor: pointer;
     border-left: 3px solid transparent;
     text-decoration: none;
     display: block;
+    transition: none;
 }
 
 .sidebar-wrapper .menu .item .title:hover {
-    border-left: 3px solid #367fa9;
-    color: white;
+    /*border-left: 3px solid #367fa9;*/
+    color: #000;
+    background-color: #f4f4f5;
 }
 
 .sidebar-wrapper .menu .item .subitem {
-    color: #8aa4af;
-    background-color: #2c3b41;
+    color: #777;
+    background-color: #f4f4f5;
     font-size: 90%;
     padding: 5px 35px;
     text-align: left;
     cursor: pointer;
     text-decoration: none;
     display: block;
+    transition: none;
 }
 
 .sidebar-wrapper .menu .item .subitem:hover {
-    color: white;
+    color: #000;
 }
 
 .sidebar-wrapper .menu .glyphicon {
@@ -199,7 +203,7 @@ body {
 .post .title {
     /*color: #0a68b4;*/
     color: black;
-    font-size: 135%;
+    font-size: 130%;
     margin-bottom: 5px;
 }
 
