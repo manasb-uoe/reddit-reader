@@ -109,47 +109,6 @@ body {
     transition-duration: 400ms;
 }
 
-/* Navbar */
-
-.navbar {
-    background-color: #3c8dbc !important;
-    /*box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);*/
-    border: none;
-}
-
-.navbar-brand {
-    cursor: pointer;
-    color: white !important;
-}
-
-.navbar a {
-    color: white !important;
-}
-
-.navbar .dropdown-item {
-    color: #999999 !important;
-}
-
-.brand-glyphicon {
-    font-size: small;
-}
-
-#subreddits-dropdown-container {
-    min-width: 200px;
-}
-
-#subreddits-dropdown-container .subreddits-dropdown-item {
-    cursor: pointer;
-}
-
-#subreddits-dropdown-container #add-favourite-button {
-    cursor: pointer;
-}
-
-#login-button {
-    cursor: pointer;
-}
-
 
 /* Posts page */
 
@@ -421,14 +380,6 @@ body {
 
     body {
         font-size: 11px;
-    }
-    .sidebar-wrapper {
-        left: -220px;
-    }
-
-    .content-wrapper {
-        margin-left: 0;
-        padding: 0;
     }
 
     #posts-page-container {
