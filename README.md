@@ -1,4 +1,4 @@
-# Reddit Reader
+# reddit-reader-backbone
 A minimalist single-page client for Reddit, developed using `Backbone.js` and `Require.js``. *Reddit Reader* allows its users to: 
 - Login to Reddit using OAuth 2.0 - Implicit Grant Flow (*Reddit Reader* will never ask you for your password)
 - View subscribed, default and popular subreddits (and even jump to any subreddit you like)
@@ -17,7 +17,7 @@ After cloning the repository, run the following command from the root directory 
 $ node javascripts/libs/r.js -o name=main out=javascripts/build/main.min.js mainConfigFile=javascripts/main.js include=libs/require.js
 ```
 Now you just need to launch a local web server (something like [localhost-now](https://www.npmjs.com/package/localhost-now) 
-or [SimpleHTTPServer](https://docs.python.org/2/library/simplehttpserver.html)) and start exploring  *Reddit Reader* in your 
+or [SimpleHTTPServer](https://docs.python.org/2/library/simplehttpserver.html)) to serve static files, and then you can start exploring  *Reddit Reader* in your 
 preferred web browser.
 
 ### Any queries?
