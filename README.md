@@ -1,5 +1,5 @@
-# reddit-reader-backbone
-A minimalist single-page client for Reddit, developed using `Backbone.js`. *Reddit Reader* allows its users to: 
+# Reddit Reader
+A minimalist single-page client for Reddit, developed using `Backbone.js` and `Require.js``. *Reddit Reader* allows its users to: 
 - Login to Reddit using OAuth 2.0 - Implicit Grant Flow (*Reddit Reader* will never ask you for your password)
 - View subscribed, default and popular subreddits (and even jump to any subreddit you like)
 - View post listings along with the ability to sort them by 'Hot', 'New', 'Rising', 'Controversial' and 'Top'
