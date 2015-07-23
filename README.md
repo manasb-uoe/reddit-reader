@@ -10,6 +10,16 @@ A minimalist single-page client for Reddit, developed using `Backbone.js` and `R
 
 >**Note:** Since *Reddit Reader* authhenticates its users using implicit grant flow, it's not possible to refresh the access token once it has expired (60 minutes). On expiration, *Reddit Reader* will notify you and request you to re-authenticate. 
 
+### Screenshots
+Posts view: 
+![Posts view](/screenshots/1.png?raw=true)
+
+Comments view: 
+![Comments view](/screenshots/2.png?raw=true)
+
+Content viewer in action: 
+![Content viewer in action](/screenshots/3.png?raw=true)
+
 ### How do I get set up? 
 After cloning the repository, run the following command from the root directory to minify all JavaScript modules into a single file 
 `javascripts/build/main.min.js`: 
