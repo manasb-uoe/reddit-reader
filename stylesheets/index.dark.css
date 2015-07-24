@@ -7,6 +7,12 @@ body {
 
 /* Sidebar */
 
+#sidebar-button {
+    color: #ffffff;
+    background-color: #375a7f;
+    border-color: #253c54;
+}
+
 .sidebar-wrapper {
     background: #222d32;
 }
@@ -158,6 +164,7 @@ body {
 
 .comment {
     color: rgba(255,255,255,0.4);
+    border-color: rgba(255,255,255,0.3);
 }
 
 .comment .score {
@@ -188,7 +195,7 @@ body {
 }
 
 #thread-navigator-container {
-    background-color: #464545;
+    background-color: rgba(0,0,0,0.4);
     box-shadow: none;
 }
 

@@ -50,6 +50,18 @@ define([
             if (selectedTheme) {
                 this.switchTheme(selectedTheme);
             }
+
+            $("#sidebar-button").click(function () {
+                var $sidebarWrapper = $(".sidebar-wrapper");
+
+                if ($sidebarWrapper.css("marginLeft") == "-200px") {
+                    $sidebarWrapper.css("marginLeft", "0");
+                    $("body").css("overflow", "hidden");
+                } else {
+                    $sidebarWrapper.css("marginLeft", "-200px");
+                    $("body").css("overflow", "auto");
+                }
+            });
         },
         events: {
             "keypress #subreddit-input": "jumpToSubreddit",

@@ -6,6 +6,11 @@ body {
 
 /* Sidebar */
 
+#sidebar-button {
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
 .sidebar-wrapper {
     position: fixed;
     left: 0;
@@ -15,6 +20,7 @@ body {
     background: #f9fafc;
     transition: none;
     box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    z-index: 2000;
 }
 
 .sidebar-wrapper .header {
@@ -105,7 +111,7 @@ body {
     position: relative;
     padding: 15px;
     margin-left: 200px;
-    transition-duration: 400ms;
+    transition: none;
 }
 
 
@@ -139,13 +145,12 @@ body {
 }
 
 .post {
-    margin: 10px 0;
-    border-radius: 3px;
+    margin-bottom: 15px;
+    font-size: 95%;
 }
 
 .post .left-col {
     margin-right: 15px;
-    height: 75px;
     float: left;
 }
 
@@ -159,15 +164,14 @@ body {
 }
 
 .post .title {
-    /*color: #0a68b4;*/
     color: black;
-    font-size: 130%;
+    font-size: 140%;
     margin-bottom: 5px;
 }
 
 .post ._thumbnail {
-    height: 70px;
-    width: 70px;
+    height: 65px;
+    width: 65px;
     border: 1px solid transparent;
     border-radius: 3px;
     display: block;
@@ -249,15 +253,15 @@ body {
 }
 
 #comments-container {
-    background-color: white;
-    padding: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     margin-bottom: 30px;
 }
 
 .comment {
-    border-left: 2px solid #4285f4;
+    border-left: 2px solid #dddddd;
     padding: 5px 5px 5px 10px;
+    clear: both;
+    font-size: 90%;
+    word-break: break-all;
 }
 
 .comment .left-col {
@@ -315,7 +319,12 @@ body {
 }
 
 .comment .body {
-    font-size: 120%;
+    font-size: 140%;
+}
+
+.comment .body p {
+    margin: 0;
+    padding: 0;
 }
 
 .thread-separator {
@@ -381,12 +390,22 @@ body {
         font-size: 11px;
     }
 
+    .sidebar-wrapper {
+        margin-left: -200px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    .content-wrapper {
+        margin-left: 0;
+        padding: 0;
+    }
+
     #posts-page-container {
         padding: 5px;
     }
 
     .post {
-        padding: 5px;
+        margin-bottom: 10px;
     }
 
     .post .left-col {
@@ -421,12 +440,21 @@ body {
         margin-bottom: 50px;
     }
 
+    .comment {
+        padding: 5px;
+    }
+
     #thread-navigator-container {
         bottom: 0;
         right: 0;
         width: 100%;
         text-align: center;
-        background-color: rgba(255,255,255,0.8);
+        background-color: rgba(255,255,255,0.6);
+        padding: 5px;
+    }
+
+    #thread-navigator-container .btn {
+        padding: 5px 10px;
     }
 
     #content-viewer-container iframe {
