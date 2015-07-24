@@ -261,7 +261,6 @@ body {
     padding: 5px 5px 5px 10px;
     clear: both;
     font-size: 90%;
-    word-break: break-all;
 }
 
 .comment .left-col {
@@ -442,6 +441,7 @@ body {
 
     .comment {
         padding: 5px;
+        word-break: break-all;
     }
 
     #thread-navigator-container {
