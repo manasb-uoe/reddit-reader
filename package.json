@@ -5,7 +5,7 @@
     "url": "https://github.com/enthusiast94/reddit-reader-backbone"
   },
   "scripts": {
-    "build:css": "node-sass stylesheets/index.scss stylesheets/index.css --output-style compressed --source-map true --source-comments",
+    "build:css": "node-sass stylesheets/ -o stylesheets/ --output-style compressed --source-map true --source-comments",
     "build:js": "node javascripts/libs/r.js -o name=main out=javascripts/build/main.min.js mainConfigFile=javascripts/main.js include=libs/require.js",
     "build": "npm run build:css && npm run build:js",
     "build:watch": "parallelshell \"npm run build:css -- -w\" \"npm run watch:js\"",

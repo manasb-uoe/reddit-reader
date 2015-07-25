@@ -5,3 +5,5 @@
 build/
 node_modules/
 *.log
+*.css
+*.css.map
