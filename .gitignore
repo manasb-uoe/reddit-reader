@@ -1,5 +1,7 @@
 # jetbrains config files
 .idea/
 
-# batch scripts
-build.bat
+# generated files and folders
+build/
+node_modules/
+javascripts/build/main.min.js
