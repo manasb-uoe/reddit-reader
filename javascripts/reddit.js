@@ -281,8 +281,6 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
 
             if (!this.checkAccessToken(user)) return;
 
-            console.log("im through");
-
             if (!settings.itemId || !settings.voteDir) throw new Error("'itemId' and 'voteDir' are required parameters");
 
             $.ajax({
