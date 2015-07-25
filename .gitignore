@@ -4,4 +4,4 @@
 # generated files and folders
 build/
 node_modules/
-javascripts/build/main.min.js
+*.log

@@ -5,16 +5,18 @@
     "url": "https://github.com/enthusiast94/reddit-reader-backbone"
   },
   "scripts": {
-    "build:css": "node-sass stylesheets/index.scss:stylesheets/index.css --style compressed",
+    "build:css": "node-sass stylesheets/index.scss stylesheets/index.css --output-style compressed --source-map true --source-comments",
     "build:js": "node javascripts/libs/r.js -o name=main out=javascripts/build/main.min.js mainConfigFile=javascripts/main.js include=libs/require.js",
-    "build": "npm build:css && npm build:js",
-    "build:watch": "watch 'npm run build'",
+    "build": "npm run build:css && npm run build:js",
+    "build:watch": "parallelshell \"npm run build:css -- -w\" \"npm run watch:js\"",
+    "watch:js": "watch \"npm run build:js\" --wait=25",
     "server:launch": "browser-sync start --server --files \"javascripts/*.js, stylesheets/*.css, *.html\"",
-    "start": "npm build:watch && npm server:launch"
+    "start": "parallelshell \"npm run server:launch\" \"npm run build:watch\""
   },
   "devDependencies": {
-    "browser-sync": "^2.8.0",
-    "node-sass": "^3.2.0",
-    "watch": "^0.16.0"
+    "browser-sync": "latest",
+    "node-sass": "latest",
+    "parallelshell": "^1.2.0",
+    "watch": "latest"
   }
 }
