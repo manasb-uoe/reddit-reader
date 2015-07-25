@@ -1,0 +1,22 @@
+{
+  "name": "reddit-reader-backbone",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enthusiast94/reddit-reader-backbone"
+  },
+  "scripts": {
+    "build:css": "node-sass stylesheets/ -o stylesheets/ --output-style compressed --source-map true --source-comments",
+    "build:js": "node javascripts/libs/r.js -o name=main out=javascripts/build/main.min.js mainConfigFile=javascripts/main.js include=libs/require.js",
+    "build": "npm run build:css && npm run build:js",
+    "build:watch": "parallelshell \"npm run build:css -- -w\" \"npm run watch:js\"",
+    "watch:js": "watch \"npm run build:js\" --wait=25",
+    "server:launch": "browser-sync start --server --files \"javascripts/*.js, stylesheets/*.css, *.html\"",
+    "start": "parallelshell \"npm run server:launch\" \"npm run build:watch\""
+  },
+  "devDependencies": {
+    "browser-sync": "latest",
+    "node-sass": "latest",
+    "parallelshell": "^1.2.0",
+    "watch": "latest"
+  }
+}
