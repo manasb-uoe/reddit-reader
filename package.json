@@ -1,0 +1,14 @@
+{
+  "name": "reddit-reader-backbone",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enthusiast94/reddit-reader-backbone"
+  },
+  "scripts": {
+    "build": "node javascripts/libs/r.js -o name=main out=javascripts/build/main.min.js mainConfigFile=javascripts/main.js include=libs/require.js",
+    "start": "http-server -p 3000"
+  },
+  "devDependencies": {
+    "http-server": "latest"
+  }
+}

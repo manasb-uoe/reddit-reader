@@ -1,5 +1,6 @@
 # jetbrains config files
 .idea/
 
-# batch scripts
-build.bat
+# auto generated files
+node_modules/
+*.log
