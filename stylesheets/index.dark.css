@@ -63,6 +63,11 @@ body {
 
 /* Posts page */
 
+#posts-page-container {
+    background-color: #252525 !important;
+    border-color: transparent;
+}
+
 #posts-sort-tabs-container a {
     border-bottom-color: #464545;
     color: #a5b3b9 !important;
@@ -97,6 +102,7 @@ body {
 
 .post .score {
     color: rgba(255,255,255,0.6);
+    background-color: #303030;
 }
 
 .post .btn-default {
@@ -138,6 +144,10 @@ body {
 
 
 /* Comments page */
+
+#comments-page-body, #post-container {
+    background-color: #252525 !important;
+}
 
 #comments-sort-tabs-container a {
     border-bottom-color: #464545;
