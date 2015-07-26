@@ -64,7 +64,6 @@ body {
 /* Posts page */
 
 #posts-page-container {
-    background-color: #252525 !important;
     border-color: transparent;
 }
 
@@ -89,6 +88,7 @@ body {
 
 .post {
     color: rgba(255,255,255,0.4);
+    background-color: #252525 !important;
 }
 
 .post .title {
