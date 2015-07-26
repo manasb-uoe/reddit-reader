@@ -27,14 +27,18 @@ Dark theme:
 ![Dark theme](/screenshots/6.png?raw=true)
 
 ### How do I get set up? 
-After cloning the repository, run the following command from the root directory to minify all JavaScript modules into a single file 
-`javascripts/build/main.min.js`: 
+After cloning the repository, run the following command from the root directory to install all dependencies: 
 ```
-$ node javascripts/libs/r.js -o name=main out=javascripts/build/main.min.js mainConfigFile=javascripts/main.js include=libs/require.js
+$ npm install 
 ```
-Now you just need to launch a local web server (something like [localhost-now](https://www.npmjs.com/package/localhost-now) 
-or [SimpleHTTPServer](https://docs.python.org/2/library/simplehttpserver.html)) to serve static files, and then you can start exploring  *Reddit Reader* in your 
-preferred web browser.
+Now minify all JavaScript modules into a single file `javascripts/build/main.min.js`: 
+```
+$ npm run build
+```
+Finally, start the localhost server on port 3000: 
+```
+$ npm start
+```
 
 ### Any queries?
 Send me an email at [manas.bajaj94@gmail.com](manas.bajaj94@gmail.com)
