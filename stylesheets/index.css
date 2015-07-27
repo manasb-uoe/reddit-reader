@@ -4,11 +4,12 @@
 body {
     font-size: 12px;
     line-height: 1.5;
-    background-color: #f2f2f2;
+    background-color: #f6f9fa;
 }
 
 .card-shadow {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-radius: 3px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.1);
 }
 
 
@@ -30,7 +31,6 @@ body {
     transition-duration: 400ms;
     box-shadow: 0 0 6px rgba(0,0,0,0.2);
     z-index: 2000;
-    margin-top: -15px;
 }
 
 .sidebar-wrapper .header {
@@ -120,7 +120,6 @@ body {
 .content-wrapper {
     position: relative;
     padding: 15px;
-    margin-left: 200px;
     transition: none;
     margin-top: 15px;
     margin-bottom: 15px;;
@@ -130,7 +129,7 @@ body {
 /* Posts page */
 
 #posts-page-container {
-    max-width: 1200px;
+    max-width: 1000px;
     padding: 0;
 }
 
@@ -259,7 +258,7 @@ body {
 /* Comments page */
 
 #comments-page-container {
-    max-width: 1200px;
+    max-width: 1000px;
     padding: 0 !important;
 }
 
@@ -427,7 +426,7 @@ body {
 
 /* Mobile UI */
 
-@media(max-width:768px) {
+@media(max-width:1000px) {
 
     body {
         font-size: 11px;
@@ -436,7 +435,7 @@ body {
     .sidebar-wrapper {
         margin-left: -200px;
         box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        margin-top: 0;
+        transition: none;
     }
 
     .content-wrapper {
