@@ -1,18 +1,3 @@
-<div class="header">User</div>
-{% if username %}
-<div class="item">
-    <a class="title" role="button" data-toggle="collapse" data-parent="#menu-accordion" href="#user-collapse" aria-expanded="false" aria-controls="user-collapse"><span class="glyphicon glyphicon-user"></span> {{username}}</a>
-    <div class="subitems-container collapse" id="user-collapse">
-        <div class="subitem" id="logout-button">Logout</div>
-    </div>
-</div>
-{% else %}
-<div class="item">
-    <a href="{{authUrl}}" class="title"><span class="glyphicon glyphicon-log-in"></span> Login</a>
-</div>
-{% endif %}
-
-
 <div class="header">Subreddits</div>
 <!--Front page-->
 <div class="item">

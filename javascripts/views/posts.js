@@ -32,13 +32,11 @@ define([
             this.$progressIndicator = $("#progress-indicator");
             this.$postsContainer = $("#posts-container");
             this.$errorContainer = $("#posts-error-container");
-            this.$currentSubreddit = $("#current-subreddit");
             this.$sortTabsContainer = $("#posts-sort-tabs-container");
             this.$morePostsButton = $("#more-posts-button");
 
             this.$progressIndicator.show();
             this.$postsContainer.hide();
-            this.updateCurrentSubreddit(subreddit);
             this.refreshSortTabs(subreddit, sort);
             this.$morePostsButton.hide();
 
@@ -113,10 +111,6 @@ define([
         allPostsLoaded: function () {
             this.$morePostsButton.html("No more posts to load :(");
             this.$morePostsButton.prop("disabled", true);
-        },
-        updateCurrentSubreddit: function (subreddit) {
-            var text = subreddit != "Front page" ? "Subreddit: " + "r/" + subreddit : subreddit;
-            this.$currentSubreddit.text(text);
         }
     });
 

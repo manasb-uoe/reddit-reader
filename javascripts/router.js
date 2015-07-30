@@ -7,9 +7,10 @@ define([
     "backbone",
     "reddit",
     "views/nav",
+    "views/nav2",
     "views/posts",
     "views/comments"
-], function (_, Backbone, reddit, navView, postsView, commentsView) {
+], function (_, Backbone, reddit, navView, navView2, postsView, commentsView) {
     "use strict";
 
     var AppRouter = Backbone.Router.extend({
@@ -33,6 +34,7 @@ define([
                     state: state,
                     success: function () {
                         navView.render();
+                        navView2.render();
                         self.redirectToFrontPage();
                     }
                 });
@@ -52,6 +54,7 @@ define([
                 } else {
                     var subreddit = "Front page";
                     postsView.render(subreddit, param, localStorage.getItem("user"));
+                    navView2.updateCurrentSubreddit(subreddit);
                 }
             }
         },
@@ -60,6 +63,7 @@ define([
             sort = sort != null ? sort : "hot";
 
             postsView.render(subreddit, sort, localStorage.getItem("user"));
+            navView2.updateCurrentSubreddit(subreddit);
         },
         showComments: function (subreddit, postId, sort) {
             // remove scroll event handler since it's only needed on posts page
@@ -68,6 +72,7 @@ define([
             sort = sort != null ? sort : "best";
 
             commentsView.render(subreddit, postId, sort);
+            navView2.updateCurrentSubreddit(subreddit);
         },
         redirectToFrontPage: function () {
             this.navigate("#/");
@@ -76,6 +81,7 @@ define([
 
     var init = function () {
         navView.render();
+        navView2.render();
 
         new AppRouter();
 

@@ -4,32 +4,69 @@
 body {
     font-size: 12px;
     line-height: 1.5;
-    background-color: #f6f9fa;
+    background-color: #eeeeee;
 }
 
-.card-shadow {
-    border-radius: 3px;
-    box-shadow: 0 0 5px 0 rgba(0,0,0,.1);
+/* Navigation bar */
+
+.navbar-inverse .navbar-brand {
+    font-size: 160%;
+}
+
+.navbar-inverse .navbar-brand .glyphicon {
+    font-size: x-small;
+    top: -2px;
+    padding-right: 10px;
+}
+
+.navbar-nav > li > a, .navbar-brand {
+    padding-top:12px !important;
+    padding-bottom:0 !important;
+    height: 50px;
+    color: white !important;
+}
+
+.navbar-nav > li > a > .glyphicon {
+    padding-right: 5px;
+}
+
+.navbar {
+    min-height:50px !important;
+    max-height: 50px;
+}
+
+#subreddit-input {
+    background-color: rgba(0,0,0,0.1);
+    height: 35px;
+    width: 100%;
+    color: white;
+    border-radius: 2px;
+    font-size: 90%;
+    padding: 10px;
+    box-shadow: none;
+    margin-top: 7px;
+}
+
+#logout-button {
+    cursor: pointer;
+}
+
+#toggle-sidebar-button {
+    cursor: pointer;
 }
 
 
 /* Sidebar */
 
-#sidebar-button {
-    margin-right: 5px;
-    margin-top: 5px;
-    margin-bottom: -10px;
-}
-
 .sidebar-wrapper {
     position: fixed;
-    left: 0;
+    left: 15px;
+    top: 65px;
     width: 200px;
-    height: 100%;
+    bottom: 15px;
     overflow-y: auto;
-    background: #f9fafc;
-    transition-duration: 400ms;
-    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    background: #fff;
+    transition: none;
     z-index: 2000;
 }
 
@@ -53,24 +90,6 @@ body {
     display: block;
 }
 
-.sidebar-wrapper .jump-to-subreddit-form {
-    padding: 15px;
-    width: 100%;
-    text-align: center;
-}
-
-.sidebar-wrapper .jump-to-subreddit-form #subreddit-input {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    height: 35px;
-    width: 100%;
-    color: black;
-    border-radius: 2px;
-    font-size: 90%;
-    padding: 10px;
-    box-shadow: none;
-}
-
 .sidebar-wrapper .menu .header {
     color: #848484;
     text-transform: uppercase;
@@ -92,7 +111,6 @@ body {
 }
 
 .sidebar-wrapper .menu .item .title:hover {
-    /*border-left: 3px solid #367fa9;*/
     color: #000;
     background-color: #f4f4f5;
 }
@@ -121,16 +139,16 @@ body {
     position: relative;
     padding: 15px;
     transition: none;
-    margin-top: 15px;
-    margin-bottom: 15px;;
+    margin-top: 50px;
+    margin-left: 215px;
 }
 
 
 /* Posts page */
 
 #posts-page-container {
-    max-width: 1000px;
-    padding: 0;
+    background-color: white;
+    padding: 15px;
 }
 
 #progress-indicator {
@@ -149,21 +167,8 @@ body {
     margin-bottom: 20px;
 }
 
-#current-subreddit {
-    display: inline-block;
-    margin-bottom: 5px;
-    padding: 10px;
-    font-size: 110%;
-    font-weight: 500;
-    margin-top: 5px;
-    background-color: white;
-}
-
 .post {
-    margin-bottom: 10px;
-    font-size: 95%;
-    padding: 10px;
-    background-color: white;
+    margin-bottom: 15px;
 }
 
 .post .left-col {
@@ -181,7 +186,7 @@ body {
 }
 
 .post .title {
-    color: rgba(0,0,0,0.9);
+    color: #000;
     font-size: 140%;
     margin-bottom: 5px;
 }
@@ -258,8 +263,7 @@ body {
 /* Comments page */
 
 #comments-page-container {
-    max-width: 1000px;
-    padding: 0 !important;
+    padding: 0;
 }
 
 #post-container {
@@ -375,7 +379,7 @@ body {
 #thread-navigator-container {
     position: fixed;
     right: 20px;
-    bottom: 20px;
+    bottom: 15px;
     margin-bottom: -200px;
     background-color: white;
     box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
@@ -426,16 +430,17 @@ body {
 
 /* Mobile UI */
 
-@media(max-width:1000px) {
+@media(max-width:768px) {
 
     body {
         font-size: 11px;
     }
 
     .sidebar-wrapper {
-        margin-left: -200px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        transition: none;
+        margin-left: -215px;
+        left: 5px;
+        bottom: 5px;
+        top: 56px;
     }
 
     .content-wrapper {
@@ -445,10 +450,6 @@ body {
 
     #posts-page-container {
         padding: 0;
-    }
-
-    #current-subreddit {
-        margin-top: 5px;
     }
 
     .post {
@@ -467,16 +468,6 @@ body {
     .post ._thumbnail {
         width: 60px;
         height: 60px;
-    }
-
-    .nav-justified > li {
-        display: table-cell;
-        width: 1%;
-    }
-    .nav-justified > li > a  {
-        border-bottom: 1px solid #ddd !important;
-        border-radius: 4px 4px 0 0 !important;
-        margin-bottom: 0 !important;
     }
 
     #comments-page-container {

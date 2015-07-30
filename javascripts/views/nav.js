@@ -7,12 +7,13 @@ define([
     "jquery",
     "backbone",
     "reddit",
+    "views/nav2",
     "collections/subreddits",
     "swig",
     "text!../../templates/sidebar.html",
     "text!../../templates/sidebar_menu.html",
     "bootstrap"
-], function (_, $, Backbone, reddit, SubredditsCollection, swig, sidebarTemplate, sidebarMenu) {
+], function (_, $, Backbone, reddit, navView2, SubredditsCollection, swig, sidebarTemplate, sidebarMenu) {
     "use strict";
 
     var NavView = Backbone.View.extend({
@@ -26,31 +27,17 @@ define([
             this.userSubreddits.on("reset", this.refreshSidebarMenu, this);
             this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
 
+            navView2.on("logout", this.render, this);
+            navView2.on("toggle.sidebar", this.toggleSidebar, this);
+
             var self = this;
             $(document).on("access_token_expired", function () {
                 self.render();
-                Backbone.history.loadUrl();
-
-                alert("Session has expired, please login again.");
-            });
-
-            // bind click listener on sidebar button to hide/show sidebar on small screen devices
-            $("#sidebar-button").click(function () {
-                var $sidebarWrapper = $(".sidebar-wrapper");
-
-                if ($sidebarWrapper.css("marginLeft") == "-200px") {
-                    $sidebarWrapper.css("marginLeft", "0");
-                    //$("body").css("overflow", "hidden");
-                } else {
-                    $sidebarWrapper.css("marginLeft", "-200px");
-                    //$("body").css("overflow", "auto");
-                }
             });
         },
         render: function () {
             this.$el.html(sidebarTemplate);
 
-            this.$subredditInput = $("#subreddit-input");
             this.$menu = $("#menu-accordion");
 
             this.refreshSidebarMenu();
@@ -65,9 +52,6 @@ define([
             }
         },
         events: {
-            "keypress #subreddit-input": "jumpToSubreddit",
-            "click #subreddit-go-button": "jumpToSubreddit",
-            "click #logout-button": "logout",
             "click #light-theme-button": function () {this.switchTheme("light")},
             "click #dark-theme-button": function () {this.switchTheme("dark")}
         },
@@ -84,19 +68,6 @@ define([
             });
             this.$menu.html(compiledTemplate);
         },
-        jumpToSubreddit: function (event) {
-            if (event.which == 1 || event.which == 13) {
-                event.preventDefault();
-                Backbone.history.navigate("/r/" + this.$subredditInput.val(), {trigger: true});
-            }
-        },
-        logout: function () {
-            reddit.deauth();
-
-            this.render();
-
-            Backbone.history.loadUrl();
-        },
         switchTheme: function (type) {
             var $darkAppStyle = $("#dark-app-style");
 
@@ -112,6 +83,18 @@ define([
                 default:
                     throw new Error("Theme type can only be 'light' or 'dark'");
                     break;
+            }
+        },
+        toggleSidebar: function () {
+            var $sidebarWrapper = $(".sidebar-wrapper");
+            var $contentWrapper = $(".content-wrapper");
+
+            if ($sidebarWrapper.css("marginLeft") == "-215px") {
+                $sidebarWrapper.css("marginLeft", "0");
+                $contentWrapper.css("marginLeft", "215px");
+            } else {
+                $sidebarWrapper.css("marginLeft", "-215px");
+                $contentWrapper.css("marginLeft", "0");
             }
         }
     });
