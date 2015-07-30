@@ -1,101 +1,67 @@
 /**
- * Created by ManasB on 6/28/2015.
+ * Created by ManasB on 7/30/2015.
  */
 
 define([
-    "underscore",
     "jquery",
     "backbone",
     "reddit",
-    "views/nav2",
-    "collections/subreddits",
     "swig",
-    "text!../../templates/sidebar.html",
-    "text!../../templates/sidebar_menu.html",
-    "bootstrap"
-], function (_, $, Backbone, reddit, navView2, SubredditsCollection, swig, sidebarTemplate, sidebarMenu) {
+    "text!../../templates/nav.html"
+], function ($, Backbone, reddit, swig, navTemplate) {
     "use strict";
 
     var NavView = Backbone.View.extend({
-        el: "#sidebar",
+        el: "#nav",
         initialize: function () {
-            this.defaultSubreddits = new SubredditsCollection({type: "defaults"});
-            this.userSubreddits = new SubredditsCollection({type: "user"});
-            this.popularSubreddits = new SubredditsCollection({type: "popular"});
-
-            this.defaultSubreddits.on("reset", this.refreshSidebarMenu, this);
-            this.userSubreddits.on("reset", this.refreshSidebarMenu, this);
-            this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
-
-            navView2.on("logout", this.render, this);
-            navView2.on("toggle.sidebar", this.toggleSidebar, this);
+            this.on("logout", this.logout, this);
 
             var self = this;
             $(document).on("access_token_expired", function () {
                 self.render();
+                Backbone.history.loadUrl();
+
+                alert("Session has expired, please login again.");
             });
         },
         render: function () {
-            this.$el.html(sidebarTemplate);
-
-            this.$menu = $("#menu-accordion");
-
-            this.refreshSidebarMenu();
-
-            this.defaultSubreddits.fetch();
-            this.userSubreddits.fetch();
-            this.popularSubreddits.fetch();
-
-            var selectedTheme = localStorage.getItem("theme");
-            if (selectedTheme) {
-                this.switchTheme(selectedTheme);
-            }
-        },
-        events: {
-            "click #light-theme-button": function () {this.switchTheme("light")},
-            "click #dark-theme-button": function () {this.switchTheme("dark")}
-        },
-        refreshSidebarMenu: function () {
             var user = reddit.getUser();
-            var compiledTemplate = swig.render(sidebarMenu, {
+            var compiledTemplate = swig.render(navTemplate, {
                 locals: {
                     username: user ? user.username : undefined,
-                    authUrl: !user ? reddit.getAuthUrl() : undefined,
-                    defaults: this.defaultSubreddits.toJSON(),
-                    popular: this.popularSubreddits.toJSON(),
-                    subs: this.userSubreddits.toJSON()
+                    authUrl: !user ? reddit.getAuthUrl() : undefined
                 }
             });
-            this.$menu.html(compiledTemplate);
-        },
-        switchTheme: function (type) {
-            var $darkAppStyle = $("#dark-app-style");
+            this.$el.html(compiledTemplate);
 
-            switch(type) {
-                case "light":
-                    $darkAppStyle.removeAttr("href");
-                    localStorage.setItem("theme", type);
-                    break;
-                case "dark":
-                    $darkAppStyle.attr("href", "stylesheets/index.dark.css");
-                    localStorage.setItem("theme", type);
-                    break;
-                default:
-                    throw new Error("Theme type can only be 'light' or 'dark'");
-                    break;
+            this.$currentSubreddit = $("#current-subreddit");
+            this.$subredditInput = $("#subreddit-input");
+        },
+        events: {
+            "click #toggle-sidebar-button": function () {
+                this.trigger("toggle.sidebar");
+            },
+            "keypress #subreddit-input": "jumpToSubreddit",
+            "click #logout-button": function () {
+                this.trigger("logout");
             }
         },
-        toggleSidebar: function () {
-            var $sidebarWrapper = $(".sidebar-wrapper");
-            var $contentWrapper = $(".content-wrapper");
-
-            if ($sidebarWrapper.css("marginLeft") == "-215px") {
-                $sidebarWrapper.css("marginLeft", "0");
-                $contentWrapper.css("marginLeft", "215px");
-            } else {
-                $sidebarWrapper.css("marginLeft", "-215px");
-                $contentWrapper.css("marginLeft", "0");
+        updateCurrentSubreddit: function (subreddit) {
+            var text = subreddit != "Front page" ? "Subreddit: " + "r/" + subreddit : subreddit;
+            this.$currentSubreddit.text(text);
+        },
+        jumpToSubreddit: function (event) {
+            if (event.which == 1 || event.which == 13) {
+                event.preventDefault();
+                Backbone.history.navigate("/r/" + this.$subredditInput.val(), {trigger: true});
             }
+        },
+        logout: function () {
+            reddit.deauth();
+
+            this.render();
+
+            Backbone.history.loadUrl();
         }
     });
 
