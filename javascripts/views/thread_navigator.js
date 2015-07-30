@@ -54,7 +54,7 @@ define([
             }
 
             var $targetDiv = $("#comments-container").find("[data-name='" + this.threads[this.currentThread].get("name") + "']");
-            $("html,body").animate({scrollTop: $targetDiv.offset().top - 15}, 0);
+            $("html,body").animate({scrollTop: $targetDiv.offset().top - 65}, 0);
 
             this.render();
             this.updateControlsVisiblity();
