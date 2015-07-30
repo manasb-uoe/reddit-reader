@@ -31,7 +31,7 @@ define([
             navView.on("toggle.sidebar", this.toggleSidebar, this);
 
             var self = this;
-            $(document).on("access_token_expired", function () {
+            reddit.on("access_token_expired", function () {
                 self.render();
             });
         },

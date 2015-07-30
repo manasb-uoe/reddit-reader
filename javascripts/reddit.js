@@ -11,7 +11,7 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             client_id: '2j6Q8QsS8lrckQ',
             response_type: "token",
             state: state,
-            redirect_uri: 'http://enthusiast94.github.io/reddit-reader-backbone/',
+            redirect_uri: 'http://localhost:3000',
             scope: "identity,mysubreddits,read,vote"
         });
 
@@ -56,7 +56,7 @@ define(["jquery", "backbone", "moment"], function ($, Backbone, moment) {
             var hasExpired = (Date.now() - user.timestamp) >= 3600000;
             if (hasExpired) {
                 this.deauth();
-                $(document).trigger("access_token_expired");
+                this.trigger("access_token_expired");
             }
 
             return !hasExpired;

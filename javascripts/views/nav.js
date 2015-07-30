@@ -17,7 +17,7 @@ define([
             this.on("logout", this.logout, this);
 
             var self = this;
-            $(document).on("access_token_expired", function () {
+            reddit.on("access_token_expired", function () {
                 self.render();
                 Backbone.history.loadUrl();
 
