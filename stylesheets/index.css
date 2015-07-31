@@ -10,7 +10,7 @@ body {
 /* Navigation bar */
 
 .navbar-inverse .navbar-brand {
-    font-size: 160%;
+    font-size: 140%;
 }
 
 .navbar-inverse .navbar-brand .glyphicon {
@@ -22,7 +22,7 @@ body {
 .navbar-nav > li > a, .navbar-brand {
     padding-top:12px !important;
     padding-bottom:0 !important;
-    height: 50px;
+    height: 45px;
     color: white !important;
 }
 
@@ -30,9 +30,22 @@ body {
     padding-right: 5px;
 }
 
+.navbar .navbar-header {
+    height: 45px;
+}
+
+.navbar button {
+    margin-top: 6px;
+    border-color: rgba(255,255,255,0.7) !important;
+}
+
+.navbar .navbar-collapse {
+    background-color: #2196f3;
+}
+
 .navbar {
-    min-height:50px !important;
-    max-height: 50px;
+    min-height:45px !important;
+    max-height: 45px;
 }
 
 #subreddit-input {
@@ -44,7 +57,7 @@ body {
     font-size: 90%;
     padding: 10px;
     box-shadow: none;
-    margin-top: 7px;
+    margin-top: 5px;
 }
 
 #logout-button {
@@ -61,7 +74,7 @@ body {
 .sidebar-wrapper {
     position: fixed;
     left: 15px;
-    top: 65px;
+    top: 60px;
     width: 200px;
     bottom: 15px;
     overflow-y: auto;
@@ -139,7 +152,7 @@ body {
     position: relative;
     padding: 15px;
     transition: none;
-    margin-top: 50px;
+    margin-top: 45px;
     margin-left: 215px;
 }
 
@@ -153,11 +166,12 @@ body {
 
 #progress-indicator {
     text-align: center;
-    margin-bottom: 25px;
+    padding: 60px;
 }
 
 #posts-error-container {
-    margin-top: 10%;
+    padding: 40px 0;
+    display: none;
 }
 
 .posts-page-header {
@@ -207,8 +221,8 @@ body {
 .post .score {
     font-size: 120%;
     font-weight: 400;
-    color: #c7254e;
-    background-color: #f9f2f4;
+    color: #313131;
+    background-color: #f7f7f7;
     border-radius: 3px;
     margin-bottom: 3px;
 }
@@ -317,7 +331,7 @@ body {
 }
 
 .comment-first {
-    background-color: #f9f9f9;
+    background-color: #f7f7f7;
     border-left: none;
     padding-left: 5px;
     margin-top: 10px;

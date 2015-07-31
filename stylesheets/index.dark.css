@@ -11,6 +11,11 @@ body {
     background-color: #375a7f;
 }
 
+.navbar .navbar-collapse {
+    background-color: #375a7f;
+    border-color: #375a7f;
+}
+
 #subreddit-input {
     background-color: rgba(0,0,0,0.2);
 }
@@ -178,7 +183,7 @@ body {
 }
 
 .comment-first {
-    background-color: rgba(255,255,255,0.1);
+    background-color: #2e2e2e;
 }
 
 .comment .btn-default {
