@@ -21,10 +21,10 @@ Content viewer in action:
 ![Content viewer in action](/screenshots/3.png?raw=true)
 
 Optimized for small screen devices: 
-![Optimized for small screen devices](/screenshots/5.png?raw=true)
+![Optimized for small screen devices](/screenshots/4.png?raw=true)
 
 Dark theme: 
-![Dark theme](/screenshots/6.png?raw=true)
+![Dark theme](/screenshots/5.png?raw=true)
 
 ### How do I get set up? 
 After cloning the repository, run the following command from the root directory to install all dependencies: 
