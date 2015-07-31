@@ -130,7 +130,7 @@ body {
 
 .sidebar-wrapper .menu .item .subitem {
     color: #777;
-    background-color: #f4f4f5;
+    background-color: #f9f9f9;
     font-size: 90%;
     padding: 5px 35px;
     text-align: left;
@@ -201,8 +201,7 @@ body {
 
 .post .title {
     color: #000;
-    font-size: 140%;
-    margin-bottom: 5px;
+    font-size: 150%;
 }
 
 .post ._thumbnail {
@@ -261,8 +260,9 @@ body {
     border: 1px solid darkgray;
     border-radius: 3px;
     padding: 10px;
-    font-size: 120%;
+    font-size: 125%;
     margin-top: 5px;
+    color: black;
 }
 
 #more-posts-button {
@@ -301,18 +301,19 @@ body {
 
 #comments-progress-indicator {
     text-align: center;
-    margin-bottom: 25px;
+    padding: 50px;
 }
 
 #comments-error-container {
-    margin-top: 10%;
+    padding: 40px 0;
+    display: none;
 }
 
 .comment {
     border-left: 2px solid #dddddd;
     padding: 5px 5px 5px 10px;
     clear: both;
-    font-size: 90%;
+    font-size: 95%;
 }
 
 .comment .left-col {
@@ -371,6 +372,7 @@ body {
 
 .comment .body {
     font-size: 140%;
+    color: black;
 }
 
 .comment .body a {
