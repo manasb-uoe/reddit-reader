@@ -38,7 +38,7 @@ var NavView = Backbone.View.extend({
         this.$subredditInput = $("#subreddit-input");
     },
     events: {
-        "keypress #subreddit-input": "jumpToSubreddit",
+        "submit form": "jumpToSubreddit",
         "click #logout-button": function () {
             this.trigger("logout");
         }
@@ -48,10 +48,9 @@ var NavView = Backbone.View.extend({
         this.$currentSubreddit.text(text);
     },
     jumpToSubreddit: function (event) {
-        if (event.which == 1 || event.which == 13) {
-            event.preventDefault();
-            Backbone.history.navigate("/r/" + this.$subredditInput.val(), {trigger: true});
-        }
+        event.preventDefault();
+
+        window.location.hash = "/r/" + this.$subredditInput.val();
     },
     logout: function () {
         reddit.deauth();
