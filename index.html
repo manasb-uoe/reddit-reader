@@ -7,13 +7,10 @@
     <link rel="icon" href="images/favicon.ico">
     <title>Reddit Reader</title>
     <!-- stylesheets -->
-    <link rel="stylesheet" type="text/css" href="stylesheets/libs/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/libs/dots.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/index.css">
     <link id="dark-app-style" rel="stylesheet" type="text/css" href="stylesheets/index.css">
-    <!-- scripts -->
-    <!--<script data-main="javascripts/main" type="text/javascript" src="javascripts/libs/require.js"></script>-->
-    <script type="text/javascript" src="javascripts/build/main.min.js"></script>
 </head>
 
 <body>
@@ -31,6 +28,197 @@
 </div>
 
 <div id="content-viewer-container"></div>
+
+<!-- Templates -->
+
+<!-- Comments item template -->
+<script type="text/template" id="comments-item-template">
+    <div class="comment {%if comment.level == 0%} comment-first {% endif %}" data-name="{{comment.name}}" style="margin-left: {{comment.leftPadding}}px;">
+        <div class="left-col">
+            <button class="btn btn-default btn-sm upvote-button {% if comment.likes == 1 %} upvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-up"></span></button>
+            <button class="btn btn-default btn-sm downvote-button {% if comment.likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
+        </div>
+        <div class="right-col">
+            <span class="score {% if comment.likes == 1 %} upvoted-score {% elif comment.likes == -1 %} downvoted-score {% endif %}"><strong>{{comment.score}} points</strong></span> •
+            <span class="author {% if comment.author == postAuthor %} post-author {% endif %}">{{comment.author}}</span> •
+            <span class="created">{{comment.created_utc}}</span>
+            <br>
+            <span class="body"></span>
+        </div>
+    </div>
+</script>
+
+<!-- Comments page template -->
+<script type="text/template" id="comments-page-template">
+    <div class="container-fluid" id="comments-page-container">
+        <div id="post-container"></div>
+
+        <div id="comments-page-body">
+            <div class="comments-page-header">
+                <ul class="nav nav-tabs nav-justified" id="comments-sort-tabs-container"></ul>
+            </div>
+
+            <div id="comments-container"></div>
+
+            <h5 id="comments-error-container"></h5>
+
+            <div id="comments-progress-indicator">
+                <div class="dots-loader">
+                    Loading…
+                </div>
+            </div>
+        </div>
+
+        <div id="thread-navigator-container"></div>
+    </div>
+</script>
+
+<!-- Error template -->
+<script type="text/template" id="error-template">
+    <p class="text-center"><strong>{{ error }}.</strong> That's an error.</p>
+</script>
+
+<!--Nav template -->
+<script type="text/template" id="nav-template">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a id="toggle-sidebar-button" class="navbar-brand"><span class="glyphicon glyphicon-menu-hamburger"></span> <span id="current-subreddit">Reddit Reader</span></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <input id="subreddit-input" class="form-control" placeholder="Jump to a subreddit">
+                    </li>
+                    {% if username %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{username}} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a id="logout-button">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li><a href="{{authUrl}}" class="title"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</script>
+
+<!-- Posts item template-->
+<script type="text/template" id="posts-item-template">
+    <div class="post">
+        <div class="left-col">
+            <div class="score text-center {% if likes == 1 %} upvoted-score {% elif likes == -1 %} downvoted-score {% endif %}">{{score}}</div>
+            <button class="btn btn-default btn-sm upvote-button {% if likes == 1 %} upvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-up"></span></button>
+            <button class="btn btn-default btn-sm downvote-button {% if likes == -1 %} downvoted-button {% endif %}"><span class="glyphicon glyphicon-arrow-down"></span></button>
+        </div>
+        <div class="middle-col {% if !thumbnail %} hidden {% endif %}">
+            <a class="thumbnail-link" href="{{url}}"><img class="_thumbnail {% if !thumbnail %} hidden {% endif %}" src="{{thumbnail}}"></a>
+        </div>
+        <div class="right-col">
+            <a class="title" href="{% if is_self %} #/r/{{subreddit}}/comments/{{id}} {% else %} {{url}} {% endif %}">{{ title }}</a>
+            <br>
+            <span class="author">{{author}} </span><span class="span-in">in</span><span><a class="subreddit" href="#/r/{{subreddit}}"> r/{{subreddit}}</a></span>
+            <br>
+            <span class="num-comments"><a class="comments-link" href="#/r/{{subreddit}}/comments/{{id}}">{{num_comments}} comments</a></span> • <span class="domain">{{domain}}</span> • <span class="created-at">{{created_utc}}</span>
+        </div>
+        <div style="clear:both"></div>
+        <div class="self-text"></div>
+    </div>
+</script>
+
+<!-- Posts page template -->
+<script type="text/template" id="posts-page-template">
+    <div class="container-fluid" id="posts-page-container">
+        <div class="posts-page-header">
+            <ul class="nav nav-tabs nav-justified" id="posts-sort-tabs-container"></ul>
+        </div>
+
+        <div id="posts-container"></div>
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <button id="more-posts-button" class="btn btn-primary btn-block btn-sm">Load more</button>
+            </div>
+        </div>
+
+        <h5 id="posts-error-container"></h5>
+
+        <div id="progress-indicator">
+            <div class="dots-loader">
+                Loading…
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- Sidebar template -->
+<script type="text/template" id="sidebar-template">
+    <div class="menu" id="menu-accordion"></div>
+</script>
+
+<!-- Sidebar menu template -->
+<script type="text/template" id="sidebar-menu-template">
+    <div class="header">Subreddits</div>
+    <!--Front page-->
+    <div class="item">
+        <a href="#/" class="title"><span class="glyphicon glyphicon-home"></span> Front page</a>
+    </div>
+    <!--Subscribed subreddites-->
+    <div class="item">
+        <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#subs-collapse" aria-expanded="true" aria-controls="subs-collapse"><span class="glyphicon glyphicon-star"></span> Subscriptions</a>
+        <div class="subitems-container collapse" id="subs-collapse" >
+            {% if subs.length > 0 %}
+            {% for subreddit in subs %}
+            <a class="subitem collapse" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a>
+            {% endfor %}
+            {% else %}
+            <a href="{{authUrl}}" class="subitem collapse">Login to view subscriptions</a>
+            {%endif%}
+        </div>
+    </div>
+    <!--Default subreddits-->
+    <div class="item">
+        <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#defaults-collapse" aria-expanded="true" aria-controls="defaults-collapse"><span class="glyphicon glyphicon-list-alt"></span> Default</a>
+        <div class="subitems-container collapse" id="defaults-collapse">
+            {% for subreddit in defaults %}
+            <a class="subitem collapse" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <!--Popular subreddits-->
+    <div class="item">
+        <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#popular-collapse" aria-expanded="true" aria-controls="popular-collapse"><span class="glyphicon glyphicon-thumbs-up"></span> Popular</a>
+        <div class="subitems-container collapse" id="popular-collapse">
+            {% for subreddit in popular %}
+            <a class="subitem collapse" href="#/r/{{subreddit.display_name}}">{{subreddit.display_name}}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="header">Settings</div>
+    <div class="item">
+        <a class="title" role="button" data-toggle="collapse" data-parent="#accordion" href="#theme-collapse" aria-expanded="true" aria-controls="theme-collapse"><span class="glyphicon glyphicon-adjust"></span> Theme</a>
+        <div class="subitems-container collapse" id="theme-collapse">
+            <div class="subitem collapse" id="light-theme-button">Light</div>
+            <div class="subitem collapse" id="dark-theme-button">Dark</div>
+        </div>
+    </div>
+</script>
+
+<!--------------------------------->
+
+<!-- scripts -->
+<script type="text/javascript" src="javascripts/bundle/main.min.js"></script>
+<script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
 </body>
 </html>

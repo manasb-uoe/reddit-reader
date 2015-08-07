@@ -5,10 +5,19 @@
     "url": "https://github.com/enthusiast94/reddit-reader-backbone"
   },
   "scripts": {
-    "build": "node javascripts/libs/r.js -o name=main out=javascripts/build/main.min.js mainConfigFile=javascripts/main.js include=libs/require.js",
-    "start": "http-server -p 3000"
+    "build": "browserify javascripts/main.js -o javascripts/bundle/main.min.js",
+    "start": "npm run build && http-server -p 3000"
+  },
+  "dependencies": {
+    "backbone": "latest",
+    "bootstrap": "latest",
+    "jquery": "latest",
+    "moment": "latest",
+    "swig": "latest",
+    "underscore": "latest"
   },
   "devDependencies": {
-    "http-server": "latest"
+    "http-server": "latest",
+    "browserify": "latest"
   }
 }
