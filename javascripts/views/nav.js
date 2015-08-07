@@ -38,9 +38,6 @@ var NavView = Backbone.View.extend({
         this.$subredditInput = $("#subreddit-input");
     },
     events: {
-        "click #toggle-sidebar-button": function () {
-            this.trigger("toggle.sidebar");
-        },
         "keypress #subreddit-input": "jumpToSubreddit",
         "click #logout-button": function () {
             this.trigger("logout");

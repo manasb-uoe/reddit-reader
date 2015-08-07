@@ -19,12 +19,19 @@
     <div id="nav"></div>
 </div>
 
-<div class="sidebar-wrapper">
-    <div id="sidebar"></div>
-</div>
-
-<div class="content-wrapper">
-    <div id="content"></div>
+<div class="container" id="main-container">
+    <div class="row">
+        <div class="col-lg-2 main-col">
+            <div class="sidebar-wrapper">
+                <div id="sidebar"></div>
+            </div>
+        </div>
+        <div class="col-lg-10 main-col">
+            <div class="content-wrapper">
+                <div id="content"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="content-viewer-container"></div>
@@ -80,8 +87,8 @@
 
 <!--Nav template -->
 <script type="text/template" id="nav-template">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
+    <nav id="navigation-bar" class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
@@ -89,13 +96,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a id="toggle-sidebar-button" class="navbar-brand"><span class="glyphicon glyphicon-menu-hamburger"></span> <span id="current-subreddit">Reddit Reader</span></a>
+                <a id="toggle-sidebar-button" class="navbar-brand"><span id="current-subreddit">Reddit Reader</span></a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input id="subreddit-input" class="form-control input-sm" placeholder="Jump to a subreddit">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-default">Go</button>
+                </form>
                 <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <input id="subreddit-input" class="form-control" placeholder="Jump to a subreddit">
-                    </li>
                     {% if username %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{username}} <span class="caret"></span></a>
@@ -104,7 +114,7 @@
                         </ul>
                     </li>
                     {% else %}
-                    <li><a href="{{authUrl}}" class="title"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="{{authUrl}}" class="title">Login to Reddit</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -137,7 +147,7 @@
 
 <!-- Posts page template -->
 <script type="text/template" id="posts-page-template">
-    <div class="container-fluid" id="posts-page-container">
+    <div id="posts-page-container">
         <div class="posts-page-header">
             <ul class="nav nav-tabs nav-justified" id="posts-sort-tabs-container"></ul>
         </div>
@@ -145,7 +155,7 @@
         <div id="posts-container"></div>
 
         <div class="row">
-            <div class="col-md-6 col-md-offset-3">
+            <div class="col-xs-6 col-xs-offset-3">
                 <button id="more-posts-button" class="btn btn-primary btn-block btn-sm">Load more</button>
             </div>
         </div>

@@ -2,70 +2,19 @@
 /* General */
 
 body {
-    font-size: 12px;
-    line-height: 1.5;
-    background-color: #eeeeee;
+    font-size: 11px;
+    background-color: #f6f9fa;
 }
 
-/* Navigation bar */
-
-.navbar-inverse .navbar-brand {
-    font-size: 140%;
+#main-container {
+    margin-top: 65px;
+    margin-bottom: 20px;
 }
 
-.navbar-inverse .navbar-brand .glyphicon {
-    font-size: x-small;
-    top: -2px;
-    padding-right: 10px;
-}
-
-.navbar-nav > li > a, .navbar-brand {
-    padding-top:12px !important;
-    padding-bottom:0 !important;
-    height: 45px;
-    color: white !important;
-}
-
-.navbar-nav > li > a > .glyphicon {
-    padding-right: 5px;
-}
-
-.navbar .navbar-header {
-    height: 45px;
-}
-
-.navbar button {
-    margin-top: 6px;
-    border-color: rgba(255,255,255,0.7) !important;
-}
-
-.navbar .navbar-collapse {
-    background-color: #2196f3;
-}
+/* Nav bar */
 
 .navbar {
-    min-height:45px !important;
-    max-height: 45px;
-}
-
-#subreddit-input {
-    background-color: rgba(0,0,0,0.1);
-    height: 35px;
-    width: 100%;
-    color: white;
-    border-radius: 2px;
-    font-size: 90%;
-    padding: 10px;
-    box-shadow: none;
-    margin-top: 5px;
-}
-
-#logout-button {
-    cursor: pointer;
-}
-
-#toggle-sidebar-button {
-    cursor: pointer;
+    box-shadow: 0 6px 6px -8px #999;
 }
 
 
@@ -73,14 +22,12 @@ body {
 
 .sidebar-wrapper {
     position: fixed;
-    left: 15px;
-    top: 60px;
-    width: 200px;
-    bottom: 15px;
+    width: 180px;
+    max-height: 100%;
     overflow-y: auto;
     background: #fff;
     transition: none;
-    z-index: 2000;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.1);
 }
 
 .sidebar-wrapper .header {
@@ -114,7 +61,7 @@ body {
 
 .sidebar-wrapper .menu .item .title {
     color: #444;
-    padding: 15px;
+    padding: 12px;
     text-align: left;
     cursor: pointer;
     border-left: 3px solid transparent;
@@ -131,8 +78,8 @@ body {
 .sidebar-wrapper .menu .item .subitem {
     color: #777;
     background-color: #f9f9f9;
-    font-size: 90%;
-    padding: 5px 35px;
+    font-size: 100%;
+    padding: 4px 35px;
     text-align: left;
     cursor: pointer;
     text-decoration: none;
@@ -150,10 +97,7 @@ body {
 
 .content-wrapper {
     position: relative;
-    padding: 15px;
     transition: none;
-    margin-top: 45px;
-    margin-left: 215px;
 }
 
 
@@ -162,6 +106,7 @@ body {
 #posts-page-container {
     background-color: white;
     padding: 15px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.1);
 }
 
 #progress-indicator {
@@ -201,12 +146,12 @@ body {
 
 .post .title {
     color: #000;
-    font-size: 150%;
+    font-size: 140%;
 }
 
 .post ._thumbnail {
-    height: 65px;
-    width: 65px;
+    height: 55px;
+    width: 55px;
     border: 1px solid transparent;
     border-radius: 3px;
     display: block;
@@ -244,7 +189,7 @@ body {
 }
 
 .post .btn-sm {
-    padding: 2px 4px;
+    padding: 3px 5px;
     font-size: 80%;
 }
 
@@ -283,6 +228,7 @@ body {
 #post-container {
     background-color: white;
     margin-bottom: 15px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.1);
 }
 
 #post-container .post {
@@ -293,6 +239,7 @@ body {
 #comments-page-body {
     background-color: white;
     padding: 10px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.1);
 }
 
 .comments-page-header {
@@ -311,7 +258,7 @@ body {
 
 .comment {
     border-left: 2px solid #dddddd;
-    padding: 5px 5px 5px 10px;
+    padding: 10px;
     clear: both;
     font-size: 95%;
 }
@@ -327,7 +274,7 @@ body {
 }
 
 .comment .btn-sm {
-    padding: 2px 4px;
+    padding: 3px 5px;
     font-size: 80%;
 }
 
@@ -446,22 +393,28 @@ body {
 
 /* Mobile UI */
 
-@media(max-width:768px) {
+@media(max-width:1200px) {
 
-    body {
-        font-size: 11px;
+    .main-col {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    /* disable tab stacking */
+    .nav-justified > li {
+        display: table-cell;
+        width: 1%;
+    }
+    .nav-justified > li > a  {
+        border-bottom: 1px solid #ddd !important;
+        border-radius: 4px 4px 0 0 !important;
+        margin-bottom: 0 !important;
     }
 
     .sidebar-wrapper {
-        margin-left: -215px;
-        left: 5px;
-        bottom: 5px;
-        top: 56px;
-    }
-
-    .content-wrapper {
-        margin-left: 0;
-        padding: 5px;
+        width: 100%;
+        position: relative;
+        margin-bottom: 15px;
     }
 
     #posts-page-container {
@@ -482,8 +435,12 @@ body {
     }
 
     .post ._thumbnail {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
+    }
+
+    #more-posts-button {
+        margin-bottom: 10px;
     }
 
     #comments-page-container {

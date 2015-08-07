@@ -5,29 +5,8 @@ body {
     background-color: #1B1B1D;
 }
 
-/* Navigation bar */
-
-.navbar-inverse {
-    background-color: #375a7f;
-}
-
-.navbar .navbar-collapse {
-    background-color: #375a7f;
-    border-color: #375a7f;
-}
-
-#subreddit-input {
-    background-color: rgba(0,0,0,0.2);
-}
-
 
 /* Sidebar */
-
-#sidebar-button {
-    color: #ffffff;
-    background-color: #375a7f;
-    border-color: #253c54;
-}
 
 .sidebar-wrapper {
     background: #222d32;

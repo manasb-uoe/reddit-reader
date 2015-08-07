@@ -79,8 +79,8 @@ var AppRouter = Backbone.Router.extend({
 
 
 module.exports.init = function () {
-    sidebarView.render();
     navView.render();
+    sidebarView.render();
 
     new AppRouter();
 

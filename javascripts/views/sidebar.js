@@ -26,7 +26,6 @@ var SidebarView = Backbone.View.extend({
         this.popularSubreddits.on("reset", this.refreshSidebarMenu, this);
 
         navView.on("logout", this.render, this);
-        navView.on("toggle.sidebar", this.toggleSidebar, this);
 
         var self = this;
         $(document).on("access_token_expired", function () {
@@ -68,31 +67,26 @@ var SidebarView = Backbone.View.extend({
     },
     switchTheme: function (type) {
         var $darkAppStyle = $("#dark-app-style");
+        var $navbar = $("#navigation-bar");
 
         switch(type) {
             case "light":
                 $darkAppStyle.removeAttr("href");
+                $navbar.removeClass("navbar-inverse");
+                $navbar.addClass("navbar-default");
+
                 localStorage.setItem("theme", type);
                 break;
             case "dark":
                 $darkAppStyle.attr("href", "stylesheets/index.dark.css");
+                $navbar.addClass("navbar-inverse");
+                $navbar.removeClass("navbar-default");
+
                 localStorage.setItem("theme", type);
                 break;
             default:
                 throw new Error("Theme type can only be 'light' or 'dark'");
                 break;
-        }
-    },
-    toggleSidebar: function () {
-        var $sidebarWrapper = $(".sidebar-wrapper");
-        var $contentWrapper = $(".content-wrapper");
-
-        if ($sidebarWrapper.css("marginLeft") == "-215px") {
-            $sidebarWrapper.css("marginLeft", "0");
-            $contentWrapper.css("marginLeft", "215px");
-        } else {
-            $sidebarWrapper.css("marginLeft", "-215px");
-            $contentWrapper.css("marginLeft", "0");
         }
     }
 });

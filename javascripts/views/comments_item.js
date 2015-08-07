@@ -20,7 +20,7 @@ var CommentsItemView = Backbone.View.extend({
     },
     render: function () {
         // add left padding depending on comment level
-        this.model.set("leftPadding", this.model.get("level") * 10);
+        this.model.set("leftPadding", this.model.get("level") * 7);
 
         var compiledTemplate = swig.render(commentsItemTemplate, {locals: {comment: this.model.toJSON(), postAuthor: this.postAuthor}});
         this.$el.html(compiledTemplate);
