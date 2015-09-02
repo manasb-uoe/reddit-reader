@@ -12,19 +12,19 @@ A minimalist single-page client for Reddit with an intuitive and responsive UI, 
 
 ### Screenshots
 Posts view: 
-![Posts view](/screenshots/1.png?raw=true)
+![Posts view](frontend_web/screenshots/1.png?raw=true)
 
 Comments view: 
-![Comments view](/screenshots/2.png?raw=true)
+![Comments view](frontend_web/screenshots/2.png?raw=true)
 
 Content viewer in action: 
-![Content viewer in action](/screenshots/3.png?raw=true)
+![Content viewer in action](frontend_web/screenshots/3.png?raw=true)
 
 Optimized for small screen devices: 
-![Optimized for small screen devices](/screenshots/4.png?raw=true)
+![Optimized for small screen devices](frontend_web/screenshots/4.png?raw=true)
 
 Dark theme: 
-![Dark theme](/screenshots/5.png?raw=true)
+![Dark theme](frontend_web/screenshots/5.png?raw=true)
 
 ### How do I get set up? 
 After cloning the repository, run the following command from the root directory to install all dependencies: 
