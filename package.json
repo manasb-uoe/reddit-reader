@@ -1,8 +1,8 @@
 {
-  "name": "reddit-reader-backbone",
+  "name": "reddit-reader",
   "repository": {
     "type": "git",
-    "url": "https://github.com/enthusiast94/reddit-reader-backbone"
+    "url": "https://github.com/enthusiast94/reddit-reader"
   },
   "scripts": {
     "build": "browserify javascripts/main.js -o javascripts/bundle/main.min.js",
