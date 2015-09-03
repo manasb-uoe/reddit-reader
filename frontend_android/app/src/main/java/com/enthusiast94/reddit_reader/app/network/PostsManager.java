@@ -22,12 +22,11 @@ public class PostsManager {
     private static final String UNAUTH_API_BASE = "http://www.reddit.com";
 
     public static void getPosts(String subreddit, String sort, String after, final Callback<List<Post>> callback) {
-        // set default values for arguments
-        if (sort == null) sort = "hot";
+        sort = sort.toLowerCase();
 
         // build posts url
         String postsUrl = UNAUTH_API_BASE;
-        if (subreddit == null) {
+        if (subreddit.equals(App.getAppContext().getResources().getString(R.string.front_page))) {
             postsUrl += "/" + sort + ".json";
         } else {
             postsUrl += "/r/" + subreddit + "/" + sort + ".json";
@@ -77,8 +76,8 @@ public class PostsManager {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (callback != null) callback.onFailure(responseString);
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (callback != null) callback.onFailure(String.valueOf(statusCode));
             }
         });
     }

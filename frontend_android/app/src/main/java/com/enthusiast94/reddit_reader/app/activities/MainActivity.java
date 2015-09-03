@@ -8,12 +8,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.fragments.PostsFragment;
+import com.enthusiast94.reddit_reader.app.models.Subreddit;
+import com.enthusiast94.reddit_reader.app.network.Callback;
+import com.enthusiast94.reddit_reader.app.network.SubredditsManager;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private TabLayout sortTabs;
+    private TabLayout subredditTabs;
     private PostsFragment postsFragment;
     private String subreddit;
     private String sort;
@@ -30,13 +35,16 @@ public class MainActivity extends AppCompatActivity {
          */
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        sortTabs = (TabLayout) findViewById(R.id.sort_tabs);
+        subredditTabs = (TabLayout) findViewById(R.id.subreddit_tabs);
 
         /**
-         * Restore saved values from instance state
+         * Restore saved values from instance state. If not available, set default vaules.
          */
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
+            subreddit = getResources().getString(R.string.front_page);
+            sort = getResources().getString(R.string.sort_hot);
+        } else {
             subreddit = savedInstanceState.getString(SUBREDDIT_BUNDLE_KEY);
             sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
         }
@@ -46,45 +54,53 @@ public class MainActivity extends AppCompatActivity {
          */
 
         setSupportActionBar(toolbar);
-        setAppBarTitle(subreddit);
+        updateAppBarTitles();
 
         /**
          * Setup tabs
          */
 
-        // add all sort tabs
-        sortTabs.addTab(sortTabs.newTab().setText(R.string.sort_hot));
-        sortTabs.addTab(sortTabs.newTab().setText(R.string.sort_new));
-        sortTabs.addTab(sortTabs.newTab().setText(R.string.sort_rising));
-        sortTabs.addTab(sortTabs.newTab().setText(R.string.sort_controversial));
-        sortTabs.addTab(sortTabs.newTab().setText(R.string.sort_top));
-        sortTabs.addTab(sortTabs.newTab().setText(R.string.sort_gilded));
-        sortTabs.addTab(sortTabs.newTab().setText(R.string.sort_promoted));
-
-        // select active tab
-        for (int i=0; i<sortTabs.getTabCount(); i++) {
-            TabLayout.Tab tab = sortTabs.getTabAt(i);
-            if (tab.getText().toString().equals(sort)) {
-                tab.select();
-                break;
-            }
-        }
-
-        // set selection listener
-        sortTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                sort = tab.getText().toString();
-                postsFragment.loadPosts(subreddit, sort.toLowerCase());
-            }
+        SubredditsManager.getSubreddits(new Callback<List<Subreddit>>() {
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public void onSuccess(List<Subreddit> data) {
+                // add subreddit tabs
+                for (Subreddit subreddit : data) {
+                    subredditTabs.addTab(subredditTabs.newTab().setText(subreddit.getName()));
+                }
 
+                // select active tab
+                for (int i = 0; i < subredditTabs.getTabCount(); i++) {
+                    TabLayout.Tab tab = subredditTabs.getTabAt(i);
+                    if (tab.getText().toString().equals(subreddit)) {
+                        tab.select();
+                        break;
+                    }
+                }
+
+                // set selection listener
+                subredditTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        subreddit = tab.getText().toString();
+                        postsFragment.loadPosts(subreddit, sort);
+                        updateAppBarTitles();
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public void onFailure(String message) {
 
             }
         });
@@ -103,12 +119,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setAppBarTitle(String subreddit) {
-        if (subreddit == null) {
-            setTitle(R.string.front_page);
-        } else {
-            setTitle(subreddit);
-        }
+    private void updateAppBarTitles() {
+        toolbar.setTitle(subreddit);
+        toolbar.setSubtitle(sort);
     }
 
     @Override
