@@ -2,6 +2,7 @@ package com.enthusiast94.reddit_reader.app.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private ActionBar appBar;
     private TabLayout subredditTabs;
     private PostsFragment postsFragment;
     private String subreddit;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
          */
 
         setSupportActionBar(toolbar);
+        appBar = getSupportActionBar();
         updateAppBarTitles();
 
         /**
@@ -120,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateAppBarTitles() {
-        toolbar.setTitle(subreddit);
-        toolbar.setSubtitle(sort);
+        appBar.setTitle(subreddit);
+        appBar.setSubtitle(sort);
     }
 
     @Override
