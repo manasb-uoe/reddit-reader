@@ -9,10 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
@@ -76,26 +73,7 @@ public class PostsFragment extends Fragment {
          */
 
         if (posts == null) {
-            PostsManager.getPosts(subreddit, sort, null, new Callback<List<Post>>() {
-
-                @Override
-                public void onSuccess(List<Post> data) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    postsRecyclerView.setVisibility(View.VISIBLE);
-
-                    posts = data;
-
-                    setPostsAdapter();
-                }
-
-                @Override
-                public void onFailure(String message) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    postsRecyclerView.setVisibility(View.VISIBLE);
-
-                    Toast.makeText(PostsFragment.this.getActivity(), message, Toast.LENGTH_LONG).show();
-                }
-            });
+            loadPosts(subreddit, sort);
         } else {
             progressBar.setVisibility(View.INVISIBLE);
             postsRecyclerView.setVisibility(View.VISIBLE);
@@ -104,6 +82,32 @@ public class PostsFragment extends Fragment {
         }
 
         return view;
+    }
+
+    public void loadPosts(String subreddit, String sort) {
+        progressBar.setVisibility(View.VISIBLE);
+        postsRecyclerView.setVisibility(View.INVISIBLE);
+
+        PostsManager.getPosts(subreddit, sort, null, new Callback<List<Post>>() {
+
+            @Override
+            public void onSuccess(List<Post> data) {
+                progressBar.setVisibility(View.INVISIBLE);
+                postsRecyclerView.setVisibility(View.VISIBLE);
+
+                posts = data;
+
+                setPostsAdapter();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                progressBar.setVisibility(View.INVISIBLE);
+                postsRecyclerView.setVisibility(View.VISIBLE);
+
+                Toast.makeText(PostsFragment.this.getActivity(), message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setPostsAdapter() {
@@ -115,9 +119,13 @@ public class PostsFragment extends Fragment {
     private class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
 
         private LayoutInflater inflater;
+        private int previouslySelectedPosition;
+        private int currentlySelectedPosition;
 
         public PostsAdapter() {
             this.inflater = LayoutInflater.from(PostsFragment.this.getActivity());
+            previouslySelectedPosition = -1;
+            currentlySelectedPosition = -1;
         }
 
         @Override
@@ -136,7 +144,7 @@ public class PostsFragment extends Fragment {
             return posts.size();
         }
 
-        public class PostViewHolder extends RecyclerView.ViewHolder {
+        public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             private Context context;
             private TextView scoreTextView;
@@ -153,6 +161,8 @@ public class PostsFragment extends Fragment {
                 titleTextView = (TextView) itemView.findViewById(R.id.title_textview);
                 infoTextView = (TextView) itemView.findViewById(R.id.info_textview);
                 thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
+
+                itemView.setOnClickListener(this);
             }
 
             public void bindItem(Post post) {
@@ -165,6 +175,22 @@ public class PostsFragment extends Fragment {
                 } else {
                     thumbnailImageView.setVisibility(View.GONE);
                 }
+
+                if (getAdapterPosition() == currentlySelectedPosition) {
+                    // select item here
+                } else {
+                    // deselect item here
+                }
+            }
+
+            @Override
+            public void onClick(View view) {
+                currentlySelectedPosition = getAdapterPosition();
+
+                notifyItemChanged(currentlySelectedPosition);
+                notifyItemChanged(previouslySelectedPosition);
+
+                previouslySelectedPosition = currentlySelectedPosition;
             }
         }
     }
