@@ -12,4 +12,9 @@
     <string name="sort_top">Top</string>
     <string name="sort_gilded">Gilded</string>
     <string name="sort_promoted">Promoted</string>
+    <string name="action_upvote">Upvote</string>
+    <string name="action_downvote">Downvote</string>
+    <string name="action_comments">Comments</string>
+    <string name="action_view">View</string>
+    <string name="action_more">More</string>
 </resources>

@@ -151,6 +151,7 @@ public class PostsFragment extends Fragment {
             private TextView titleTextView;
             private TextView infoTextView;
             private ImageView thumbnailImageView;
+            private View buttonsContainer;
 
             public PostViewHolder(Context context, View itemView) {
                 super(itemView);
@@ -161,6 +162,7 @@ public class PostsFragment extends Fragment {
                 titleTextView = (TextView) itemView.findViewById(R.id.title_textview);
                 infoTextView = (TextView) itemView.findViewById(R.id.info_textview);
                 thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
+                buttonsContainer = itemView.findViewById(R.id.buttons_container);
 
                 itemView.setOnClickListener(this);
             }
@@ -177,9 +179,9 @@ public class PostsFragment extends Fragment {
                 }
 
                 if (getAdapterPosition() == currentlySelectedPosition) {
-                    // select item here
+                    buttonsContainer.setVisibility(View.VISIBLE);
                 } else {
-                    // deselect item here
+                    buttonsContainer.setVisibility(View.GONE);
                 }
             }
 
