@@ -2,17 +2,48 @@ package com.enthusiast94.reddit_reader.app.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.fragments.PostsFragment;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
+    private String subreddit;
+    private String sort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /**
+         * Find views
+         */
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        /**
+         * Setup AppBar
+         */
+
+        setSupportActionBar(toolbar);
+
+        /**
+         * Add posts fragment dynamically if it doesn't already exist
+         */
+
+        PostsFragment postsFragment = (PostsFragment) getSupportFragmentManager().findFragmentByTag(PostsFragment.TAG);
+        if (postsFragment == null) {
+            postsFragment = PostsFragment.newInstance(subreddit, sort);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, postsFragment, PostsFragment.TAG)
+                    .commit();
+        }
     }
 
 
