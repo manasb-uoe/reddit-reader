@@ -1,9 +1,40 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context=".MainActivity">
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".MainActivity"
+        >
+
+    <item
+            android:id="@+id/action_sort_posts"
+            android:title="@string/action_sort_posts"
+            android:orderInCategory="100"
+            android:icon="@drawable/ic_action_content_sort_dark"
+            app:showAsAction="always"
+            >
+
+        <menu>
+            <item
+                    android:id="@+id/action_sort_hot"
+                    android:title="@string/action_sort_hot"
+                    />
+            <item
+                    android:id="@+id/action_sort_new"
+                    android:title="@string/action_sort_new"
+                    />
+            <item
+                    android:id="@+id/action_sort_rising"
+                    android:title="@string/action_sort_rising"
+                    />
+            <item
+                    android:id="@+id/action_sort_controversial"
+                    android:title="@string/action_sort_controversial"
+                    />
+            <item
+                    android:id="@+id/action_sort_top"
+                    android:title="@string/action_sort_top"
+                    />
+        </menu>
+
+    </item>
 </menu>

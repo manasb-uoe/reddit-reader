@@ -5,16 +5,16 @@
     <string name="action_settings">Settings</string>
     <string name="error_parsing">There was an error while parsing the API response.</string>
     <string name="front_page">Front Page</string>
-    <string name="sort_hot">Hot</string>
-    <string name="sort_rising">Rising</string>
-    <string name="sort_new">New</string>
-    <string name="sort_controversial">Controversial</string>
-    <string name="sort_top">Top</string>
-    <string name="sort_gilded">Gilded</string>
-    <string name="sort_promoted">Promoted</string>
+    <string name="action_sort_hot">Hot</string>
+    <string name="action_sort_rising">Rising</string>
+    <string name="action_sort_new">New</string>
+    <string name="action_sort_controversial">Controversial</string>
+    <string name="action_sort_top">Top</string>
+    <string name="action_sort_gilded">Gilded</string>
     <string name="action_upvote">Upvote</string>
     <string name="action_downvote">Downvote</string>
     <string name="action_comments">Comments</string>
     <string name="action_view">View</string>
     <string name="action_more">More</string>
+    <string name="action_sort_posts">Sort posts</string>
 </resources>

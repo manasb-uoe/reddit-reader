@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             subreddit = getResources().getString(R.string.front_page);
-            sort = getResources().getString(R.string.sort_hot);
+            sort = getResources().getString(R.string.action_sort_hot);
         } else {
             subreddit = savedInstanceState.getString(SUBREDDIT_BUNDLE_KEY);
             sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
@@ -150,7 +150,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sort_hot || id == R.id.action_sort_new || id == R.id.action_sort_rising ||
+                id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
+            sort = item.getTitle().toString();
+            updateAppBarTitles();
+            postsFragment.loadPosts(subreddit, sort);
             return true;
         }
 
