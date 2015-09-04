@@ -2,6 +2,9 @@ package com.enthusiast94.reddit_reader.app.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ActionBar appBar;
     private TabLayout subredditTabs;
-    private PostsFragment postsFragment;
+    private ViewPager viewPager;
+    private SubredditPagerAdapter subredditPagerAdapter;
     private String subreddit;
     private String sort;
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         subredditTabs = (TabLayout) findViewById(R.id.subreddit_tabs);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         /**
          * Restore saved values from instance state. If not available, set default vaules.
@@ -60,17 +65,20 @@ public class MainActivity extends AppCompatActivity {
         updateAppBarTitles();
 
         /**
-         * Setup tabs
+         * Setup tabs and viewpager
          */
 
         SubredditsManager.getSubreddits(new Callback<List<Subreddit>>() {
 
             @Override
             public void onSuccess(List<Subreddit> data) {
-                // add subreddit tabs
-                for (Subreddit subreddit : data) {
-                    subredditTabs.addTab(subredditTabs.newTab().setText(subreddit.getName()));
-                }
+                // setup view pager
+                subredditPagerAdapter = new SubredditPagerAdapter(data);
+                viewPager.setAdapter(subredditPagerAdapter);
+                viewPager.addOnPageChangeListener(subredditPagerAdapter);
+
+                // bind view pager to tabs
+                subredditTabs.setupWithViewPager(viewPager);
 
                 // select active tab
                 for (int i = 0; i < subredditTabs.getTabCount(); i++) {
@@ -80,46 +88,13 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-
-                // set selection listener
-                subredditTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                    @Override
-                    public void onTabSelected(TabLayout.Tab tab) {
-                        subreddit = tab.getText().toString();
-                        postsFragment.loadPosts(subreddit, sort);
-                        updateAppBarTitles();
-                    }
-
-                    @Override
-                    public void onTabUnselected(TabLayout.Tab tab) {
-
-                    }
-
-                    @Override
-                    public void onTabReselected(TabLayout.Tab tab) {
-
-                    }
-                });
             }
 
             @Override
             public void onFailure(String message) {
-
+                // TODO display error message
             }
         });
-
-        /**
-         * Add posts fragment dynamically if it doesn't already exist
-         */
-
-        postsFragment = (PostsFragment) getSupportFragmentManager().findFragmentByTag(PostsFragment.TAG);
-        if (postsFragment == null) {
-            postsFragment = PostsFragment.newInstance(subreddit, sort);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, postsFragment, PostsFragment.TAG)
-                    .commit();
-        }
     }
 
     private void updateAppBarTitles() {
@@ -154,10 +129,56 @@ public class MainActivity extends AppCompatActivity {
                 id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
             sort = item.getTitle().toString();
             updateAppBarTitles();
-            postsFragment.loadPosts(subreddit, sort);
+            subredditPagerAdapter.getCurrentFragment().loadPosts(subreddit, sort);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class SubredditPagerAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
+
+        private List<Subreddit> subreddits;
+
+        public SubredditPagerAdapter(List<Subreddit> subreddits) {
+            super(getSupportFragmentManager());
+
+            this.subreddits = subreddits;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return PostsFragment.newInstance(subreddits.get(position).getName(), sort);
+        }
+
+        @Override
+        public int getCount() {
+            return subreddits.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return subreddits.get(position).getName();
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            subreddit = subreddits.get(position).getName();
+            updateAppBarTitles();
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+
+        public PostsFragment getCurrentFragment() {
+            return (PostsFragment) instantiateItem(viewPager, viewPager.getCurrentItem());
+        }
     }
 }

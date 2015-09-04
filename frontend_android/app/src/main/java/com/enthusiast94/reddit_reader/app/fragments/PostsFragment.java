@@ -9,7 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
@@ -45,7 +48,7 @@ public class PostsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRetainInstance(true);
+//        setRetainInstance(true);
     }
 
     @Nullable
@@ -97,7 +100,11 @@ public class PostsFragment extends Fragment {
 
                 posts = data;
 
-                setPostsAdapter();
+                // only proceed if fragment is still attached to its parent activity
+                // this would prevent null pointer exception when adapter tries to use activity context
+                if (getActivity() != null) {
+                    setPostsAdapter();
+                }
             }
 
             @Override
@@ -105,7 +112,9 @@ public class PostsFragment extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
                 postsRecyclerView.setVisibility(View.VISIBLE);
 
-                Toast.makeText(PostsFragment.this.getActivity(), message, Toast.LENGTH_LONG).show();
+                if (getActivity() != null) {
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -113,7 +122,7 @@ public class PostsFragment extends Fragment {
     private void setPostsAdapter() {
         PostsAdapter postsAdapter = new PostsAdapter();
         postsRecyclerView.setAdapter(postsAdapter);
-        postsRecyclerView.setLayoutManager(new LinearLayoutManager(PostsFragment.this.getActivity()));
+        postsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
@@ -123,7 +132,7 @@ public class PostsFragment extends Fragment {
         private int currentlySelectedPosition;
 
         public PostsAdapter() {
-            this.inflater = LayoutInflater.from(PostsFragment.this.getActivity());
+            this.inflater = LayoutInflater.from(getActivity());
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
         }
@@ -131,7 +140,7 @@ public class PostsFragment extends Fragment {
         @Override
         public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = inflater.inflate(R.layout.row_posts_recyclerview, viewGroup, false);
-            return new PostViewHolder(PostsFragment.this.getActivity(), itemView);
+            return new PostViewHolder(getActivity(), itemView);
         }
 
         @Override
