@@ -48,16 +48,15 @@ public class ContentViewerFragment extends Fragment {
          */
 
         Bundle bundle = getArguments();
-        String contentTitle = bundle.getString(CONTENT_TITLE_BUNDLE_KEY);
-        String url = bundle.getString(URL_BUNDLE_KEY);
+        final String contentTitle = bundle.getString(CONTENT_TITLE_BUNDLE_KEY);
+        final String contentUrl = bundle.getString(URL_BUNDLE_KEY);
 
 
         /**
          * Setup toolbar
          */
 
-        toolbar.setTitle(contentTitle);
-        toolbar.setSubtitle(url);
+        toolbar.setTitle(R.string.loading);
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
@@ -86,13 +85,19 @@ public class ContentViewerFragment extends Fragment {
                 view.loadUrl(url);
                 return true;
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                toolbar.setTitle(contentTitle);
+                toolbar.setSubtitle(contentUrl);
+            }
         });
 
         /**
          * Finally, load URL
          */
 
-        webView.loadUrl(url);
+        webView.loadUrl(contentUrl);
 
         return view;
     }

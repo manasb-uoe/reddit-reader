@@ -17,4 +17,5 @@
     <string name="action_view">View</string>
     <string name="action_more">More</string>
     <string name="action_sort_posts">Sort posts</string>
+    <string name="loading">Loading…</string>
 </resources>
