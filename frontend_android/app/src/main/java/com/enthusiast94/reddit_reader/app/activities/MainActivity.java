@@ -20,14 +20,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.SubredditPreferencesUpdatedEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.fragments.ContentViewerFragment;
+import com.enthusiast94.reddit_reader.app.fragments.ManageSubredditsFragment;
 import com.enthusiast94.reddit_reader.app.fragments.PostsFragment;
 import com.enthusiast94.reddit_reader.app.models.Subreddit;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.SubredditsManager;
 import de.greenrobot.event.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -84,22 +87,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(List<Subreddit> data) {
-                // setup view pager
-                subredditPagerAdapter = new SubredditPagerAdapter(data);
-                viewPager.setAdapter(subredditPagerAdapter);
-                viewPager.addOnPageChangeListener(subredditPagerAdapter);
-
-                // bind view pager to tabs
-                subredditTabs.setupWithViewPager(viewPager);
-
-                // select active tab
-                for (int i = 0; i < subredditTabs.getTabCount(); i++) {
-                    TabLayout.Tab tab = subredditTabs.getTabAt(i);
-                    if (tab.getText().toString().equals(subreddit)) {
-                        tab.select();
-                        break;
+                // keep selected subreddits only
+                List<Subreddit> selectedSubreddits = new ArrayList<Subreddit>();
+                for (Subreddit subreddit : data) {
+                    if (subreddit.isSelected()) {
+                        selectedSubreddits.add(subreddit);
                     }
                 }
+
+                setupViewPagerAndTabs(selectedSubreddits);
             }
 
             @Override
@@ -107,6 +103,50 @@ public class MainActivity extends AppCompatActivity {
                 // TODO display error message
             }
         });
+    }
+
+    private void setupViewPagerAndTabs(final List<Subreddit> selectedSubreddits) {
+        // remove any existing onPageChange listeners in order to prevent multiple listeners from being attached
+        viewPager.clearOnPageChangeListeners();
+
+        // setup view pager
+        subredditPagerAdapter = new SubredditPagerAdapter(selectedSubreddits);
+        viewPager.setAdapter(subredditPagerAdapter);
+        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                subreddit = selectedSubreddits.get(position).getName();
+                updateAppBarTitlesWithPostInfo();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+        viewPager.addOnPageChangeListener(onPageChangeListener);
+        // bind view pager to tabs
+        subredditTabs.setupWithViewPager(viewPager);
+
+        // select active tab
+        for (int i = 0; i < subredditTabs.getTabCount(); i++) {
+            TabLayout.Tab tab = subredditTabs.getTabAt(i);
+            if (tab.getText().toString().equals(subreddit)) {
+                tab.select();
+                return;
+            }
+        }
+
+        // if no active tab found, set first tab as active
+        subredditTabs.getTabAt(0).select();
+        viewPager.setCurrentItem(0);
+        onPageChangeListener.onPageSelected(0);
     }
 
     @Override
@@ -141,6 +181,11 @@ public class MainActivity extends AppCompatActivity {
         fTransaction.add(android.R.id.content, contentViewerFragment);
         fTransaction.addToBackStack(null);
         fTransaction.commit();
+    }
+
+    public void onEventMainThread(SubredditPreferencesUpdatedEvent event) {
+        setupViewPagerAndTabs(event.getSelectedSubreddits());
+        updateAppBarTitlesWithPostInfo();
     }
 
     private void updateAppBarTitlesWithPostInfo() {
@@ -204,6 +249,11 @@ public class MainActivity extends AppCompatActivity {
                     .setNegativeButton(R.string.action_cancel, null)
                     .create();
             dialog.show();
+        } else if (id == R.id.action_manage_subreddits) {
+            FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+            fTransaction.add(android.R.id.content, new ManageSubredditsFragment());
+            fTransaction.addToBackStack(null);
+            fTransaction.commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -218,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class SubredditPagerAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
+    private class SubredditPagerAdapter extends FragmentStatePagerAdapter {
 
         private List<Subreddit> subreddits;
 
@@ -241,22 +291,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return subreddits.get(position).getName();
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            subreddit = subreddits.get(position).getName();
-            updateAppBarTitlesWithPostInfo();
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
         }
 
         public PostsFragment getCurrentFragment() {

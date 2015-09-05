@@ -29,9 +29,8 @@ public class SubredditsManager {
         urls.put("user", "/reddits/mine.json?limit=100");
 
         // check if requested subreddits are already cached or not
-        // if yes, simply return them, else send request to server
-        final Gson gson = new Gson();
-
+        // if yes, simply return them, else send request to server and then cache them
+        Gson gson = new Gson();
         String subredditsString = Helpers.readFromPrefs(App.getAppContext(), SUBREDDITS_PREFS_KEY);
         if (subredditsString != null) {
             List<Subreddit> subreddits = Arrays.asList(gson.fromJson(subredditsString, Subreddit[].class));
@@ -49,18 +48,18 @@ public class SubredditsManager {
                         List<Subreddit> subreddits = new ArrayList<Subreddit>();
 
                         // add Front Page as first tab
-                        subreddits.add(new Subreddit(null, App.getAppContext().getResources().getString(R.string.front_page)));
+                        subreddits.add(new Subreddit(null,
+                                App.getAppContext().getResources().getString(R.string.front_page), true));
 
                         for (int i=0; i<children.length(); i++) {
                             JSONObject subredditData = children.getJSONObject(i).getJSONObject("data");
 
-                            Subreddit subreddit =
-                                    new Subreddit(subredditData.getString("id"), subredditData.getString("display_name"));
+                            Subreddit subreddit = new Subreddit(subredditData.getString("id"),
+                                    subredditData.getString("display_name"), true);
 
                             subreddits.add(subreddit);
 
-                            // cache subreddits
-                            Helpers.writeToPrefs(App.getAppContext(), SUBREDDITS_PREFS_KEY, gson.toJson(subreddits));
+                            saveSubreddits(subreddits);
                         }
 
                         if (callback != null) callback.onSuccess(subreddits);
@@ -76,6 +75,10 @@ public class SubredditsManager {
                 }
             });
         }
+    }
 
+    public static void saveSubreddits(List<Subreddit> subreddits) {
+        Gson gson = new Gson();
+        Helpers.writeToPrefs(App.getAppContext(), SUBREDDITS_PREFS_KEY, gson.toJson(subreddits));
     }
 }

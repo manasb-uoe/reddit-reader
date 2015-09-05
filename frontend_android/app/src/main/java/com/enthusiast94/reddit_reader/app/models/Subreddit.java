@@ -7,10 +7,12 @@ public class Subreddit {
 
     private String id;
     private String displayName;
+    private boolean isSelected;
 
-    public Subreddit(String id, String name) {
+    public Subreddit(String id, String name, boolean isSelected) {
         this.id = id;
         this.displayName = name;
+        this.isSelected = isSelected;
     }
 
     public String getId() {
@@ -27,5 +29,13 @@ public class Subreddit {
 
     public void setName(String name) {
         this.displayName = name;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isFavourite) {
+        this.isSelected = isFavourite;
     }
 }

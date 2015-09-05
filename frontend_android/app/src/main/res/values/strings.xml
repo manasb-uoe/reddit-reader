@@ -20,7 +20,11 @@
     <string name="action_go_to_subreddit">Go to subreddit</string>
     <string name="action_go">Go</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_manage_subreddits">Manage subreddits</string>
+    <string name="action_done">Done</string>
     <string name="loading">Loading…</string>
     <string name="hint_subreddit_name">Subreddit name</string>
     <string name="error_subreddit_name_required">Error! Subreddit name is required.</string>
+    <string name="error_atleast_one_selected_subreddit">Error! You must select at least one subreddit.</string>
+    <string name="success_subreddit_preferences_updated">Success! Subreddit preferences updated successfully.</string>
 </resources>

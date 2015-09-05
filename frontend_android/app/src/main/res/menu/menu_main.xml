@@ -38,9 +38,15 @@
     </item>
 
     <item
-        android:id="@+id/action_go_to_subreddit"
-        android:title="@string/action_go_to_subreddit"
-        app:showAsAction="never"
-        />
+            android:id="@+id/action_go_to_subreddit"
+            android:title="@string/action_go_to_subreddit"
+            app:showAsAction="never"
+            />
+
+    <item
+            android:id="@+id/action_manage_subreddits"
+            android:title="@string/action_manage_subreddits"
+            app:showAsAction="never"
+            />
 
 </menu>
