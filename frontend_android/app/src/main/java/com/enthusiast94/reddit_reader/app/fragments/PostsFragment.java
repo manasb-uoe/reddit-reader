@@ -155,6 +155,7 @@ public class PostsFragment extends Fragment {
         public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             private Context context;
+            private View rootLayout;
             private TextView scoreTextView;
             private TextView titleTextView;
             private TextView infoTextView;
@@ -167,6 +168,7 @@ public class PostsFragment extends Fragment {
 
                 this.context = context;
 
+                rootLayout = itemView.findViewById(R.id.root_layout);
                 scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
                 titleTextView = (TextView) itemView.findViewById(R.id.title_textview);
                 infoTextView = (TextView) itemView.findViewById(R.id.info_textview);
@@ -192,9 +194,11 @@ public class PostsFragment extends Fragment {
                 }
 
                 if (getAdapterPosition() == currentlySelectedPosition) {
+                    rootLayout.setBackgroundResource(R.color.post_selected_background);
                     buttonsContainer.setVisibility(View.VISIBLE);
                 } else {
                     buttonsContainer.setVisibility(View.GONE);
+                    rootLayout.setBackgroundResource(0);
                 }
             }
 
