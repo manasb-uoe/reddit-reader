@@ -1,5 +1,7 @@
 package com.enthusiast94.reddit_reader.app.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -116,6 +118,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(ViewContentEvent event) {
+        if (event.getUrl().contains("youtube.com")) {
+            Intent viewIntent = new Intent();
+            viewIntent.setAction(Intent.ACTION_VIEW);
+            viewIntent.setData(Uri.parse(event.getUrl()));
+
+            if (viewIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(viewIntent);
+                return;
+            }
+        }
+
         ContentViewerFragment contentViewerFragment = ContentViewerFragment.newInstance(event.getContentTitle(), event.getUrl());
         FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
         fTransaction.add(android.R.id.content, contentViewerFragment);
