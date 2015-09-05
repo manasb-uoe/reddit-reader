@@ -17,5 +17,10 @@
     <string name="action_view">View</string>
     <string name="action_more">More</string>
     <string name="action_sort_posts">Sort posts</string>
+    <string name="action_go_to_subreddit">Go to subreddit</string>
+    <string name="action_go">Go</string>
+    <string name="action_cancel">Cancel</string>
     <string name="loading">Loading…</string>
+    <string name="hint_subreddit_name">Subreddit name</string>
+    <string name="error_subreddit_name_required">Error! Subreddit name is required.</string>
 </resources>

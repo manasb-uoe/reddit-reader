@@ -8,9 +8,8 @@
     <item
             android:id="@+id/action_sort_posts"
             android:title="@string/action_sort_posts"
-            android:orderInCategory="100"
             android:icon="@drawable/ic_action_content_sort_dark"
-            app:showAsAction="always"
+            app:showAsAction="ifRoom"
             >
 
         <menu>
@@ -37,4 +36,11 @@
         </menu>
 
     </item>
+
+    <item
+        android:id="@+id/action_go_to_subreddit"
+        android:title="@string/action_go_to_subreddit"
+        app:showAsAction="never"
+        />
+
 </menu>

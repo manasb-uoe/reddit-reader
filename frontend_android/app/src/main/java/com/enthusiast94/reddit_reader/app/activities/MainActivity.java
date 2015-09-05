@@ -1,5 +1,7 @@
 package com.enthusiast94.reddit_reader.app.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,8 +13,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.fragments.ContentViewerFragment;
@@ -129,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        ContentViewerFragment contentViewerFragment = ContentViewerFragment.newInstance(event.getContentTitle(), event.getUrl());
+        ContentViewerFragment contentViewerFragment =
+                ContentViewerFragment.newInstance(event.getContentTitle(), event.getUrl());
         FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
         fTransaction.add(android.R.id.content, contentViewerFragment);
         fTransaction.addToBackStack(null);
@@ -170,6 +177,33 @@ public class MainActivity extends AppCompatActivity {
             updateAppBarTitlesWithPostInfo();
             subredditPagerAdapter.getCurrentFragment().loadPosts(subreddit, sort);
             return true;
+        } else if (id == R.id.action_go_to_subreddit) {
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_go_tp_subreddit, null);
+            final EditText subredditEditText = (EditText) dialogView.findViewById(R.id.subreddit_edittext);
+
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.action_go_to_subreddit)
+                    .setView(dialogView)
+                    .setPositiveButton(R.string.action_go, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String subredditName = subredditEditText.getText().toString();
+                            if (TextUtils.isEmpty(subredditName)) {
+                                Toast.makeText(MainActivity.this, R.string.error_subreddit_name_required, Toast.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+                                fTransaction.add(android.R.id.content,
+                                        PostsFragment.newInstance(subredditEditText.getText().toString(), sort));
+                                fTransaction.addToBackStack(null);
+                                fTransaction.commit();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.action_cancel, null)
+                    .create();
+            dialog.show();
         }
 
         return super.onOptionsItemSelected(item);
