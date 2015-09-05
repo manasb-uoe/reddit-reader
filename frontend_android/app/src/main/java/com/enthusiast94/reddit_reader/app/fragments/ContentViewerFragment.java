@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import com.enthusiast94.reddit_reader.app.R;
 
 /**
@@ -46,6 +47,17 @@ public class ContentViewerFragment extends Fragment {
         // fit content to screen
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
+        // enable local storage
+        webView.getSettings().setDomStorageEnabled(true);
+        // force to load url in the webview itself instead of opening default browser
+        webView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
 
         /**
          * Retrieve URL from arguments and load it
