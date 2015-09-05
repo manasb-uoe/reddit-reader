@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
+import com.enthusiast94.reddit_reader.app.fragments.ContentViewerFragment;
 import com.enthusiast94.reddit_reader.app.fragments.PostsFragment;
 import com.enthusiast94.reddit_reader.app.models.Subreddit;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.SubredditsManager;
+import de.greenrobot.event.EventBus;
 
 import java.util.List;
 
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         appBar = getSupportActionBar();
-        updateAppBarTitles();
+        updateAppBarTitlesWithPostInfo();
 
         /**
          * Setup tabs and viewpager
@@ -97,7 +101,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateAppBarTitles() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEventMainThread(ViewContentEvent event) {
+//        appBar.setTitle(event.getTitle());
+//        appBar.setSubtitle(event.getUrl());
+
+        ContentViewerFragment contentViewerFragment = ContentViewerFragment.newInstance(event.getUrl());
+        FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+        fTransaction.add(android.R.id.content, contentViewerFragment);
+        fTransaction.addToBackStack(null);
+        fTransaction.commit();
+    }
+
+    private void updateAppBarTitlesWithPostInfo() {
         appBar.setTitle(subreddit);
         appBar.setSubtitle(sort);
     }
@@ -128,12 +157,21 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_sort_hot || id == R.id.action_sort_new || id == R.id.action_sort_rising ||
                 id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
             sort = item.getTitle().toString();
-            updateAppBarTitles();
+            updateAppBarTitlesWithPostInfo();
             subredditPagerAdapter.getCurrentFragment().loadPosts(subreddit, sort);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private class SubredditPagerAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
@@ -169,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             subreddit = subreddits.get(position).getName();
-            updateAppBarTitles();
+            updateAppBarTitlesWithPostInfo();
         }
 
         @Override

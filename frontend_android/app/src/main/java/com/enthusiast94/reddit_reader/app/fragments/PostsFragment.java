@@ -9,15 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.PostsManager;
 import com.squareup.picasso.Picasso;
+import de.greenrobot.event.EventBus;
 
 import java.util.List;
 
@@ -161,6 +160,7 @@ public class PostsFragment extends Fragment {
             private TextView infoTextView;
             private ImageView thumbnailImageView;
             private View buttonsContainer;
+            private Button viewButton;
 
             public PostViewHolder(Context context, View itemView) {
                 super(itemView);
@@ -172,8 +172,12 @@ public class PostsFragment extends Fragment {
                 infoTextView = (TextView) itemView.findViewById(R.id.info_textview);
                 thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
                 buttonsContainer = itemView.findViewById(R.id.buttons_container);
+                viewButton = (Button) itemView.findViewById(R.id.view_button);
 
+                // set event listeners
                 itemView.setOnClickListener(this);
+                viewButton.setOnClickListener(this);
+
             }
 
             public void bindItem(Post post) {
@@ -196,12 +200,20 @@ public class PostsFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                currentlySelectedPosition = getAdapterPosition();
+                switch (view.getId()) {
+                    case R.id.root_layout:
+                        currentlySelectedPosition = getAdapterPosition();
 
-                notifyItemChanged(currentlySelectedPosition);
-                notifyItemChanged(previouslySelectedPosition);
+                        notifyItemChanged(currentlySelectedPosition);
+                        notifyItemChanged(previouslySelectedPosition);
 
-                previouslySelectedPosition = currentlySelectedPosition;
+                        previouslySelectedPosition = currentlySelectedPosition;
+                        break;
+                    case R.id.view_button:
+                        Post currentPost = posts.get(getAdapterPosition());
+                        EventBus.getDefault().post(new ViewContentEvent(currentPost.getTitle(), currentPost.getUrl()));
+                        break;
+                }
             }
         }
     }
