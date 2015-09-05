@@ -120,32 +120,74 @@ public class ManageSubredditsFragment extends Fragment {
 
     }
 
-    private class SubredditsAdapter extends RecyclerView.Adapter<SubredditsAdapter.SubredditViewHolder> {
+    private class SubredditsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private List<Subreddit> subreddits;
+        private List<Subreddit> selectedSubreddits;
+        private List<Subreddit> unselectedSubreddits;
 
         public SubredditsAdapter(List<Subreddit> subreddits) {
-            this.subreddits = subreddits;
+            selectedSubreddits = new ArrayList<Subreddit>();
+            unselectedSubreddits = new ArrayList<Subreddit>();
+
+            for (Subreddit subreddit : subreddits) {
+                if (subreddit.isSelected()) {
+                    selectedSubreddits.add(subreddit);
+                } else {
+                    unselectedSubreddits.add(subreddit);
+                }
+            }
         }
 
         @Override
-        public SubredditViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.row_subreddits, parent, false);
-            return new SubredditViewHolder(itemView);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+            if (viewType == 0) {
+                return new HeadingViewHolder(inflater.inflate(R.layout.row_subreddits_recyclerview_heading, parent, false));
+            } else if (viewType == 1) {
+                return new SubredditViewHolder(inflater.inflate(R.layout.row_subreddits_recyclerview, parent, false));
+            } else {
+                return null;
+            }
         }
 
         @Override
-        public void onBindViewHolder(SubredditViewHolder holder, int position) {
-            holder.bindItem(subreddits.get(position));
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if (position > 0) {
+                if (position < selectedSubreddits.size() + 1) {
+                    ((SubredditViewHolder) holder).bindItem(selectedSubreddits.get(position-1));
+                } else {
+                    ((SubredditViewHolder) holder).bindItem(unselectedSubreddits.get(position-1-selectedSubreddits.size()));
+                }
+            }
         }
 
         @Override
         public int getItemCount() {
-            return subreddits.size();
+            return 1 + selectedSubreddits.size() + unselectedSubreddits.size();
         }
 
         public List<Subreddit> getSubreddits() {
+            ArrayList<Subreddit> subreddits = new ArrayList<Subreddit>(selectedSubreddits);
+            subreddits.addAll(unselectedSubreddits);
+
             return subreddits;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+
+        public class HeadingViewHolder extends RecyclerView.ViewHolder {
+
+            public HeadingViewHolder(View itemView) {
+                super(itemView);
+            }
         }
 
         public class SubredditViewHolder extends RecyclerView.ViewHolder {
@@ -163,7 +205,14 @@ public class ManageSubredditsFragment extends Fragment {
 
                     @Override
                     public void onClick(View view) {
-                        Subreddit currentSubreddit = subreddits.get(getAdapterPosition());
+                        Subreddit currentSubreddit;
+
+                        if (getAdapterPosition() < selectedSubreddits.size() + 1) {
+                            currentSubreddit = selectedSubreddits.get(getAdapterPosition()-1);
+                        } else {
+                            currentSubreddit = unselectedSubreddits.get(getAdapterPosition()-1-selectedSubreddits.size());
+                        }
+
                         currentSubreddit.setSelected(!currentSubreddit.isSelected());
                         notifyItemChanged(getAdapterPosition());
                     }
