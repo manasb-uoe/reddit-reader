@@ -116,10 +116,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(ViewContentEvent event) {
-//        appBar.setTitle(event.getTitle());
-//        appBar.setSubtitle(event.getUrl());
-
-        ContentViewerFragment contentViewerFragment = ContentViewerFragment.newInstance(event.getUrl());
+        ContentViewerFragment contentViewerFragment = ContentViewerFragment.newInstance(event.getContentTitle(), event.getUrl());
         FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
         fTransaction.add(android.R.id.content, contentViewerFragment);
         fTransaction.addToBackStack(null);

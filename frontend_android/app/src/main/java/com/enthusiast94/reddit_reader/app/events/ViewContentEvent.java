@@ -5,16 +5,16 @@ package com.enthusiast94.reddit_reader.app.events;
  */
 public class ViewContentEvent {
 
-    private String title;
+    private String contentTitle;
     private String url;
 
-    public ViewContentEvent(String title, String url) {
-        this.title = title;
+    public ViewContentEvent(String contentTitle, String url) {
+        this.contentTitle = contentTitle;
         this.url = url;
     }
 
-    public String getTitle() {
-        return title;
+    public String getContentTitle() {
+        return contentTitle;
     }
 
     public String getUrl() {

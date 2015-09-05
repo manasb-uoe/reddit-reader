@@ -3,6 +3,7 @@ package com.enthusiast94.reddit_reader.app.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import com.enthusiast94.reddit_reader.app.R;
 public class ContentViewerFragment extends Fragment {
 
     public static final String URL_BUNDLE_KEY = "url_key";
+    public static final String CONTENT_TITLE_BUNDLE_KEY = "content_title_key";
+    private Toolbar toolbar;
     private WebView webView;
 
-    public static ContentViewerFragment newInstance(String url) {
+    public static ContentViewerFragment newInstance(String contentTitle, String url) {
         Bundle bundle = new Bundle();
+        bundle.putString(CONTENT_TITLE_BUNDLE_KEY, contentTitle);
         bundle.putString(URL_BUNDLE_KEY, url);
         ContentViewerFragment contentViewerFragment = new ContentViewerFragment();
         contentViewerFragment.setArguments(bundle);
@@ -36,7 +40,32 @@ public class ContentViewerFragment extends Fragment {
          * Find views
          */
 
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         webView = (WebView) view.findViewById(R.id.webview);
+
+        /**
+         * Retrieve content info from arguments
+         */
+
+        Bundle bundle = getArguments();
+        String contentTitle = bundle.getString(CONTENT_TITLE_BUNDLE_KEY);
+        String url = bundle.getString(URL_BUNDLE_KEY);
+
+
+        /**
+         * Setup toolbar
+         */
+
+        toolbar.setTitle(contentTitle);
+        toolbar.setSubtitle(url);
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         /**
          * Configure browser settings
@@ -60,10 +89,9 @@ public class ContentViewerFragment extends Fragment {
         });
 
         /**
-         * Retrieve URL from arguments and load it
+         * Finally, load URL
          */
 
-        String url = getArguments().getString(URL_BUNDLE_KEY);
         webView.loadUrl(url);
 
         return view;
