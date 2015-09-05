@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        >
+
+    <item
+            android:id="@+id/action_sort_posts"
+            android:title="@string/action_sort_posts"
+            android:icon="@drawable/ic_action_content_sort_dark"
+            app:showAsAction="ifRoom"
+            >
+
+        <menu>
+            <item
+                    android:id="@+id/action_sort_hot"
+                    android:title="@string/action_sort_hot"
+                    />
+            <item
+                    android:id="@+id/action_sort_new"
+                    android:title="@string/action_sort_new"
+                    />
+            <item
+                    android:id="@+id/action_sort_rising"
+                    android:title="@string/action_sort_rising"
+                    />
+            <item
+                    android:id="@+id/action_sort_controversial"
+                    android:title="@string/action_sort_controversial"
+                    />
+            <item
+                    android:id="@+id/action_sort_top"
+                    android:title="@string/action_sort_top"
+                    />
+        </menu>
+
+    </item>
+</menu>

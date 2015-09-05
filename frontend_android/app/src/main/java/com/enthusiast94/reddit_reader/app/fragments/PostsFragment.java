@@ -4,12 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v7.widget.*;
+import android.view.*;
 import android.widget.*;
+import android.support.v7.widget.Toolbar;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
@@ -28,14 +26,19 @@ public class PostsFragment extends Fragment {
     public static final String TAG = Fragment.class.getSimpleName();
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
+    private static final String SHOULD_USE_TOOLBAR_BUNDLE_KEY = "should_use_toolbar_key";
+    private Toolbar toolbar;
     private RecyclerView postsRecyclerView;
     private ProgressBar progressBar;
     private List<Post> posts;
+    private String subreddit;
+    private String sort;
 
-    public static PostsFragment newInstance(String subreddit, String sort) {
+    public static PostsFragment newInstance(String subreddit, String sort, boolean shouldUseToolbar) {
         Bundle bundle = new Bundle();
         bundle.putString(SUBREDDIT_BUNDLE_KEY, subreddit);
         bundle.putString(SORT_BUNDLE_KEY, sort);
+        bundle.putBoolean(SHOULD_USE_TOOLBAR_BUNDLE_KEY, shouldUseToolbar);
 
         PostsFragment postsFragment = new PostsFragment();
         postsFragment.setArguments(bundle);
@@ -55,10 +58,14 @@ public class PostsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_posts, container, false);
 
+        // enable options menu
+        setHasOptionsMenu(true);
+
         /**
          * Find views
          */
 
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         postsRecyclerView = (RecyclerView) view.findViewById(R.id.posts_recyclerview);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_circular);
 
@@ -67,8 +74,48 @@ public class PostsFragment extends Fragment {
          */
 
         Bundle bundle = getArguments();
-        String subreddit = bundle.getString(SUBREDDIT_BUNDLE_KEY);
-        String sort = bundle.getString(SORT_BUNDLE_KEY);
+        subreddit = bundle.getString(SUBREDDIT_BUNDLE_KEY);
+        sort = bundle.getString(SORT_BUNDLE_KEY);
+        boolean shouldUseToolbar = bundle.getBoolean(SHOULD_USE_TOOLBAR_BUNDLE_KEY);
+
+        /**
+         * Setup toolbar if it is to be used
+         */
+
+        if (shouldUseToolbar) {
+            toolbar.setVisibility(View.VISIBLE);
+
+            updateToolbarTitles();
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    getActivity().onBackPressed();
+                }
+            });
+            toolbar.inflateMenu(R.menu.menu_post_fragment);
+            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    int id = item.getItemId();
+
+                    if (id == R.id.action_sort_hot || id == R.id.action_sort_new || id == R.id.action_sort_rising ||
+                            id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
+                        sort = item.getTitle().toString();
+                        updateToolbarTitles();
+                        loadPosts(subreddit, sort);
+
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
+        } else {
+            toolbar.setVisibility(View.GONE);
+        }
 
         /**
          * Load posts and setup recycler view adapter
@@ -116,6 +163,11 @@ public class PostsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void updateToolbarTitles() {
+        toolbar.setTitle(subreddit);
+        toolbar.setSubtitle(sort);
     }
 
     private void setPostsAdapter() {

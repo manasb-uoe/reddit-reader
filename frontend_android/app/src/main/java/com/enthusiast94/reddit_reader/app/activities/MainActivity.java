@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
                                 fTransaction.add(android.R.id.content,
-                                        PostsFragment.newInstance(subredditEditText.getText().toString(), sort));
+                                        PostsFragment.newInstance(subredditEditText.getText().toString(), sort, true));
                                 fTransaction.addToBackStack(null);
                                 fTransaction.commit();
                             }
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return PostsFragment.newInstance(subreddits.get(position).getName(), sort);
+            return PostsFragment.newInstance(subreddits.get(position).getName(), sort, false);
         }
 
         @Override

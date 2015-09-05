@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_material_light"
+        android:orientation="vertical"
         >
 
-    <ProgressBar
-            android:id="@id/progress_circular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/spacing_large"
-            />
+    <include layout="@layout/toolbar"/>
 
-    <android.support.v7.widget.RecyclerView
-            android:id="@+id/posts_recyclerview"
+    <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"
-            android:padding="@dimen/spacing_tiny"
-            android:clipToPadding="false"
-            />
-</FrameLayout>
+            android:background="@color/background_material_light"
+            >
+
+        <ProgressBar
+                android:id="@id/progress_circular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                />
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/posts_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
+                android:padding="@dimen/spacing_tiny"
+                android:clipToPadding="false"
+                />
+
+    </FrameLayout>
+
+
+</LinearLayout>
