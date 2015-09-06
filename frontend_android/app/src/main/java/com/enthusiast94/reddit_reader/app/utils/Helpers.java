@@ -6,6 +6,9 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by manas on 03-09-2015.
  */
@@ -29,5 +32,32 @@ public class Helpers {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
+    }
+
+    public static String humanizeTimestamp(String timestampSeconds) {
+        Date createdAt = new Date(Double.valueOf(timestampSeconds).longValue() * 1000);
+        long elapsed = System.currentTimeMillis() - createdAt.getTime();
+
+        long diffSeconds = TimeUnit.MILLISECONDS.toSeconds(elapsed);
+        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(elapsed);
+        long diffHours = TimeUnit.MILLISECONDS.toHours(elapsed);
+        long diffDays = TimeUnit.MILLISECONDS.toDays(elapsed);
+        long diffWeeks = diffDays / 7;
+
+        if (diffWeeks > 0) {
+            return diffWeeks + "w";
+        }
+        else if (diffDays > 0) {
+            return diffDays + "d";
+        }
+        else if (diffHours > 0) {
+            return diffHours + "h";
+        }
+        else if (diffMinutes > 0) {
+            return diffMinutes + "m";
+        }
+        else {
+            return diffSeconds + "s";
+        }
     }
 }

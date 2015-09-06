@@ -50,6 +50,7 @@ public class PostsManager {
                         JSONObject postData = children.getJSONObject(i).getJSONObject("data");
 
                         Post post = new Post();
+                        post.setId(postData.getString("id"));
                         post.setFullName(postData.getString("name"));
                         post.setLikes(!postData.isNull("likes") ? postData.getBoolean("likes") : null);
                         post.setDomain(postData.getString("domain"));

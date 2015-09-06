@@ -1,15 +1,16 @@
 package com.enthusiast94.reddit_reader.app.models;
 
+import com.enthusiast94.reddit_reader.app.utils.Helpers;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by manas on 03-09-2015.
  */
 public class Post {
 
+    private String id;
     private String fullName;
     private String domain;
     private String subreddit;
@@ -24,6 +25,14 @@ public class Post {
     private String permalink;
     private String selftext;
     private int likes;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getFullName() {
         return fullName;
@@ -96,30 +105,7 @@ public class Post {
     }
 
     public void setCreated(String created) {
-        Date createdAt = new Date(Double.valueOf(created).longValue() * 1000);
-        long elapsed = System.currentTimeMillis() - createdAt.getTime();
-
-        long diffSeconds = TimeUnit.MILLISECONDS.toSeconds(elapsed);
-        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(elapsed);
-        long diffHours = TimeUnit.MILLISECONDS.toHours(elapsed);
-        long diffDays = TimeUnit.MILLISECONDS.toDays(elapsed);
-        long diffWeeks = diffDays / 7;
-
-        if (diffWeeks > 0) {
-            this.created = diffWeeks + "w";
-        }
-        else if (diffDays > 0) {
-            this.created = diffDays + "d";
-        }
-        else if (diffHours > 0) {
-            this.created = diffHours + "h";
-        }
-        else if (diffMinutes > 0) {
-            this.created = diffMinutes + "m";
-        }
-        else {
-            this.created = diffSeconds + "s";
-        }
+        this.created = Helpers.humanizeTimestamp(created);
     }
 
     public String getTitle() {
