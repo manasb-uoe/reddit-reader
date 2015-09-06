@@ -145,26 +145,26 @@ public class ManageSubredditsFragment extends Fragment {
             if (viewType == 0) {
                 return new HeadingViewHolder(inflater.inflate(R.layout.row_subreddits_recyclerview_heading, parent, false));
             } else if (viewType == 1) {
-                return new SubredditViewHolder(inflater.inflate(R.layout.row_subreddits_recyclerview, parent, false));
+                return new DividerViewHolder(inflater.inflate(R.layout.row_subreddits_recyclerview_divider, parent, false));
             } else {
-                return null;
+                return new SubredditViewHolder(inflater.inflate(R.layout.row_subreddits_recyclerview, parent, false));
             }
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            if (position > 0) {
+            if (position > 0 && position != 1 + selectedSubreddits.size()) {
                 if (position < selectedSubreddits.size() + 1) {
                     ((SubredditViewHolder) holder).bindItem(selectedSubreddits.get(position-1));
                 } else {
-                    ((SubredditViewHolder) holder).bindItem(unselectedSubreddits.get(position-1-selectedSubreddits.size()));
+                    ((SubredditViewHolder) holder).bindItem(unselectedSubreddits.get(position-1-selectedSubreddits.size()-1));
                 }
             }
         }
 
         @Override
         public int getItemCount() {
-            return 1 + selectedSubreddits.size() + unselectedSubreddits.size();
+            return 1 + selectedSubreddits.size() + 1 + unselectedSubreddits.size();
         }
 
         public List<Subreddit> getSubreddits() {
@@ -178,14 +178,23 @@ public class ManageSubredditsFragment extends Fragment {
         public int getItemViewType(int position) {
             if (position == 0) {
                 return 0;
-            } else {
+            } else if (position == 1 + selectedSubreddits.size()) {
                 return 1;
+            } else {
+                return 2;
             }
         }
 
         public class HeadingViewHolder extends RecyclerView.ViewHolder {
 
             public HeadingViewHolder(View itemView) {
+                super(itemView);
+            }
+        }
+
+        public class DividerViewHolder extends RecyclerView.ViewHolder {
+
+            public DividerViewHolder(View itemView) {
                 super(itemView);
             }
         }
@@ -210,7 +219,7 @@ public class ManageSubredditsFragment extends Fragment {
                         if (getAdapterPosition() < selectedSubreddits.size() + 1) {
                             currentSubreddit = selectedSubreddits.get(getAdapterPosition()-1);
                         } else {
-                            currentSubreddit = unselectedSubreddits.get(getAdapterPosition()-1-selectedSubreddits.size());
+                            currentSubreddit = unselectedSubreddits.get(getAdapterPosition()-1-selectedSubreddits.size()-1);
                         }
 
                         currentSubreddit.setSelected(!currentSubreddit.isSelected());

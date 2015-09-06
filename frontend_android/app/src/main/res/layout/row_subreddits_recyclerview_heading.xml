@@ -8,5 +8,5 @@
         android:padding="@dimen/spacing_small"
         android:textAllCaps="true"
         android:textStyle="bold"
-        style="@style/TextAppearance.AppCompat.Subhead"
+        style="@style/TextAppearance.AppCompat.Body1"
         />

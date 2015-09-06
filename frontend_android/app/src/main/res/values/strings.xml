@@ -28,4 +28,5 @@
     <string name="error_atleast_one_selected_subreddit">Error! You must select at least one subreddit.</string>
     <string name="success_subreddit_preferences_updated">Success! Subreddit preferences updated successfully.</string>
     <string name="label_selected_subreddits">Selected Subreddits</string>
+    <string name="label_fetching_subreddits">Fetching subreddits…</string>
 </resources>
