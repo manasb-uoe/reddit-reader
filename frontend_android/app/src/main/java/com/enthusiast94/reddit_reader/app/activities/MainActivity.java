@@ -1,6 +1,7 @@
 package com.enthusiast94.reddit_reader.app.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private String sort;
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
+    private ProgressDialog fetchingSubredditsProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,15 @@ public class MainActivity extends AppCompatActivity {
         updateAppBarTitlesWithPostInfo();
 
         /**
+         * Setup progress bar which will be displayed while subreddits are being fetched
+         */
+
+        fetchingSubredditsProgressDialog = new ProgressDialog(this);
+        fetchingSubredditsProgressDialog.setMessage(getResources().getString(R.string.label_fetching_subreddits));
+        fetchingSubredditsProgressDialog.setCancelable(false);
+        fetchingSubredditsProgressDialog.show();
+
+        /**
          * Setup tabs and viewpager
          */
 
@@ -87,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(List<Subreddit> data) {
+                fetchingSubredditsProgressDialog.hide();
+
                 // keep selected subreddits only
                 List<Subreddit> selectedSubreddits = new ArrayList<Subreddit>();
                 for (Subreddit subreddit : data) {
@@ -100,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String message) {
+                fetchingSubredditsProgressDialog.hide();
+
                 // TODO display error message
             }
         });
@@ -161,6 +176,13 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        fetchingSubredditsProgressDialog.dismiss();
+
+        super.onDestroy();
     }
 
     public void onEventMainThread(ViewContentEvent event) {
