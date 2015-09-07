@@ -29,4 +29,6 @@
     <string name="success_subreddit_preferences_updated">Success! Subreddit preferences updated successfully.</string>
     <string name="label_selected_subreddits">Selected Subreddits</string>
     <string name="label_fetching_subreddits">Fetching subreddits…</string>
+    <string name="label_points">points</string>
+    <string name="solid_circle_symbol">•</string>
 </resources>

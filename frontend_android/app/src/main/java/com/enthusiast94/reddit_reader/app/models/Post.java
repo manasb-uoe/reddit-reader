@@ -1,5 +1,7 @@
 package com.enthusiast94.reddit_reader.app.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
 
 import java.util.ArrayList;
@@ -8,7 +10,7 @@ import java.util.List;
 /**
  * Created by manas on 03-09-2015.
  */
-public class Post {
+public class Post implements Parcelable {
 
     private String id;
     private String fullName;
@@ -25,6 +27,10 @@ public class Post {
     private String permalink;
     private String selftext;
     private int likes;
+
+    public Post() {
+        // empty constructor
+    }
 
     public String getId() {
         return id;
@@ -160,5 +166,64 @@ public class Post {
         } else {
             this.likes = -1;
         }
+    }
+
+    /**
+     * Parcelable stuff
+     */
+
+    public static final Creator<Post> CREATOR = new Creator<Post>() {
+
+        @Override
+        public Post createFromParcel(Parcel parcel) {
+            return new Post(parcel);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(fullName);
+        parcel.writeString(domain);
+        parcel.writeString(subreddit);
+        parcel.writeString(author);
+        parcel.writeInt(score);
+        parcel.writeInt(nsfw ? 1 : 0);
+        parcel.writeString(thumbnail);
+        parcel.writeString(created);
+        parcel.writeString(title);
+        parcel.writeString(url);
+        parcel.writeInt(numComments);
+        parcel.writeString(permalink);
+        parcel.writeString(selftext);
+        parcel.writeInt(likes);
+    }
+
+    public Post(Parcel source) {
+        id = source.readString();
+        fullName = source.readString();
+        domain = source.readString();
+        subreddit = source.readString();
+        author = source.readString();
+        score = source.readInt();
+        nsfw = source.readInt() == 1;
+        thumbnail = source.readString();
+        created = source.readString();
+        title = source.readString();
+        url = source.readString();
+        numComments = source.readInt();
+        permalink = source.readString();
+        selftext = source.readString();
+        likes = source.readInt();
     }
 }

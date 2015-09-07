@@ -9,6 +9,7 @@ import android.view.*;
 import android.widget.*;
 import android.support.v7.widget.Toolbar;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
@@ -214,6 +215,7 @@ public class PostsFragment extends Fragment {
             private ImageView thumbnailImageView;
             private View buttonsContainer;
             private Button viewButton;
+            private Button commentsButton;
 
             public PostViewHolder(Context context, View itemView) {
                 super(itemView);
@@ -227,10 +229,12 @@ public class PostsFragment extends Fragment {
                 thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
                 buttonsContainer = itemView.findViewById(R.id.buttons_container);
                 viewButton = (Button) itemView.findViewById(R.id.view_button);
+                commentsButton = (Button) itemView.findViewById(R.id.comments_button);
 
                 // set event listeners
                 itemView.setOnClickListener(this);
                 viewButton.setOnClickListener(this);
+                commentsButton.setOnClickListener(this);
 
             }
 
@@ -268,6 +272,9 @@ public class PostsFragment extends Fragment {
                     case R.id.view_button:
                         Post currentPost = posts.get(getAdapterPosition());
                         EventBus.getDefault().post(new ViewContentEvent(currentPost.getTitle(), currentPost.getUrl()));
+                        break;
+                    case R.id.comments_button:
+                        EventBus.getDefault().post(new ViewCommentsEvent(posts.get(getAdapterPosition())));
                         break;
                 }
             }

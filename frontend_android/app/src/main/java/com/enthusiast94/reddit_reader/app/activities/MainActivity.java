@@ -22,7 +22,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.SubredditPreferencesUpdatedEvent;
+import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
+import com.enthusiast94.reddit_reader.app.fragments.CommentsFragment;
 import com.enthusiast94.reddit_reader.app.fragments.ContentViewerFragment;
 import com.enthusiast94.reddit_reader.app.fragments.ManageSubredditsFragment;
 import com.enthusiast94.reddit_reader.app.fragments.PostsFragment;
@@ -208,6 +210,15 @@ public class MainActivity extends AppCompatActivity {
     public void onEventMainThread(SubredditPreferencesUpdatedEvent event) {
         setupViewPagerAndTabs(event.getSelectedSubreddits());
         updateAppBarTitlesWithPostInfo();
+    }
+
+    public void onEventMainThread(ViewCommentsEvent event) {
+        CommentsFragment commentsFragment =
+                CommentsFragment.newInstance(event.getSelectedPost());
+        FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+        fTransaction.add(android.R.id.content, commentsFragment);
+        fTransaction.addToBackStack(null);
+        fTransaction.commit();
     }
 
     private void updateAppBarTitlesWithPostInfo() {
