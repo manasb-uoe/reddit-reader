@@ -1,82 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
+        android:id="@+id/root_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="?attr/selectableItemBackground"
+        android:layout_height="match_parent"
+        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
         >
 
-    <View
-            android:id="@+id/child_comment_bar"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/primary"
-            android:layout_marginRight="@dimen/spacing_tiny"
-            />
-
     <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_tiny"
+            android:orientation="horizontal"
             >
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-            <TextView
-                    android:id="@+id/author_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.AppCompat.Caption"
-                    />
-
-            <TextView
-                    android:text="@string/solid_circle_symbol"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_tiny"
-                    android:layout_marginRight="@dimen/spacing_tiny"
-                    style="@style/TextAppearance.AppCompat.Caption"
-                    />
-
-            <TextView
-                    android:id="@+id/score_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.AppCompat.Caption"
-                    />
-
-            <TextView
-                    android:text="@string/solid_circle_symbol"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_tiny"
-                    android:layout_marginRight="@dimen/spacing_tiny"
-                    style="@style/TextAppearance.AppCompat.Caption"
-                    />
-
-            <TextView
-                    android:id="@+id/created_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.AppCompat.Caption"
-                    />
-
-        </LinearLayout>
-
-        <TextView
-                android:id="@+id/body_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Body1"
+        <View
+                android:id="@+id/child_comment_indicator"
+                android:layout_width="@dimen/child_comment_indicator_width"
+                android:layout_height="match_parent"
+                android:background="@color/divider"
+                android:layout_marginRight="@dimen/spacing_tiny"
                 />
 
+        <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing_tiny"
+                android:paddingRight="@dimen/spacing_tiny"
+                android:paddingTop="@dimen/spacing_7dp"
+                android:paddingBottom="@dimen/spacing_7dp"
+                >
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                <TextView
+                        android:id="@+id/author_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/indigo_500"
+                        android:textStyle="bold"
+                        style="@style/TextAppearance.AppCompat.Caption"
+                        />
+
+                <TextView
+                        android:text="@string/solid_circle_symbol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_tiny"
+                        android:layout_marginRight="@dimen/spacing_tiny"
+                        style="@style/TextAppearance.AppCompat.Caption"
+                        />
+
+                <TextView
+                        android:id="@+id/score_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextAppearance.AppCompat.Caption"
+                        />
+
+                <TextView
+                        android:text="@string/solid_circle_symbol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_tiny"
+                        android:layout_marginRight="@dimen/spacing_tiny"
+                        style="@style/TextAppearance.AppCompat.Caption"
+                        />
+
+                <TextView
+                        android:id="@+id/created_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextAppearance.AppCompat.Caption"
+                        />
+
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/body_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+            <LinearLayout
+                    android:id="@+id/buttons_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="5"
+                    >
+
+                <Button
+                        android:id="@+id/upvote_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_upvote"
+                        style="@style/ButtonCard"
+                        />
+
+                <Button
+                        android:id="@+id/downvote_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_downvote"
+                        style="@style/ButtonCard"
+                        />
+
+                <ImageButton
+                        android:id="@+id/more_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_action_navigation_more_vert"
+                        style="@style/ButtonCard"
+                        android:contentDescription="@string/action_more"
+                        />
+
+                <Button
+                        android:id="@+id/previous_parent_comment_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_previous"
+                        style="@style/ButtonCard"
+                        />
+
+                <Button
+                        android:id="@+id/next_parent_comment_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_next"
+                        style="@style/ButtonCard"
+                        />
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

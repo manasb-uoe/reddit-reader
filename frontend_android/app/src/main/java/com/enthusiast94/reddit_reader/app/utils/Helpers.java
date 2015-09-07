@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.TypedValue;
 import android.view.inputmethod.InputMethodManager;
 
 import java.util.Date;
@@ -59,5 +60,9 @@ public class Helpers {
         else {
             return diffSeconds + "s";
         }
+    }
+
+    public static float convertDpToPx(Context context, float dp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 }

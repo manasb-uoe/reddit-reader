@@ -13,10 +13,13 @@
     <dimen name="spacing_huge">40dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_20dp">20dp</dimen>
+    <dimen name="spacing_7dp">7dp</dimen>
     <dimen name="spacing_normal">14dp</dimen>
     <dimen name="spacing_small">10dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>
 
     <dimen name="post_thumbnail_width">80dp</dimen>
     <dimen name="post_thumbnail_height">60dp</dimen>
+    <dimen name="comment_left_spacing">7dp</dimen>
+    <dimen name="child_comment_indicator_width">3dp</dimen>
 </resources>

@@ -105,10 +105,14 @@ public class CommentsFragment extends Fragment {
 
         private List<Comment> comments;
         private LayoutInflater inflater;
+        private int previouslySelectedPosition;
+        private int currentlySelectedPosition;
 
         public CommentsAdapter(List<Comment> comments) {
             this.comments = comments;
             inflater = LayoutInflater.from(getActivity());
+            previouslySelectedPosition = -1;
+            currentlySelectedPosition = -1;
         }
 
         @Override
@@ -126,22 +130,29 @@ public class CommentsFragment extends Fragment {
             return comments.size();
         }
 
-        private class CommentViewHolder extends RecyclerView.ViewHolder {
+        private class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+            private View rootLayout;
             private TextView authorTextView;
             private TextView scoreTextView;
             private TextView createdTextView;
             private TextView bodyTextView;
-            private View childCommentBar;
+            private View childCommentIndicator;
+            private View buttonsContainer;
 
             public CommentViewHolder(View itemView) {
                 super(itemView);
 
+                rootLayout = itemView.findViewById(R.id.root_layout);
                 authorTextView = (TextView) itemView.findViewById(R.id.author_textview);
                 scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
                 createdTextView = (TextView) itemView.findViewById(R.id.created_textview);
                 bodyTextView = (TextView) itemView.findViewById(R.id.body_textview);
-                childCommentBar = itemView.findViewById(R.id.child_comment_bar);
+                childCommentIndicator = itemView.findViewById(R.id.child_comment_indicator);
+                buttonsContainer = itemView.findViewById(R.id.buttons_container);
+
+                // set event listeners
+                itemView.setOnClickListener(this);
             }
 
             public void bindItem(Comment comment) {
@@ -150,13 +161,36 @@ public class CommentsFragment extends Fragment {
                 createdTextView.setText(comment.getCreated());
                 bodyTextView.setText(comment.getBody());
                 if (comment.getLevel() == 0) {
-                    childCommentBar.setVisibility(View.GONE);
+                    childCommentIndicator.setVisibility(View.GONE);
                 } else {
-                    childCommentBar.setVisibility(View.VISIBLE);
+                    childCommentIndicator.setVisibility(View.VISIBLE);
+                }
+
+                if (getAdapterPosition() == currentlySelectedPosition) {
+                    rootLayout.setBackgroundResource(R.color.post_selected_background);
+                    buttonsContainer.setVisibility(View.VISIBLE);
+                } else {
+                    buttonsContainer.setVisibility(View.GONE);
+                    rootLayout.setBackgroundResource(0);
                 }
 
                 // set comment left padding based on level
-                itemView.setPadding(comment.getLevel() * 10, 0, 0, 0);
+                itemView.setPadding((int) (comment.getLevel() *
+                        getResources().getDimension(R.dimen.comment_left_spacing)), 0, 0, 0);
+            }
+
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.root_layout:
+                        currentlySelectedPosition = getAdapterPosition();
+
+                        notifyItemChanged(currentlySelectedPosition);
+                        notifyItemChanged(previouslySelectedPosition);
+
+                        previouslySelectedPosition = currentlySelectedPosition;
+                        break;
+                }
             }
         }
     }

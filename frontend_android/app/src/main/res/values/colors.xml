@@ -9,4 +9,5 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#cfcfcf</color>
     <color name="post_selected_background">#E1E1E1</color>
+    <color name="indigo_500">#3F51B5</color>
 </resources>

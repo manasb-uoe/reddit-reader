@@ -22,6 +22,8 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_manage_subreddits">Manage subreddits</string>
     <string name="action_done">Done</string>
+    <string name="action_next">Next</string>
+    <string name="action_previous">Previous</string>
     <string name="loading">Loading…</string>
     <string name="hint_subreddit_name">Subreddit name</string>
     <string name="error_subreddit_name_required">Error! Subreddit name is required.</string>
