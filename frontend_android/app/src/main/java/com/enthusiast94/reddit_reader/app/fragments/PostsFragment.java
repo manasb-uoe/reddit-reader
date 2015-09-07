@@ -211,7 +211,9 @@ public class PostsFragment extends Fragment {
             private View rootLayout;
             private TextView scoreTextView;
             private TextView titleTextView;
-            private TextView infoTextView;
+            private TextView subredditTextView;
+            private TextView numCommentsTextView;
+            private TextView createdTextView;
             private ImageView thumbnailImageView;
             private View buttonsContainer;
             private Button viewButton;
@@ -225,7 +227,9 @@ public class PostsFragment extends Fragment {
                 rootLayout = itemView.findViewById(R.id.root_layout);
                 scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
                 titleTextView = (TextView) itemView.findViewById(R.id.title_textview);
-                infoTextView = (TextView) itemView.findViewById(R.id.info_textview);
+                subredditTextView = (TextView) itemView.findViewById(R.id.subreddit_textview);
+                numCommentsTextView = (TextView) itemView.findViewById(R.id.num_comments_textview);
+                createdTextView = (TextView) itemView.findViewById(R.id.created_textview);
                 thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
                 buttonsContainer = itemView.findViewById(R.id.buttons_container);
                 viewButton = (Button) itemView.findViewById(R.id.view_button);
@@ -241,7 +245,10 @@ public class PostsFragment extends Fragment {
             public void bindItem(Post post) {
                 scoreTextView.setText(String.valueOf(post.getScore()));
                 titleTextView.setText(post.getTitle());
-                infoTextView.setText(post.getCreated() + " \u25CF " + post.getNumComments() + " comments");
+                subredditTextView.setText(post.getSubreddit());
+                numCommentsTextView.setText(post.getNumComments() + " " + getResources().getString(R.string.label_comments));
+                createdTextView.setText(post.getCreated());
+
                 if (post.getThumbnail() != null) {
                     thumbnailImageView.setVisibility(View.VISIBLE);
                     Picasso.with(context).load(post.getThumbnail()).into(thumbnailImageView);

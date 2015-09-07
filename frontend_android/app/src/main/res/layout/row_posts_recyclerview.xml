@@ -9,126 +9,172 @@
         android:clickable="true"
         >
 
-        <LinearLayout
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:paddingLeft="@dimen/spacing_small"
+                android:paddingRight="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_tiny"
+                android:paddingBottom="@dimen/spacing_tiny"
                 >
 
-                <RelativeLayout
-                        android:layout_width="match_parent"
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_toLeftOf="@+id/thumbnail_imageview"
+                    android:layout_marginRight="@dimen/spacing_tiny"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    >
+
+                <TextView
+                        android:text="2890"
+                        android:id="@+id/score_textview"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/spacing_small"
-                        android:paddingRight="@dimen/spacing_small"
-                        android:paddingTop="@dimen/spacing_tiny"
-                        android:paddingBottom="@dimen/spacing_tiny"
-                        >
+                        style="@style/TextAppearance.AppCompat.Title"
+                        android:fontFamily="sans-serif-condensed"
+                        />
 
-                        <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:layout_toLeftOf="@+id/thumbnail_imageview"
-                                android:layout_marginRight="@dimen/spacing_tiny"
-                                android:layout_alignParentLeft="true" android:layout_alignParentStart="true">
-
-                                <TextView
-                                        android:text="2890"
-                                        android:id="@+id/score_textview"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        style="@style/TextAppearance.AppCompat.Title"
-                                        android:fontFamily="sans-serif-condensed"
-                                        />
-
-                                <TextView
-                                        android:text="This is a sample title. It can usually be longer than this."
-                                        android:id="@+id/title_textview"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        style="@style/TextAppearance.AppCompat.Body1"
-                                        />
-
-                                <TextView
-                                        android:text="1 h • r/subreddit"
-                                        android:id="@+id/info_textview"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        style="@style/TextAppearance.AppCompat.Small"
-                                        android:textSize="@dimen/font_small"
-                                        />
-
-                        </LinearLayout>
-
-                        <ImageView
-                                android:id="@+id/thumbnail_imageview"
-                                android:layout_width="@dimen/post_thumbnail_width"
-                                android:layout_height="@dimen/post_thumbnail_height"
-                                android:scaleType="centerCrop"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentRight="true"
-                                android:layout_alignParentEnd="true"
-                                />
-
-                </RelativeLayout>
+                <TextView
+                        android:text="This is a sample title. It can usually be longer than this."
+                        android:id="@+id/title_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextAppearance.AppCompat.Body1"
+                        />
 
                 <LinearLayout
-                        android:id="@+id/buttons_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:weightSum="5"
-                        android:paddingBottom="@dimen/spacing_tiny"
                         >
 
-                        <Button
-                                android:id="@+id/upvote_button"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/action_upvote"
-                                style="@style/ButtonCard"
-                                />
+                    <TextView
+                            android:id="@+id/subreddit_textview"
+                            android:text="r/subreddit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="@dimen/font_small"
+                            />
 
-                        <Button
-                                android:id="@+id/downvote_button"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/action_downvote"
-                                style="@style/ButtonCard"
-                                />
+                    <TextView
+                            android:text="@string/solid_circle_symbol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_tiny"
+                            android:layout_marginRight="@dimen/spacing_tiny"
+                            style="@style/TextAppearance.AppCompat.Caption"
+                            />
 
-                        <ImageButton
-                                android:id="@+id/more_button"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:src="@drawable/ic_action_navigation_more_vert"
-                                style="@style/ButtonCard"
-                                android:contentDescription="@string/action_more"
-                                />
+                    <TextView
+                            android:id="@+id/num_comments_textview"
+                            android:text="1140 comments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="@dimen/font_small"
+                            />
 
-                        <Button
-                                android:id="@+id/comments_button"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/action_comments"
-                                style="@style/ButtonCard"
-                                />
+                    <TextView
+                            android:text="@string/solid_circle_symbol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_tiny"
+                            android:layout_marginRight="@dimen/spacing_tiny"
+                            style="@style/TextAppearance.AppCompat.Caption"
+                            />
 
-                        <Button
-                                android:id="@+id/view_button"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/action_view"
-                                style="@style/ButtonCard"
-                                />
+                    <TextView
+                            android:id="@+id/created_textview"
+                            android:text="5h"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="@dimen/font_small"
+                            />
 
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <ImageView
+                    android:id="@+id/thumbnail_imageview"
+                    android:layout_width="@dimen/post_thumbnail_width"
+                    android:layout_height="@dimen/post_thumbnail_height"
+                    android:scaleType="centerCrop"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    />
+
+        </RelativeLayout>
+
+        <LinearLayout
+                android:id="@+id/buttons_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="5"
+                android:paddingBottom="@dimen/spacing_tiny"
+                >
+
+            <Button
+                    android:id="@+id/upvote_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_upvote"
+                    style="@style/ButtonCard"
+                    />
+
+            <Button
+                    android:id="@+id/downvote_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_downvote"
+                    style="@style/ButtonCard"
+                    />
+
+            <ImageButton
+                    android:id="@+id/more_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_action_navigation_more_vert"
+                    style="@style/ButtonCard"
+                    android:contentDescription="@string/action_more"
+                    />
+
+            <Button
+                    android:id="@+id/comments_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_comments"
+                    style="@style/ButtonCard"
+                    />
+
+            <Button
+                    android:id="@+id/view_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_view"
+                    style="@style/ButtonCard"
+                    />
+
         </LinearLayout>
+
+    </LinearLayout>
 
 </FrameLayout>
