@@ -11,6 +11,7 @@
     <style name="ButtonCard">
         <item name="android:textSize">@dimen/font_small</item>
         <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:minHeight">36dp</item>
     </style>
 
 </resources>

@@ -27,11 +27,37 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/spacing_tiny"
-                android:paddingRight="@dimen/spacing_tiny"
-                android:paddingTop="@dimen/spacing_7dp"
-                android:paddingBottom="@dimen/spacing_7dp"
+                android:padding="@dimen/spacing_7dp"
                 >
+
+            <LinearLayout
+                    android:id="@+id/buttons_container_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="5"
+                    android:gravity="right"
+                    >
+
+                <Button
+                        android:id="@+id/previous_parent_comment_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_previous"
+                        style="@style/ButtonCard"
+                        />
+
+                <Button
+                        android:id="@+id/next_parent_comment_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_next"
+                        style="@style/ButtonCard"
+                        />
+
+            </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -45,7 +71,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/light_blue_800"
                         android:textStyle="bold"
-                        android:text="enthusiast_94"
                         style="@style/TextAppearance.AppCompat.Caption"
                         />
 
@@ -91,7 +116,7 @@
                     />
 
             <LinearLayout
-                    android:id="@+id/buttons_container"
+                    android:id="@+id/buttons_container_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -127,20 +152,20 @@
                         />
 
                 <Button
-                        android:id="@+id/previous_parent_comment_button"
+                        android:id="@+id/share_button"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/action_previous"
+                        android:text="@string/action_share"
                         style="@style/ButtonCard"
                         />
 
                 <Button
-                        android:id="@+id/next_parent_comment_button"
+                        android:id="@+id/hide_button"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/action_next"
+                        android:text="@string/action_hide"
                         style="@style/ButtonCard"
                         />
 

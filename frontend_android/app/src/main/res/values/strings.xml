@@ -24,6 +24,8 @@
     <string name="action_done">Done</string>
     <string name="action_next">Next</string>
     <string name="action_previous">Previous</string>
+    <string name="action_share">Share</string>
+    <string name="action_hide">Hide</string>
     <string name="loading">Loading…</string>
     <string name="hint_subreddit_name">Subreddit name</string>
     <string name="error_subreddit_name_required">Error! Subreddit name is required.</string>

@@ -39,7 +39,6 @@
                 android:layout_height="match_parent"
                 android:visibility="invisible"
                 android:scrollbars="vertical"
-                android:padding="@dimen/spacing_tiny"
                 android:clipToPadding="false"
                 />
 

@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class CommentsFragment extends Fragment {
     private Toolbar toolbar;
     private ProgressBar progressBar;
     private RecyclerView commentsRecyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private static final String SELECTED_POST_BUNDLE_KEY = "selected_subreddit_key";
 
     public static CommentsFragment newInstance(Post selectedPost) {
@@ -88,7 +90,10 @@ public class CommentsFragment extends Fragment {
 
                 if (getActivity() != null) {
                     commentsRecyclerView.setAdapter(new CommentsAdapter(data));
-                    commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    linearLayoutManager = new LinearLayoutManager(getActivity());
+                    commentsRecyclerView.setLayoutManager(linearLayoutManager);
+                    // disable change animation
+                    commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
                 }
             }
 
@@ -154,7 +159,10 @@ public class CommentsFragment extends Fragment {
             private TextView createdTextView;
             private TextView bodyTextView;
             private View childCommentIndicator;
-            private View buttonsContainer;
+            private View buttonsContainerTop;
+            private Button nextButton;
+            private Button previousButton;
+            private View buttonsContainerBottom;
 
             public CommentViewHolder(View itemView) {
                 super(itemView);
@@ -165,10 +173,15 @@ public class CommentsFragment extends Fragment {
                 createdTextView = (TextView) itemView.findViewById(R.id.created_textview);
                 bodyTextView = (TextView) itemView.findViewById(R.id.body_textview);
                 childCommentIndicator = itemView.findViewById(R.id.child_comment_indicator);
-                buttonsContainer = itemView.findViewById(R.id.buttons_container);
+                buttonsContainerTop = itemView.findViewById(R.id.buttons_container_top);
+                nextButton = (Button) buttonsContainerTop.findViewById(R.id.next_parent_comment_button);
+                previousButton = (Button) buttonsContainerTop.findViewById(R.id.previous_parent_comment_button);
+                buttonsContainerBottom = itemView.findViewById(R.id.buttons_container_bottom);
 
                 // set event listeners
                 itemView.setOnClickListener(this);
+                nextButton.setOnClickListener(this);
+                previousButton.setOnClickListener(this);
             }
 
             public void bindItem(Comment comment) {
@@ -184,10 +197,12 @@ public class CommentsFragment extends Fragment {
 
                 if (getAdapterPosition() == currentlySelectedPosition) {
                     rootLayout.setBackgroundResource(R.color.post_selected_background);
-                    buttonsContainer.setVisibility(View.VISIBLE);
+                    buttonsContainerTop.setVisibility(View.VISIBLE);
+                    buttonsContainerBottom.setVisibility(View.VISIBLE);
                 } else {
-                    buttonsContainer.setVisibility(View.GONE);
                     rootLayout.setBackgroundResource(0);
+                    buttonsContainerTop.setVisibility(View.GONE);
+                    buttonsContainerBottom.setVisibility(View.GONE);
                 }
 
                 // set child comment left spacing based on level
@@ -198,17 +213,38 @@ public class CommentsFragment extends Fragment {
                 childCommentIndicator.setBackgroundColor(childCommentIndicatorColors[comment.getLevel() % 5]);
             }
 
+            private void selectItem(int pos) {
+                currentlySelectedPosition = pos;
+
+                notifyItemChanged(currentlySelectedPosition);
+                notifyItemChanged(previouslySelectedPosition);
+
+                previouslySelectedPosition = currentlySelectedPosition;
+            }
+
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.root_layout:
-                        currentlySelectedPosition = getAdapterPosition();
-
-                        notifyItemChanged(currentlySelectedPosition);
-                        notifyItemChanged(previouslySelectedPosition);
-
-                        previouslySelectedPosition = currentlySelectedPosition;
+                        selectItem(getAdapterPosition());
                         break;
+                    case R.id.next_parent_comment_button:
+                        for (int i=getAdapterPosition()+1; i<comments.size(); i++) {
+                            if (comments.get(i).getLevel() == 0) {
+                                selectItem(i);
+                                linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
+                                break;
+                            }
+                        }
+                        break;
+                    case R.id.previous_parent_comment_button:
+                        for (int i=getAdapterPosition()-1; i >=0; i--) {
+                            if (comments.get(i).getLevel() == 0) {
+                                selectItem(i);
+                                linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
+                                break;
+                            }
+                        }
                 }
             }
         }
