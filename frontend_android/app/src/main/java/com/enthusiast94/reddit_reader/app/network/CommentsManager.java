@@ -1,5 +1,6 @@
 package com.enthusiast94.reddit_reader.app.network;
 
+import android.text.TextUtils;
 import com.enthusiast94.reddit_reader.app.App;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Comment;
@@ -45,7 +46,7 @@ public class CommentsManager {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 if (callback != null) callback.onFailure(String.valueOf(statusCode));
             }
         });
@@ -66,10 +67,9 @@ public class CommentsManager {
 
             comments.add(comment);
 
-            if (!commentData.isNull("replies")) {
+            if (!TextUtils.isEmpty(commentData.getString("replies"))) {
                 level++;
-                JSONArray children =
-                        commentData.getJSONObject("replies").getJSONObject("data").getJSONArray("children");
+                JSONArray children = commentData.getJSONObject("replies").getJSONObject("data").getJSONArray("children");
                 for (int i=0; i<children.length(); i++) {
                     parseComments(comments, children.getJSONObject(i), level);
                 }
