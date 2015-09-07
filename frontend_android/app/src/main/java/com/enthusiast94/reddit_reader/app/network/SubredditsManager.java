@@ -5,7 +5,6 @@ import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Subreddit;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.google.gson.Gson;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -17,10 +16,9 @@ import java.util.*;
 /**
  * Created by manas on 03-09-2015.
  */
-public class SubredditsManager {
+public class SubredditsManager extends RedditManager {
 
     private static final String TAG = PostsManager.class.getSimpleName();
-    private static final String UNAUTH_API_BASE = "http://www.reddit.com";
     private static final String SUBREDDITS_PREFS_KEY = "subreddits_prefs_key";
 
     public static void getSubreddits(final Callback<List<Subreddit>> callback) {
@@ -37,8 +35,7 @@ public class SubredditsManager {
             if (callback != null) callback.onSuccess(subreddits);
         } else {
 
-            AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-            asyncHttpClient.get(UNAUTH_API_BASE + urls.get("defaults"), new JsonHttpResponseHandler() {
+            getAsyncHttpClient().get(UNAUTH_API_BASE + urls.get("defaults"), new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

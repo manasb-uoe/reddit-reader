@@ -3,7 +3,6 @@ package com.enthusiast94.reddit_reader.app.network;
 import com.enthusiast94.reddit_reader.app.App;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Post;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -16,10 +15,9 @@ import java.util.List;
 /**
  * Created by manas on 03-09-2015.
  */
-public class PostsManager {
+public class PostsManager extends RedditManager {
 
     private static final String TAG = PostsManager.class.getSimpleName();
-    private static final String UNAUTH_API_BASE = "http://www.reddit.com";
 
     public static void getPosts(String subreddit, String sort, String after, final Callback<List<Post>> callback) {
         sort = sort.toLowerCase();
@@ -36,8 +34,7 @@ public class PostsManager {
         }
 
         // send request to server
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-        asyncHttpClient.get(postsUrl, new JsonHttpResponseHandler() {
+        getAsyncHttpClient().get(postsUrl, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

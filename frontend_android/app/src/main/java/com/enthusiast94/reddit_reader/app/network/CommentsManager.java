@@ -17,17 +17,14 @@ import java.util.List;
 /**
  * Created by manas on 07-09-2015.
  */
-public class CommentsManager {
-
-    private static final String UNAUTH_API_BASE = "http://www.reddit.com";
+public class CommentsManager extends RedditManager {
 
     public static void getComments(String subreddit, String postId, String sort, final Callback<List<Comment>> callback) {
         sort = sort.toLowerCase();
 
         String commentsUrl = UNAUTH_API_BASE + "/r/" + subreddit + "/comments/" + postId + "/.json?sort=" + sort;
 
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(commentsUrl, new JsonHttpResponseHandler() {
+        getAsyncHttpClient().get(commentsUrl, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
