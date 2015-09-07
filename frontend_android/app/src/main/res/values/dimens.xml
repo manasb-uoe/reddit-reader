@@ -20,6 +20,6 @@
 
     <dimen name="post_thumbnail_width">80dp</dimen>
     <dimen name="post_thumbnail_height">60dp</dimen>
-    <dimen name="comment_left_spacing">7dp</dimen>
+    <dimen name="comment_left_spacing">4dp</dimen>
     <dimen name="child_comment_indicator_width">3dp</dimen>
 </resources>

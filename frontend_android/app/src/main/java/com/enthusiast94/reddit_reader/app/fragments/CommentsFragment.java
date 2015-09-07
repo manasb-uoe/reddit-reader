@@ -1,5 +1,6 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -85,8 +86,10 @@ public class CommentsFragment extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
                 commentsRecyclerView.setVisibility(View.VISIBLE);
 
-                commentsRecyclerView.setAdapter(new CommentsAdapter(data));
-                commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                if (getActivity() != null) {
+                    commentsRecyclerView.setAdapter(new CommentsAdapter(data));
+                    commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                }
             }
 
             @Override
@@ -94,7 +97,9 @@ public class CommentsFragment extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
                 commentsRecyclerView.setVisibility(View.INVISIBLE);
 
-                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                if (getActivity() != null) {
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -107,12 +112,23 @@ public class CommentsFragment extends Fragment {
         private LayoutInflater inflater;
         private int previouslySelectedPosition;
         private int currentlySelectedPosition;
+        private int[] childCommentIndicatorColors;
 
         public CommentsAdapter(List<Comment> comments) {
             this.comments = comments;
             inflater = LayoutInflater.from(getActivity());
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
+
+            // retrieve child comment indicator colors
+            Resources res = getResources();
+            childCommentIndicatorColors = new int[]{
+                    res.getColor(R.color.teal_500),
+                    res.getColor(R.color.blue_500),
+                    res.getColor(R.color.purple_500),
+                    res.getColor(R.color.light_green_500),
+                    res.getColor(R.color.deep_orange_500)
+            };
         }
 
         @Override
@@ -174,9 +190,12 @@ public class CommentsFragment extends Fragment {
                     rootLayout.setBackgroundResource(0);
                 }
 
-                // set comment left padding based on level
+                // set child comment left spacing based on level
                 itemView.setPadding((int) (comment.getLevel() *
                         getResources().getDimension(R.dimen.comment_left_spacing)), 0, 0, 0);
+
+                // set child comment indicator color based on level
+                childCommentIndicator.setBackgroundColor(childCommentIndicatorColors[comment.getLevel() % 5]);
             }
 
             @Override
