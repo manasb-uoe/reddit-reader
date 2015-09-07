@@ -175,6 +175,8 @@ public class PostsFragment extends Fragment {
         PostsAdapter postsAdapter = new PostsAdapter();
         postsRecyclerView.setAdapter(postsAdapter);
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // disable change animation
+        postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
     }
 
     private class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
