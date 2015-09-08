@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                     .show(contentViewerFragment)
                     .commit();
             contentViewerFragment.loadContent(event.getContentTitle(), event.getUrl());
-            contentViewerFragment.getView().bringToFront(); 
+            contentViewerFragment.getView().bringToFront();
         }
     }
 

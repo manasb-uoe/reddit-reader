@@ -1,20 +1,23 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.*;
-import android.view.*;
-import android.widget.*;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
+import com.bumptech.glide.Glide;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.PostsManager;
-import com.squareup.picasso.Picasso;
 import de.greenrobot.event.EventBus;
 
 import java.util.List;
@@ -194,7 +197,7 @@ public class PostsFragment extends Fragment {
         @Override
         public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = inflater.inflate(R.layout.row_posts_recyclerview, viewGroup, false);
-            return new PostViewHolder(getActivity(), itemView);
+            return new PostViewHolder(itemView);
         }
 
         @Override
@@ -209,7 +212,6 @@ public class PostsFragment extends Fragment {
 
         public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-            private Context context;
             private View rootLayout;
             private TextView scoreTextView;
             private TextView titleTextView;
@@ -221,10 +223,8 @@ public class PostsFragment extends Fragment {
             private Button viewButton;
             private Button commentsButton;
 
-            public PostViewHolder(Context context, View itemView) {
+            public PostViewHolder(View itemView) {
                 super(itemView);
-
-                this.context = context;
 
                 rootLayout = itemView.findViewById(R.id.root_layout);
                 scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
@@ -253,7 +253,7 @@ public class PostsFragment extends Fragment {
 
                 if (post.getThumbnail() != null) {
                     thumbnailImageView.setVisibility(View.VISIBLE);
-                    Picasso.with(context).load(post.getThumbnail()).into(thumbnailImageView);
+                    Glide.with(getActivity()).load(post.getThumbnail()).crossFade().into(thumbnailImageView);
                 } else {
                     thumbnailImageView.setVisibility(View.GONE);
                 }
