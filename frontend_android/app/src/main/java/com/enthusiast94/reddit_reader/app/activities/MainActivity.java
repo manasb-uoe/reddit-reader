@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                     .show(contentViewerFragment)
                     .commit();
             contentViewerFragment.loadContent(event.getContentTitle(), event.getUrl());
-            contentViewerFragment.getView().bringToFront();
+            contentViewerFragment.getView().bringToFront(); 
         }
     }
 
@@ -313,10 +313,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // if back button is pressed while content viewer fragment is visible, simply hide it
+        // if back button is pressed while content viewer fragment is visible, delegate call to its onBackPressed method
         // else, pop back stack (if possible)
         if (contentViewerFragment.isVisible()) {
-            EventBus.getDefault().post(new HideContentViewerEvent());
+            contentViewerFragment.onBackPressed();
         } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {

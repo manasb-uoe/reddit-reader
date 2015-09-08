@@ -7,16 +7,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.HideContentViewerEvent;
+import com.enthusiast94.reddit_reader.app.utils.OnBackPressedListener;
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by manas on 05-09-2015.
  */
-public class ContentViewerFragment extends Fragment {
+public class ContentViewerFragment extends Fragment implements OnBackPressedListener {
 
     public static final String TAG = ContentViewerFragment.class.getSimpleName();
     public static final String URL_BUNDLE_KEY = "url_key";
@@ -57,9 +59,7 @@ public class ContentViewerFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                webView.loadUrl("about:blank");
-
-                EventBus.getDefault().post(new HideContentViewerEvent());
+                onBackPressed();
             }
         });
 
@@ -67,13 +67,18 @@ public class ContentViewerFragment extends Fragment {
          * Configure browser settings
          */
 
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
+        WebSettings settings = webView.getSettings();
+        settings.setLoadsImagesAutomatically(true);
+        settings.setJavaScriptEnabled(true);
         // fit content to screen
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        // enable pinch to zoom
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setSupportZoom(true);
         // enable local storage
-        webView.getSettings().setDomStorageEnabled(true);
+        settings.setDomStorageEnabled(true);
         // force to load url in the webview itself instead of opening default browser
         webView.setWebViewClient(new WebViewClient() {
 
@@ -113,5 +118,12 @@ public class ContentViewerFragment extends Fragment {
         toolbar.setSubtitle(contentUrl);
 
         webView.loadUrl(contentUrl);
+    }
+
+    @Override
+    public void onBackPressed() {
+        webView.loadUrl("about:blank");
+
+        EventBus.getDefault().post(new HideContentViewerEvent());
     }
 }
