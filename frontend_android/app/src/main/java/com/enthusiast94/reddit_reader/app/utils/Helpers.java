@@ -65,4 +65,12 @@ public class Helpers {
     public static float convertDpToPx(Context context, float dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
+
+    public static CharSequence trimTrailingWhitespace(CharSequence text) {
+        while (text.charAt(text.length() - 1) == '\n') {
+            text = text.subSequence(0, text.length() - 1);
+        }
+
+        return text;
+    }
 }

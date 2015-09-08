@@ -111,6 +111,7 @@
                     android:id="@+id/body_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
                     style="@style/TextAppearance.AppCompat.Body1"
                     />
 

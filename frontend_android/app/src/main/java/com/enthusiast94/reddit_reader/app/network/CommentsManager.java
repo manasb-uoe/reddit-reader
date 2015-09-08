@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import com.enthusiast94.reddit_reader.app.App;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Comment;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -55,7 +54,7 @@ public class CommentsManager extends RedditManager {
 
             Comment comment = new Comment();
             comment.setFullName(commentData.getString("name"));
-            comment.setBody(commentData.getString("body"));
+            comment.setBody(commentData.getString("body_html"));
             comment.setLikes(!commentData.isNull("likes") ? commentData.getBoolean("likes") : null);
             comment.setAuthor(commentData.getString("author"));
             comment.setScore(commentData.getInt("score"));

@@ -88,8 +88,12 @@ public class ContentViewerFragment extends Fragment {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                toolbar.setTitle(contentTitle);
-                toolbar.setSubtitle(contentUrl);
+                if (contentTitle == null) {
+                    toolbar.setTitle(contentUrl);
+                } else {
+                    toolbar.setTitle(contentTitle);
+                    toolbar.setSubtitle(contentUrl);
+                }
             }
         });
 

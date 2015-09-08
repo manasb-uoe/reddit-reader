@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Comment;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.CommentsManager;
+import com.enthusiast94.reddit_reader.app.utils.Helpers;
+import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
+import de.greenrobot.event.EventBus;
 
 import java.util.List;
 
@@ -182,13 +187,23 @@ public class CommentsFragment extends Fragment {
                 itemView.setOnClickListener(this);
                 nextButton.setOnClickListener(this);
                 previousButton.setOnClickListener(this);
+                bodyTextView.setOnClickListener(this);
             }
 
             public void bindItem(Comment comment) {
                 authorTextView.setText(comment.getAuthor());
                 scoreTextView.setText(comment.getScore() + " " + getResources().getString(R.string.label_points));
                 createdTextView.setText(comment.getCreated());
-                bodyTextView.setText(comment.getBody());
+                // the inner fromHtml unescapes html entities, while the outer fromHtml returns a formatted Spannable
+                bodyTextView.setText(
+                        Helpers.trimTrailingWhitespace(Html.fromHtml(Html.fromHtml(comment.getBody()).toString()))
+                );
+                bodyTextView.setMovementMethod(new TextViewLinkHandler() {
+                    @Override
+                    public void onLinkClick(String url) {
+                        EventBus.getDefault().post(new ViewContentEvent(null, url));
+                    }
+                });
                 if (comment.getLevel() == 0) {
                     childCommentIndicator.setVisibility(View.GONE);
                 } else {
@@ -226,6 +241,7 @@ public class CommentsFragment extends Fragment {
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.root_layout:
+                    case R.id.body_textview:
                         selectItem(getAdapterPosition());
                         break;
                     case R.id.next_parent_comment_button:
