@@ -162,7 +162,7 @@ public class CommentsFragment extends Fragment {
 
             if (viewType == 0) {
                 return new PostsFragment.PostViewHolder(context,
-                        inflater.inflate(R.layout.row_posts_recyclerview, parent, false), this);
+                        inflater.inflate(R.layout.row_posts_recyclerview, parent, false), this, true);
             } else {
                 return new CommentViewHolder(inflater.inflate(R.layout.row_comments_recyclerview, parent, false));
             }
@@ -247,7 +247,7 @@ public class CommentsFragment extends Fragment {
                 }
 
                 if (getAdapterPosition() == currentlySelectedPosition) {
-                    rootLayout.setBackgroundResource(R.color.post_selected_background);
+                    rootLayout.setBackgroundResource(R.color.selected_item_background);
                     buttonsContainerTop.setVisibility(View.VISIBLE);
                     buttonsContainerBottom.setVisibility(View.VISIBLE);
                 } else {

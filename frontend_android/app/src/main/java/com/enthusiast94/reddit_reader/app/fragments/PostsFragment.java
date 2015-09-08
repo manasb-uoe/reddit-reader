@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,9 @@ import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.PostsManager;
+import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
+import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
 import de.greenrobot.event.EventBus;
 
 import java.util.List;
@@ -181,7 +184,7 @@ public class PostsFragment extends Fragment {
         @Override
         public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.row_posts_recyclerview, viewGroup, false);
-            return new PostViewHolder(context, itemView, this);
+            return new PostViewHolder(context, itemView, this, false);
         }
 
         @Override
@@ -209,6 +212,7 @@ public class PostsFragment extends Fragment {
 
         private Context context;
         private OnItemSelectedListener onItemSelectedListener;
+        boolean shouldShowSelftext;
         private View rootLayout;
         private TextView scoreTextView;
         private TextView titleTextView;
@@ -216,15 +220,18 @@ public class PostsFragment extends Fragment {
         private TextView numCommentsTextView;
         private TextView createdTextView;
         private ImageView thumbnailImageView;
+        private View selftextContainer;
+        private TextView selftextTextView;
         private View buttonsContainer;
         private Button viewButton;
         private Button commentsButton;
 
-        public PostViewHolder(Context context, View itemView, OnItemSelectedListener onItemSelectedListener) {
+        public PostViewHolder(Context context, View itemView, OnItemSelectedListener onItemSelectedListener, boolean shouldShowSelftext) {
             super(itemView);
 
             this.context = context;
             this.onItemSelectedListener = onItemSelectedListener;
+            this.shouldShowSelftext = shouldShowSelftext;
 
             rootLayout = itemView.findViewById(R.id.root_layout);
             scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
@@ -233,6 +240,8 @@ public class PostsFragment extends Fragment {
             numCommentsTextView = (TextView) itemView.findViewById(R.id.num_comments_textview);
             createdTextView = (TextView) itemView.findViewById(R.id.created_textview);
             thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
+            selftextContainer = itemView.findViewById(R.id.self_text_container);
+            selftextTextView = (TextView) itemView.findViewById(R.id.self_text_textview);
             buttonsContainer = itemView.findViewById(R.id.buttons_container);
             viewButton = (Button) itemView.findViewById(R.id.view_button);
             commentsButton = (Button) itemView.findViewById(R.id.comments_button);
@@ -245,6 +254,20 @@ public class PostsFragment extends Fragment {
             numCommentsTextView.setText(post.getNumComments() + " " + context.getResources().getString(R.string.label_comments));
             createdTextView.setText(post.getCreated());
 
+            if (shouldShowSelftext && !post.getSelftext().equals("null")) {
+                selftextContainer.setVisibility(View.VISIBLE);
+                selftextTextView.setText(Helpers.trimTrailingWhitespace(Html.fromHtml(Html.fromHtml(post.getSelftext()).toString())));
+                selftextTextView.setMovementMethod(new TextViewLinkHandler() {
+                    @Override
+                    public void onLinkClick(String url) {
+                        EventBus.getDefault().post(new ViewContentEvent(null, url));
+                    }
+                });
+            } else {
+                selftextContainer.setVisibility(View.GONE);
+            }
+
+
             if (post.getThumbnail() != null) {
                 thumbnailImageView.setVisibility(View.VISIBLE);
                 Glide.with(context).load(post.getThumbnail()).crossFade().into(thumbnailImageView);
@@ -253,20 +276,21 @@ public class PostsFragment extends Fragment {
             }
 
             if (getAdapterPosition() == currentlySelectedPosition) {
-                rootLayout.setBackgroundResource(R.color.post_selected_background);
+                rootLayout.setBackgroundResource(R.color.selected_item_background);
                 buttonsContainer.setVisibility(View.VISIBLE);
             } else {
                 buttonsContainer.setVisibility(View.GONE);
                 rootLayout.setBackgroundResource(0);
             }
 
-            // setup event listeners
+            // set click listeners
             View.OnClickListener onClickListener = new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
                     switch (view.getId()) {
                         case R.id.root_layout:
+                        case R.id.self_text_textview:
                             onItemSelectedListener.onItemSelected(getAdapterPosition());
                             break;
                         case R.id.view_button:
@@ -282,6 +306,7 @@ public class PostsFragment extends Fragment {
             itemView.setOnClickListener(onClickListener);
             viewButton.setOnClickListener(onClickListener);
             commentsButton.setOnClickListener(onClickListener);
+            selftextTextView.setOnClickListener(onClickListener);
         }
     }
 }
