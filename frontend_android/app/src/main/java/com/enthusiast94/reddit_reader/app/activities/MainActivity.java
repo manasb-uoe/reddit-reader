@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.HideContentViewerEvent;
 import com.enthusiast94.reddit_reader.app.events.SubredditPreferencesUpdatedEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
     private ProgressDialog fetchingSubredditsProgressDialog;
+    private ContentViewerFragment contentViewerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(ViewContentEvent event) {
-        if (event.getUrl().contains("youtube.com")) {
+        if (event.getUrl().contains("youtube.com") || event.getUrl().contains("youtu.be")) {
             Intent viewIntent = new Intent();
             viewIntent.setAction(Intent.ACTION_VIEW);
             viewIntent.setData(Uri.parse(event.getUrl()));
@@ -199,12 +201,29 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        ContentViewerFragment contentViewerFragment =
-                ContentViewerFragment.newInstance(event.getContentTitle(), event.getUrl());
-        FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
-        fTransaction.add(android.R.id.content, contentViewerFragment);
-        fTransaction.addToBackStack(null);
-        fTransaction.commit();
+        contentViewerFragment =
+                (ContentViewerFragment) getSupportFragmentManager().findFragmentByTag(ContentViewerFragment.TAG);
+
+        if (contentViewerFragment == null) {
+            contentViewerFragment = ContentViewerFragment.newInstance(event.getContentTitle(), event.getUrl());
+            getSupportFragmentManager().beginTransaction()
+                    .add(android.R.id.content, contentViewerFragment, ContentViewerFragment.TAG)
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .show(contentViewerFragment)
+                    .commit();
+            contentViewerFragment.loadContent(event.getContentTitle(), event.getUrl());
+            contentViewerFragment.getView().bringToFront();
+        }
+    }
+
+    public void onEventMainThread(HideContentViewerEvent event) {
+        contentViewerFragment =
+                (ContentViewerFragment) getSupportFragmentManager().findFragmentByTag(ContentViewerFragment.TAG);
+        getSupportFragmentManager().beginTransaction()
+                .hide(contentViewerFragment)
+                .commit();
     }
 
     public void onEventMainThread(SubredditPreferencesUpdatedEvent event) {
@@ -294,7 +313,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+        // if back button is pressed while content viewer fragment is visible, simply hide it
+        // else, pop back stack (if possible)
+        if (contentViewerFragment.isVisible()) {
+            EventBus.getDefault().post(new HideContentViewerEvent());
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();

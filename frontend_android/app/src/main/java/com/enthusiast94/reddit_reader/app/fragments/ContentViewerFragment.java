@@ -10,16 +10,21 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.HideContentViewerEvent;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by manas on 05-09-2015.
  */
 public class ContentViewerFragment extends Fragment {
 
+    public static final String TAG = ContentViewerFragment.class.getSimpleName();
     public static final String URL_BUNDLE_KEY = "url_key";
     public static final String CONTENT_TITLE_BUNDLE_KEY = "content_title_key";
     private Toolbar toolbar;
     private WebView webView;
+    private String contentTitle;
+    private String contentUrl;
 
     public static ContentViewerFragment newInstance(String contentTitle, String url) {
         Bundle bundle = new Bundle();
@@ -44,25 +49,17 @@ public class ContentViewerFragment extends Fragment {
         webView = (WebView) view.findViewById(R.id.webview);
 
         /**
-         * Retrieve content info from arguments
-         */
-
-        Bundle bundle = getArguments();
-        final String contentTitle = bundle.getString(CONTENT_TITLE_BUNDLE_KEY);
-        final String contentUrl = bundle.getString(URL_BUNDLE_KEY);
-
-
-        /**
          * Setup toolbar
          */
 
-        toolbar.setTitle(R.string.loading);
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                webView.loadUrl("about:blank");
+
+                EventBus.getDefault().post(new HideContentViewerEvent());
             }
         });
 
@@ -90,6 +87,7 @@ public class ContentViewerFragment extends Fragment {
             public void onPageFinished(WebView view, String url) {
                 if (contentTitle == null) {
                     toolbar.setTitle(contentUrl);
+                    toolbar.setSubtitle(null);
                 } else {
                     toolbar.setTitle(contentTitle);
                     toolbar.setSubtitle(contentUrl);
@@ -98,11 +96,22 @@ public class ContentViewerFragment extends Fragment {
         });
 
         /**
-         * Finally, load URL
+         * Retrieve content info from arguments and load URL
          */
 
-        webView.loadUrl(contentUrl);
+        Bundle bundle = getArguments();
+        loadContent(bundle.getString(CONTENT_TITLE_BUNDLE_KEY), bundle.getString(URL_BUNDLE_KEY));
 
         return view;
+    }
+
+    public void loadContent(String contentTitle, String contentUrl) {
+        this.contentTitle = contentTitle;
+        this.contentUrl = contentUrl;
+
+        toolbar.setTitle(R.string.loading);
+        toolbar.setSubtitle(contentUrl);
+
+        webView.loadUrl(contentUrl);
     }
 }
