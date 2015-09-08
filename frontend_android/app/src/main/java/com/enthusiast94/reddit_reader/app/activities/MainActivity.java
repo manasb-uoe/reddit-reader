@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         // if back button is pressed while content viewer fragment is visible, delegate call to its onBackPressed method
         // else, pop back stack (if possible)
-        if (contentViewerFragment.isVisible()) {
+        if (contentViewerFragment != null && contentViewerFragment.isVisible()) {
             contentViewerFragment.onBackPressed();
         } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
