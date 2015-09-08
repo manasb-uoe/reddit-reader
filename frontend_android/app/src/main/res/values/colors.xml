@@ -7,9 +7,8 @@
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
-    <color name="divider">#cfcfcf</color>
-    <color name="post_selected_background">#E1E1E1</color>
-    <color name="light_blue_800">#0277BD</color>
+    <color name="divider">#5b5b5b</color>
+    <color name="post_selected_background">#424242</color>
     <color name="blue_500">#2196F3</color>
     <color name="teal_500">#009688</color>
     <color name="purple_500">#9C27B0</color>
