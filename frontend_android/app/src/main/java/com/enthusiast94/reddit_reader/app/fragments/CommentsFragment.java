@@ -1,5 +1,6 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.CommentsManager;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
+import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
 import de.greenrobot.event.EventBus;
 
@@ -35,7 +37,6 @@ public class CommentsFragment extends Fragment {
     private Toolbar toolbar;
     private ProgressBar progressBar;
     private RecyclerView commentsRecyclerView;
-    private LinearLayoutManager linearLayoutManager;
     private static final String SELECTED_POST_BUNDLE_KEY = "selected_subreddit_key";
 
     public static CommentsFragment newInstance(Post selectedPost) {
@@ -64,7 +65,7 @@ public class CommentsFragment extends Fragment {
          * Retrieve selected subreddit from arguments
          */
 
-        Post selectedPost = getArguments().getParcelable(SELECTED_POST_BUNDLE_KEY);
+        final Post selectedPost = getArguments().getParcelable(SELECTED_POST_BUNDLE_KEY);
 
 
         /**
@@ -94,8 +95,8 @@ public class CommentsFragment extends Fragment {
                 commentsRecyclerView.setVisibility(View.VISIBLE);
 
                 if (getActivity() != null) {
-                    commentsRecyclerView.setAdapter(new CommentsAdapter(data));
-                    linearLayoutManager = new LinearLayoutManager(getActivity());
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                    commentsRecyclerView.setAdapter(new CommentsAdapter(getActivity(), data, selectedPost, linearLayoutManager));
                     commentsRecyclerView.setLayoutManager(linearLayoutManager);
                     // disable change animation
                     commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
@@ -116,22 +117,27 @@ public class CommentsFragment extends Fragment {
         return view;
     }
 
-    private class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnItemSelectedListener {
 
+        private Context context;
         private List<Comment> comments;
-        private LayoutInflater inflater;
+        private Post selectedPost;
+        private LinearLayoutManager linearLayoutManager;
         private int previouslySelectedPosition;
         private int currentlySelectedPosition;
         private int[] childCommentIndicatorColors;
 
-        public CommentsAdapter(List<Comment> comments) {
+        public CommentsAdapter(Context context, List<Comment> comments, Post selectedPost, LinearLayoutManager linearLayoutManager) {
+            this.context = context;
             this.comments = comments;
-            inflater = LayoutInflater.from(getActivity());
+            this.selectedPost = selectedPost;
+            this.linearLayoutManager = linearLayoutManager;
+
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
 
             // retrieve child comment indicator colors
-            Resources res = getResources();
+            Resources res = context.getResources();
             childCommentIndicatorColors = new int[]{
                     res.getColor(R.color.teal_500),
                     res.getColor(R.color.blue_500),
@@ -142,18 +148,48 @@ public class CommentsFragment extends Fragment {
         }
 
         @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+
+        @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new CommentViewHolder(inflater.inflate(R.layout.row_comments_recyclerview, parent, false));
+            LayoutInflater inflater = LayoutInflater.from(context);
+
+            if (viewType == 0) {
+                return new PostsFragment.PostViewHolder(context,
+                        inflater.inflate(R.layout.row_posts_recyclerview, parent, false), this);
+            } else {
+                return new CommentViewHolder(inflater.inflate(R.layout.row_comments_recyclerview, parent, false));
+            }
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((CommentViewHolder) holder).bindItem(comments.get(position));
+            if (getItemViewType(position) == 0) {
+                ((PostsFragment.PostViewHolder) holder).bindItem(selectedPost, currentlySelectedPosition);
+            } else {
+                ((CommentViewHolder) holder).bindItem(comments.get(position-1));
+            }
         }
 
         @Override
         public int getItemCount() {
-            return comments.size();
+            return 1 + comments.size();
+        }
+
+        @Override
+        public void onItemSelected(int position) {
+            currentlySelectedPosition = position;
+
+            notifyItemChanged(currentlySelectedPosition);
+            notifyItemChanged(previouslySelectedPosition);
+
+            previouslySelectedPosition = currentlySelectedPosition;
         }
 
         private class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -192,7 +228,7 @@ public class CommentsFragment extends Fragment {
 
             public void bindItem(Comment comment) {
                 authorTextView.setText(comment.getAuthor());
-                scoreTextView.setText(comment.getScore() + " " + getResources().getString(R.string.label_points));
+                scoreTextView.setText(comment.getScore() + " " + context.getResources().getString(R.string.label_points));
                 createdTextView.setText(comment.getCreated());
                 // the inner fromHtml unescapes html entities, while the outer fromHtml returns a formatted Spannable
                 bodyTextView.setText(
@@ -220,21 +256,24 @@ public class CommentsFragment extends Fragment {
                     buttonsContainerBottom.setVisibility(View.GONE);
                 }
 
+                if (getAdapterPosition() <= 1) {
+                    previousButton.setEnabled(false);
+                } else {
+                    previousButton.setEnabled(true);
+                }
+
+                if (getAdapterPosition() == comments.size()) {
+                    nextButton.setEnabled(false);
+                } else {
+                    nextButton.setEnabled(true);
+                }
+
                 // set child comment left spacing based on level
                 itemView.setPadding((int) (comment.getLevel() *
-                        getResources().getDimension(R.dimen.comment_left_spacing)), 0, 0, 0);
+                        context.getResources().getDimension(R.dimen.comment_left_spacing)), 0, 0, 0);
 
                 // set child comment indicator color based on level
                 childCommentIndicator.setBackgroundColor(childCommentIndicatorColors[comment.getLevel() % 5]);
-            }
-
-            private void selectItem(int pos) {
-                currentlySelectedPosition = pos;
-
-                notifyItemChanged(currentlySelectedPosition);
-                notifyItemChanged(previouslySelectedPosition);
-
-                previouslySelectedPosition = currentlySelectedPosition;
             }
 
             @Override
@@ -242,21 +281,21 @@ public class CommentsFragment extends Fragment {
                 switch (view.getId()) {
                     case R.id.root_layout:
                     case R.id.body_textview:
-                        selectItem(getAdapterPosition());
+                        onItemSelected(getAdapterPosition());
                         break;
                     case R.id.next_parent_comment_button:
-                        for (int i=getAdapterPosition()+1; i<comments.size(); i++) {
-                            if (comments.get(i).getLevel() == 0) {
-                                selectItem(i);
+                        for (int i=getAdapterPosition()+1; i<=comments.size(); i++) {
+                            if (comments.get(i-1).getLevel() == 0) {
+                                onItemSelected(i);
                                 linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
                                 break;
                             }
                         }
                         break;
                     case R.id.previous_parent_comment_button:
-                        for (int i=getAdapterPosition()-1; i >=0; i--) {
-                            if (comments.get(i).getLevel() == 0) {
-                                selectItem(i);
+                        for (int i=getAdapterPosition()-1; i >0; i--) {
+                            if (comments.get(i-1).getLevel() == 0) {
+                                onItemSelected(i);
                                 linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
                                 break;
                             }
