@@ -1,5 +1,6 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.PostsManager;
+import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import de.greenrobot.event.EventBus;
 
 import java.util.List;
@@ -34,7 +36,6 @@ public class PostsFragment extends Fragment {
     private Toolbar toolbar;
     private RecyclerView postsRecyclerView;
     private ProgressBar progressBar;
-    private List<Post> posts;
     private String subreddit;
     private String sort;
 
@@ -48,13 +49,6 @@ public class PostsFragment extends Fragment {
         postsFragment.setArguments(bundle);
 
         return postsFragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        setRetainInstance(true);
     }
 
     @Nullable
@@ -125,14 +119,7 @@ public class PostsFragment extends Fragment {
          * Load posts and setup recycler view adapter
          */
 
-        if (posts == null) {
-            loadPosts(subreddit, sort);
-        } else {
-            progressBar.setVisibility(View.INVISIBLE);
-            postsRecyclerView.setVisibility(View.VISIBLE);
-
-            setPostsAdapter();
-        }
+        loadPosts(subreddit, sort);
 
         return view;
     }
@@ -148,12 +135,14 @@ public class PostsFragment extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
                 postsRecyclerView.setVisibility(View.VISIBLE);
 
-                posts = data;
-
                 // only proceed if fragment is still attached to its parent activity
                 // this would prevent null pointer exception when adapter tries to use activity context
                 if (getActivity() != null) {
-                    setPostsAdapter();
+                    PostsAdapter postsAdapter = new PostsAdapter(getActivity(), data);
+                    postsRecyclerView.setAdapter(postsAdapter);
+                    postsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    // disable change animation
+                    postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
                 }
             }
 
@@ -174,35 +163,30 @@ public class PostsFragment extends Fragment {
         toolbar.setSubtitle(sort);
     }
 
-    private void setPostsAdapter() {
-        PostsAdapter postsAdapter = new PostsAdapter();
-        postsRecyclerView.setAdapter(postsAdapter);
-        postsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        // disable change animation
-        postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
-    }
+    private static class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> implements OnItemSelectedListener {
 
-    private class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
-
-        private LayoutInflater inflater;
+        private Context context;
+        private List<Post> posts;
         private int previouslySelectedPosition;
         private int currentlySelectedPosition;
 
-        public PostsAdapter() {
-            this.inflater = LayoutInflater.from(getActivity());
+        public PostsAdapter(Context context, List<Post> posts)  {
+            this.context = context;
+            this.posts = posts;
+
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
         }
 
         @Override
         public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View itemView = inflater.inflate(R.layout.row_posts_recyclerview, viewGroup, false);
-            return new PostViewHolder(itemView);
+            View itemView = LayoutInflater.from(context).inflate(R.layout.row_posts_recyclerview, viewGroup, false);
+            return new PostViewHolder(context, itemView, this);
         }
 
         @Override
         public void onBindViewHolder(PostViewHolder postViewHolder, int i) {
-            postViewHolder.bindItem(posts.get(i));
+            postViewHolder.bindItem(posts.get(i), currentlySelectedPosition);
         }
 
         @Override
@@ -210,83 +194,94 @@ public class PostsFragment extends Fragment {
             return posts.size();
         }
 
-        public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @Override
+        public void onItemSelected(int position) {
+            currentlySelectedPosition = position;
 
-            private View rootLayout;
-            private TextView scoreTextView;
-            private TextView titleTextView;
-            private TextView subredditTextView;
-            private TextView numCommentsTextView;
-            private TextView createdTextView;
-            private ImageView thumbnailImageView;
-            private View buttonsContainer;
-            private Button viewButton;
-            private Button commentsButton;
+            notifyItemChanged(currentlySelectedPosition);
+            notifyItemChanged(previouslySelectedPosition);
 
-            public PostViewHolder(View itemView) {
-                super(itemView);
+            previouslySelectedPosition = currentlySelectedPosition;
+        }
+    }
 
-                rootLayout = itemView.findViewById(R.id.root_layout);
-                scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
-                titleTextView = (TextView) itemView.findViewById(R.id.title_textview);
-                subredditTextView = (TextView) itemView.findViewById(R.id.subreddit_textview);
-                numCommentsTextView = (TextView) itemView.findViewById(R.id.num_comments_textview);
-                createdTextView = (TextView) itemView.findViewById(R.id.created_textview);
-                thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
-                buttonsContainer = itemView.findViewById(R.id.buttons_container);
-                viewButton = (Button) itemView.findViewById(R.id.view_button);
-                commentsButton = (Button) itemView.findViewById(R.id.comments_button);
+    public static class PostViewHolder extends RecyclerView.ViewHolder {
 
-                // set event listeners
-                itemView.setOnClickListener(this);
-                viewButton.setOnClickListener(this);
-                commentsButton.setOnClickListener(this);
+        private Context context;
+        private OnItemSelectedListener onItemSelectedListener;
+        private View rootLayout;
+        private TextView scoreTextView;
+        private TextView titleTextView;
+        private TextView subredditTextView;
+        private TextView numCommentsTextView;
+        private TextView createdTextView;
+        private ImageView thumbnailImageView;
+        private View buttonsContainer;
+        private Button viewButton;
+        private Button commentsButton;
 
+        public PostViewHolder(Context context, View itemView, OnItemSelectedListener onItemSelectedListener) {
+            super(itemView);
+
+            this.context = context;
+            this.onItemSelectedListener = onItemSelectedListener;
+
+            rootLayout = itemView.findViewById(R.id.root_layout);
+            scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
+            titleTextView = (TextView) itemView.findViewById(R.id.title_textview);
+            subredditTextView = (TextView) itemView.findViewById(R.id.subreddit_textview);
+            numCommentsTextView = (TextView) itemView.findViewById(R.id.num_comments_textview);
+            createdTextView = (TextView) itemView.findViewById(R.id.created_textview);
+            thumbnailImageView = (ImageView) itemView.findViewById(R.id.thumbnail_imageview);
+            buttonsContainer = itemView.findViewById(R.id.buttons_container);
+            viewButton = (Button) itemView.findViewById(R.id.view_button);
+            commentsButton = (Button) itemView.findViewById(R.id.comments_button);
+        }
+
+        public void bindItem(final Post post, int currentlySelectedPosition) {
+            scoreTextView.setText(String.valueOf(post.getScore()));
+            titleTextView.setText(post.getTitle());
+            subredditTextView.setText(post.getSubreddit());
+            numCommentsTextView.setText(post.getNumComments() + " " + context.getResources().getString(R.string.label_comments));
+            createdTextView.setText(post.getCreated());
+
+            if (post.getThumbnail() != null) {
+                thumbnailImageView.setVisibility(View.VISIBLE);
+                Glide.with(context).load(post.getThumbnail()).crossFade().into(thumbnailImageView);
+            } else {
+                thumbnailImageView.setVisibility(View.GONE);
             }
 
-            public void bindItem(Post post) {
-                scoreTextView.setText(String.valueOf(post.getScore()));
-                titleTextView.setText(post.getTitle());
-                subredditTextView.setText(post.getSubreddit());
-                numCommentsTextView.setText(post.getNumComments() + " " + getResources().getString(R.string.label_comments));
-                createdTextView.setText(post.getCreated());
-
-                if (post.getThumbnail() != null) {
-                    thumbnailImageView.setVisibility(View.VISIBLE);
-                    Glide.with(getActivity()).load(post.getThumbnail()).crossFade().into(thumbnailImageView);
-                } else {
-                    thumbnailImageView.setVisibility(View.GONE);
-                }
-
-                if (getAdapterPosition() == currentlySelectedPosition) {
-                    rootLayout.setBackgroundResource(R.color.post_selected_background);
-                    buttonsContainer.setVisibility(View.VISIBLE);
-                } else {
-                    buttonsContainer.setVisibility(View.GONE);
-                    rootLayout.setBackgroundResource(0);
-                }
+            if (getAdapterPosition() == currentlySelectedPosition) {
+                rootLayout.setBackgroundResource(R.color.post_selected_background);
+                buttonsContainer.setVisibility(View.VISIBLE);
+            } else {
+                buttonsContainer.setVisibility(View.GONE);
+                rootLayout.setBackgroundResource(0);
             }
 
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.root_layout:
-                        currentlySelectedPosition = getAdapterPosition();
+            // setup event listeners
+            View.OnClickListener onClickListener = new View.OnClickListener() {
 
-                        notifyItemChanged(currentlySelectedPosition);
-                        notifyItemChanged(previouslySelectedPosition);
-
-                        previouslySelectedPosition = currentlySelectedPosition;
-                        break;
-                    case R.id.view_button:
-                        Post currentPost = posts.get(getAdapterPosition());
-                        EventBus.getDefault().post(new ViewContentEvent(currentPost.getTitle(), currentPost.getUrl()));
-                        break;
-                    case R.id.comments_button:
-                        EventBus.getDefault().post(new ViewCommentsEvent(posts.get(getAdapterPosition())));
-                        break;
+                @Override
+                public void onClick(View view) {
+                    switch (view.getId()) {
+                        case R.id.root_layout:
+                            onItemSelectedListener.onItemSelected(getAdapterPosition());
+                            break;
+                        case R.id.view_button:
+                            EventBus.getDefault().post(new ViewContentEvent(post.getTitle(), post.getUrl()));
+                            break;
+                        case R.id.comments_button:
+                            EventBus.getDefault().post(new ViewCommentsEvent(post));
+                            break;
+                    }
                 }
-            }
+            };
+
+            itemView.setOnClickListener(onClickListener);
+            viewButton.setOnClickListener(onClickListener);
+            commentsButton.setOnClickListener(onClickListener);
         }
     }
 }
