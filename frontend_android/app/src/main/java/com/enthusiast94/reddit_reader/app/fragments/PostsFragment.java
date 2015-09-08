@@ -299,6 +299,8 @@ public class PostsFragment extends Fragment {
                         case R.id.comments_button:
                             EventBus.getDefault().post(new ViewCommentsEvent(post));
                             break;
+                        case R.id.thumbnail_imageview:
+                            EventBus.getDefault().post(new ViewContentEvent(post.getTitle(), post.getUrl()));
                     }
                 }
             };
@@ -307,6 +309,7 @@ public class PostsFragment extends Fragment {
             viewButton.setOnClickListener(onClickListener);
             commentsButton.setOnClickListener(onClickListener);
             selftextTextView.setOnClickListener(onClickListener);
+            thumbnailImageView.setOnClickListener(onClickListener);
         }
     }
 }
