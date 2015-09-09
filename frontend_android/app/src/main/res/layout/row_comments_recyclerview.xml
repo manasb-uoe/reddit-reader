@@ -70,7 +70,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/accent"
-                        style="@style/TextAppearance.AppCompat.Caption"
+                        style="@style/TextCaptionSmall"
                         />
 
                 <TextView
@@ -79,14 +79,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_tiny"
                         android:layout_marginRight="@dimen/spacing_tiny"
-                        style="@style/TextAppearance.AppCompat.Caption"
+                        style="@style/TextCaptionSmall"
                         />
 
                 <TextView
                         android:id="@+id/score_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/TextAppearance.AppCompat.Caption"
+                        style="@style/TextCaptionSmall"
                         />
 
                 <TextView
@@ -95,14 +95,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_tiny"
                         android:layout_marginRight="@dimen/spacing_tiny"
-                        style="@style/TextAppearance.AppCompat.Caption"
+                        style="@style/TextCaptionSmall"
                         />
 
                 <TextView
                         android:id="@+id/created_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/TextAppearance.AppCompat.Caption"
+                        style="@style/TextCaptionSmall"
                         />
 
             </LinearLayout>
@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
-                    style="@style/TextAppearance.AppCompat.Body1"
+                    style="@style/TextBodyNormalSmall"
                     />
 
             <LinearLayout

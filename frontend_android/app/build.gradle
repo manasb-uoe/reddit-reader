@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId "com.enthusiast94.reddit_reader.app"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
