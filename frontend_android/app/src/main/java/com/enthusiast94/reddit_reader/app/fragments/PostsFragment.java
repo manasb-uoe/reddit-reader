@@ -1,6 +1,7 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,10 @@ import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
+import com.enthusiast94.reddit_reader.app.network.AuthManager;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.PostsManager;
+import com.enthusiast94.reddit_reader.app.network.RedditManager;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
@@ -212,7 +215,10 @@ public class PostsFragment extends Fragment {
 
         private Context context;
         private OnItemSelectedListener onItemSelectedListener;
-        boolean shouldShowSelftext;
+        private boolean shouldShowSelftext;
+        private int upvoteColor;
+        private int downvoteColor;
+        private int primaryTextColor;
         private View rootLayout;
         private TextView scoreTextView;
         private TextView titleTextView;
@@ -225,6 +231,9 @@ public class PostsFragment extends Fragment {
         private View buttonsContainer;
         private Button viewButton;
         private Button commentsButton;
+        private Button upvoteButton;
+        private Button downvoteButton;
+
 
         public PostViewHolder(Context context, View itemView, OnItemSelectedListener onItemSelectedListener, boolean shouldShowSelftext) {
             super(itemView);
@@ -232,6 +241,12 @@ public class PostsFragment extends Fragment {
             this.context = context;
             this.onItemSelectedListener = onItemSelectedListener;
             this.shouldShowSelftext = shouldShowSelftext;
+
+            Resources res = context.getResources();
+
+            upvoteColor = res.getColor(R.color.reddit_upvote);
+            downvoteColor = res.getColor(R.color.reddit_downvote);
+            primaryTextColor = res.getColor(android.R.color.primary_text_dark);
 
             rootLayout = itemView.findViewById(R.id.root_layout);
             scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
@@ -245,6 +260,8 @@ public class PostsFragment extends Fragment {
             buttonsContainer = itemView.findViewById(R.id.buttons_container);
             viewButton = (Button) itemView.findViewById(R.id.view_button);
             commentsButton = (Button) itemView.findViewById(R.id.comments_button);
+            upvoteButton = (Button) itemView.findViewById(R.id.upvote_button);
+            downvoteButton = (Button) itemView.findViewById(R.id.downvote_button);
         }
 
         public void bindItem(final Post post, int currentlySelectedPosition) {
@@ -267,13 +284,14 @@ public class PostsFragment extends Fragment {
                 selftextContainer.setVisibility(View.GONE);
             }
 
-
             if (post.getThumbnail() != null) {
                 thumbnailImageView.setVisibility(View.VISIBLE);
                 Glide.with(context).load(post.getThumbnail()).crossFade().into(thumbnailImageView);
             } else {
                 thumbnailImageView.setVisibility(View.GONE);
             }
+
+            setUpvoteDownvoteColors(post.getLikes());
 
             if (getAdapterPosition() == currentlySelectedPosition) {
                 rootLayout.setBackgroundResource(R.color.selected_item_background);
@@ -301,6 +319,35 @@ public class PostsFragment extends Fragment {
                             break;
                         case R.id.thumbnail_imageview:
                             EventBus.getDefault().post(new ViewContentEvent(post.getTitle(), post.getUrl()));
+                            break;
+                        case R.id.upvote_button:
+                            if (AuthManager.isUserAuthenticated()) {
+                                if (post.getLikes() == -1 || post.getLikes() == 0) {
+                                    post.setLikes(true);
+                                } else {
+                                    post.setLikes(null);
+                                }
+                                RedditManager.vote(post.getFullName(), post.getLikes(), null);
+                                setUpvoteDownvoteColors(post.getLikes());
+                            } else {
+                                Toast.makeText(context, context.getResources().getString(R.string.error_not_authorized),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case R.id.downvote_button:
+                            if (AuthManager.isUserAuthenticated()) {
+                                if (post.getLikes() == 1 || post.getLikes() == 0) {
+                                    post.setLikes(false);
+                                } else {
+                                    post.setLikes(null);
+                                }
+                                RedditManager.vote(post.getFullName(), post.getLikes(), null);
+                                setUpvoteDownvoteColors(post.getLikes());
+                            } else {
+                                Toast.makeText(context, context.getResources().getString(R.string.error_not_authorized),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            break;
                     }
                 }
             };
@@ -310,6 +357,28 @@ public class PostsFragment extends Fragment {
             commentsButton.setOnClickListener(onClickListener);
             selftextTextView.setOnClickListener(onClickListener);
             thumbnailImageView.setOnClickListener(onClickListener);
+            upvoteButton.setOnClickListener(onClickListener);
+            downvoteButton.setOnClickListener(onClickListener);
+        }
+
+        /**
+         * Sets colors for various ui elements within viewholder according to post's current vote status
+         */
+
+        private void setUpvoteDownvoteColors(int likes) {
+            if (likes == 1) {
+                upvoteButton.setTextColor(upvoteColor);
+                scoreTextView.setTextColor(upvoteColor);
+                downvoteButton.setTextColor(primaryTextColor);
+            } else if (likes == -1) {
+                downvoteButton.setTextColor(downvoteColor);
+                scoreTextView.setTextColor(downvoteColor);
+                upvoteButton.setTextColor(primaryTextColor);
+            } else {
+                upvoteButton.setTextColor(primaryTextColor);
+                scoreTextView.setTextColor(primaryTextColor);
+                downvoteButton.setTextColor(primaryTextColor);
+            }
         }
     }
 }

@@ -34,6 +34,7 @@
     <string name="hint_subreddit_name">Subreddit name</string>
     <string name="error_subreddit_name_required">Error! Subreddit name is required.</string>
     <string name="error_atleast_one_selected_subreddit">Error! You must select at least one subreddit.</string>
+    <string name="error_not_authorized">Error! You are not authorized to perform this action.</string>
     <string name="success_subreddit_preferences_updated">Success! Subreddit preferences updated successfully.</string>
     <string name="success_logged_in_base">Success! Logged in as\u0020</string>
     <string name="label_selected_subreddits">Selected Subreddits</string>

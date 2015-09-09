@@ -14,5 +14,6 @@
     <color name="purple_500">#9C27B0</color>
     <color name="light_green_500">#8BC34A</color>
     <color name="deep_orange_500">#FF5722</color>
-
+    <color name="reddit_upvote">#ff8b60</color>
+    <color name="reddit_downvote">#9494ff</color>
 </resources>
