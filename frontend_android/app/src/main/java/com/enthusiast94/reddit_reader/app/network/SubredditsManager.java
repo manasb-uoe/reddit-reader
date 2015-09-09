@@ -34,8 +34,14 @@ public class SubredditsManager extends RedditManager {
             List<Subreddit> subreddits = Arrays.asList(gson.fromJson(subredditsString, Subreddit[].class));
             if (callback != null) callback.onSuccess(subreddits);
         } else {
+            String subredditsUrl;
+            if (AuthManager.isUserAuthenticated()) {
+                subredditsUrl = AUTH_API_BASE + urls.get("user");
+            } else {
+                subredditsUrl = UNAUTH_API_BASE + urls.get("defaults");
+            }
 
-            getAsyncHttpClient().get(UNAUTH_API_BASE + urls.get("defaults"), new JsonHttpResponseHandler() {
+            getAsyncHttpClient().get(subredditsUrl, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

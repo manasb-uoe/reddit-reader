@@ -9,13 +9,13 @@ import java.util.List;
  */
 public class SubredditPreferencesUpdatedEvent {
 
-    private List<Subreddit> selectedSubreddits;
+    private List<Subreddit> subreddits;
 
-    public SubredditPreferencesUpdatedEvent(List<Subreddit> selectedSubreddits) {
-        this.selectedSubreddits = selectedSubreddits;
+    public SubredditPreferencesUpdatedEvent(List<Subreddit> subreddits) {
+        this.subreddits = subreddits;
     }
 
-    public List<Subreddit> getSelectedSubreddits() {
-        return selectedSubreddits;
+    public List<Subreddit> getSubreddits() {
+        return subreddits;
     }
 }

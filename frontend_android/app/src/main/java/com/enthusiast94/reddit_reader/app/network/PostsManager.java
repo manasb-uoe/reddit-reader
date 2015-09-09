@@ -23,7 +23,7 @@ public class PostsManager extends RedditManager {
         sort = sort.toLowerCase();
 
         // build posts url
-        String postsUrl = UNAUTH_API_BASE;
+        String postsUrl = AuthManager.isUserAuthenticated() ? AUTH_API_BASE : UNAUTH_API_BASE;
         if (subreddit.equals(App.getAppContext().getResources().getString(R.string.front_page))) {
             postsUrl += "/" + sort + ".json";
         } else {

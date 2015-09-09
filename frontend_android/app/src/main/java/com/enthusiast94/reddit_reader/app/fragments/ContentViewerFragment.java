@@ -99,7 +99,7 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
                             params.get("error")
                     ));
 
-                    EventBus.getDefault().post(new HideContentViewerEvent());
+                    onBackPressed();
                 } else {
                     view.loadUrl(url);
                 }

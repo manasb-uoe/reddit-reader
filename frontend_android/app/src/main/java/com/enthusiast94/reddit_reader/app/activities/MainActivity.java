@@ -103,27 +103,27 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(List<Subreddit> data) {
                 progressDialog.hide();
 
-                // keep selected subreddits only
-                List<Subreddit> selectedSubreddits = new ArrayList<Subreddit>();
-                for (Subreddit subreddit : data) {
-                    if (subreddit.isSelected()) {
-                        selectedSubreddits.add(subreddit);
-                    }
-                }
-
-                setupViewPagerAndTabs(selectedSubreddits);
+                setupViewPagerAndTabs(data);
             }
 
             @Override
             public void onFailure(String message) {
                 progressDialog.hide();
 
-                // TODO display error message
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void setupViewPagerAndTabs(final List<Subreddit> selectedSubreddits) {
+    private void setupViewPagerAndTabs(final List<Subreddit> subreddits) {
+        // keep selected subreddits only
+        final List<Subreddit> selectedSubreddits = new ArrayList<Subreddit>();
+        for (Subreddit subreddit : subreddits) {
+            if (subreddit.isSelected()) {
+                selectedSubreddits.add(subreddit);
+            }
+        }
+
         // remove any existing onPageChange listeners in order to prevent multiple listeners from being attached
         viewPager.clearOnPageChangeListeners();
 
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(SubredditPreferencesUpdatedEvent event) {
-        setupViewPagerAndTabs(event.getSelectedSubreddits());
+        setupViewPagerAndTabs(event.getSubreddits());
         updateAppBarTitlesWithPostInfo();
     }
 
@@ -265,8 +265,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onEventMainThread(AuthenticatedEvent event) {
-        Toast.makeText(this, event.getUser().getUsername(), Toast.LENGTH_LONG).show();
+    public void onEventMainThread(final AuthenticatedEvent event) {
+        progressDialog.setMessage(getResources().getString(R.string.label_fetching_subreddits));
+        progressDialog.show();
+
+        SubredditsManager.getSubreddits(new Callback<List<Subreddit>>() {
+
+            @Override
+            public void onSuccess(List<Subreddit> data) {
+                progressDialog.hide();
+
+                setupViewPagerAndTabs(data);
+                updateAppBarTitlesWithPostInfo();
+
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.success_logged_in_base) +
+                        event.getUser().getUsername(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                progressDialog.hide();
+
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void updateAppBarTitlesWithPostInfo() {

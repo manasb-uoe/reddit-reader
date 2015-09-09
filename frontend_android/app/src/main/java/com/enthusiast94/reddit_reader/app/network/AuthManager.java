@@ -49,6 +49,9 @@ public class AuthManager extends RedditManager {
                 try {
                     User user = new User(response.getString("name"), accessToken, Long.valueOf(expiresIn));
 
+                    // clear any existing preferences
+                    Helpers.clearPrefs(App.getAppContext());
+
                     Gson gson = new Gson();
                     Helpers.writeToPrefs(App.getAppContext(), USER_PREFS_KEY, gson.toJson(user));
 

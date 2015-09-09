@@ -68,22 +68,22 @@ public class ManageSubredditsFragment extends Fragment {
                 int id = item.getItemId();
 
                 if (id == R.id.action_done) {
-                    List<Subreddit> selectedSubreddits = new ArrayList<Subreddit>();
-                    for (Subreddit subreddit : subredditsAdapter.getSubreddits()) {
-                        if (subreddit.isSelected()) {
-                            selectedSubreddits.add(subreddit);
-                        }
+                    List<Subreddit> subreddits = subredditsAdapter.getSubreddits();
+
+                    int selected = 0;
+                    for (Subreddit subreddit : subreddits) {
+                        if (subreddit.isSelected()) selected++;
                     }
 
-                    if (selectedSubreddits.size() == 0) {
+                    if (selected == 0) {
                         Toast.makeText(getActivity(), R.string.error_atleast_one_selected_subreddit, Toast.LENGTH_LONG)
                                 .show();
                     } else {
-                        SubredditsManager.saveSubreddits(subredditsAdapter.getSubreddits());
+                        SubredditsManager.saveSubreddits(subreddits);
                         Toast.makeText(getActivity(), R.string.success_subreddit_preferences_updated, Toast.LENGTH_SHORT)
                                 .show();
                         getActivity().onBackPressed();
-                        EventBus.getDefault().post(new SubredditPreferencesUpdatedEvent(selectedSubreddits));
+                        EventBus.getDefault().post(new SubredditPreferencesUpdatedEvent(subreddits));
                     }
 
                     return true;

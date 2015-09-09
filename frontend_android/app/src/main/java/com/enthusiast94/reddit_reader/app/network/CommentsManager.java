@@ -21,7 +21,9 @@ public class CommentsManager extends RedditManager {
     public static void getComments(String subreddit, String postId, String sort, final Callback<List<Comment>> callback) {
         sort = sort.toLowerCase();
 
-        String commentsUrl = UNAUTH_API_BASE + "/r/" + subreddit + "/comments/" + postId + "/.json?sort=" + sort;
+        // build comments URL
+        String commentsUrl = AuthManager.isUserAuthenticated() ? AUTH_API_BASE : UNAUTH_API_BASE;
+        commentsUrl += "/r/" + subreddit + "/comments/" + postId + "/.json?sort=" + sort;
 
         getAsyncHttpClient().get(commentsUrl, new JsonHttpResponseHandler() {
 
