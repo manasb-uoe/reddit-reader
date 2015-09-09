@@ -87,6 +87,10 @@ public class ManageSubredditsFragment extends Fragment {
                     }
 
                     return true;
+                } else if (id == R.id.action_select_all) {
+                    subredditsAdapter.selectAll();
+                } else if (id == R.id.action_deselect_all) {
+                    subredditsAdapter.deselectAll();
                 }
 
                 return false;
@@ -183,6 +187,30 @@ public class ManageSubredditsFragment extends Fragment {
             } else {
                 return 2;
             }
+        }
+
+        public void selectAll() {
+            for (Subreddit subreddit : selectedSubreddits) {
+                subreddit.setSelected(true);
+            }
+
+            for (Subreddit subreddit : unselectedSubreddits) {
+                subreddit.setSelected(true);
+            }
+
+            notifyDataSetChanged();
+        }
+
+        public void deselectAll() {
+            for (Subreddit subreddit : selectedSubreddits) {
+                subreddit.setSelected(false);
+            }
+
+            for (Subreddit subreddit : unselectedSubreddits) {
+                subreddit.setSelected(false);
+            }
+
+            notifyDataSetChanged();
         }
 
         public class HeadingViewHolder extends RecyclerView.ViewHolder {
