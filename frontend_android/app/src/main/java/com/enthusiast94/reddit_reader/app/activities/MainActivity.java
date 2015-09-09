@@ -291,6 +291,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void onEventMainThread(DeauthenticatedEvent event) {
+        progressDialog.setMessage(getResources().getString(R.string.label_fetching_subreddits));
+        progressDialog.show();
+
+        SubredditsManager.getSubreddits(new Callback<List<Subreddit>>() {
+
+            @Override
+            public void onSuccess(List<Subreddit> data) {
+                progressDialog.hide();
+
+                setupViewPagerAndTabs(data);
+                updateAppBarTitlesWithPostInfo();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                progressDialog.hide();
+
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void updateAppBarTitlesWithPostInfo() {
         appBar.setTitle(subreddit);
         appBar.setSubtitle(sort);
@@ -309,6 +332,20 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    // called every time the menu is about to be shown
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (AuthManager.isUserAuthenticated()) {
+            menu.findItem(R.id.action_login).setVisible(false);
+            menu.findItem(R.id.action_logout).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_login).setVisible(true);
+            menu.findItem(R.id.action_logout).setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -360,6 +397,10 @@ public class MainActivity extends AppCompatActivity {
             fTransaction.add(android.R.id.content, new ManageSubredditsFragment());
             fTransaction.addToBackStack(null);
             fTransaction.commit();
+        } else if (id == R.id.action_logout) {
+            AuthManager.deauth();
+
+            EventBus.getDefault().post(new DeauthenticatedEvent());
         }
 
         return super.onOptionsItemSelected(item);

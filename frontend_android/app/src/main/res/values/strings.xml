@@ -6,6 +6,7 @@
     <string name="error_parsing">There was an error while parsing the API response.</string>
     <string name="front_page">Front Page</string>
     <string name="action_login">Login</string>
+    <string name="action_logout">Logout</string>
     <string name="action_sort_hot">Hot</string>
     <string name="action_sort_rising">Rising</string>
     <string name="action_sort_new">New</string>
