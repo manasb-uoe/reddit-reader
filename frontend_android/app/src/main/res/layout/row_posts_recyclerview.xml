@@ -39,6 +39,7 @@
                                         android:id="@+id/score_textview"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textSize="@dimen/font_large"
                                         style="@style/TextAppearance.AppCompat.Title"
                                         android:fontFamily="sans-serif-condensed"
                                         />
@@ -62,7 +63,8 @@
                                                 android:text="r/subreddit"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                style="@style/TextAppearance.AppCompat.Caption"
+                                                style="@style/TextAppearance.AppCompat.Small"
+                                                android:textSize="@dimen/font_small"
                                                 />
 
                                         <TextView
@@ -79,7 +81,8 @@
                                                 android:text="1140 comments"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                style="@style/TextAppearance.AppCompat.Caption"
+                                                style="@style/TextAppearance.AppCompat.Small"
+                                                android:textSize="@dimen/font_small"
                                                 />
 
                                         <TextView
@@ -96,7 +99,8 @@
                                                 android:text="5h"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                style="@style/TextAppearance.AppCompat.Caption"
+                                                style="@style/TextAppearance.AppCompat.Small"
+                                                android:textSize="@dimen/font_small"
                                                 />
 
                                 </LinearLayout>
@@ -133,7 +137,6 @@
                                 android:layout_height="wrap_content"
                                 android:background="?attr/selectableItemBackground"
                                 android:text="Hello testing testing"
-                                android:textSize="@dimen/font_small"
                                 style="@style/TextAppearance.AppCompat.Body1"
                                 />
 
