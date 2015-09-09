@@ -8,12 +8,45 @@ import android.util.TypedValue;
 import android.view.inputmethod.InputMethodManager;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by manas on 03-09-2015.
  */
 public class Helpers {
+
+    public static String stringifyParams(Map<String, String> params) {
+        int pos = 0;
+
+        String paramsString = "";
+
+        for (String key : params.keySet()) {
+            if (pos == 0) {
+                paramsString  += key + "=" + params.get(key);
+            } else {
+                paramsString  += "&" + key + "=" + params.get(key);
+            }
+
+            pos++;
+        }
+
+        return paramsString;
+    }
+
+    public static Map<String, String> parseUrlHashParams(String url) {
+        url = url.substring(url.indexOf("#") + 1, url.length());
+        String[] split = url.split("&");
+
+        Map<String, String> params = new HashMap<String, String>();
+        for (String item : split) {
+            String[] split2 = item.split("=");
+            params.put(split2[0], split2[1]);
+        }
+
+        return params;
+    }
 
     public static void writeToPrefs(Context context, String key, String value) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

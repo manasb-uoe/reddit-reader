@@ -21,15 +21,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
-import com.enthusiast94.reddit_reader.app.events.HideContentViewerEvent;
-import com.enthusiast94.reddit_reader.app.events.SubredditPreferencesUpdatedEvent;
-import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
-import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
+import com.enthusiast94.reddit_reader.app.events.*;
 import com.enthusiast94.reddit_reader.app.fragments.CommentsFragment;
 import com.enthusiast94.reddit_reader.app.fragments.ContentViewerFragment;
 import com.enthusiast94.reddit_reader.app.fragments.ManageSubredditsFragment;
 import com.enthusiast94.reddit_reader.app.fragments.PostsFragment;
 import com.enthusiast94.reddit_reader.app.models.Subreddit;
+import com.enthusiast94.reddit_reader.app.models.User;
+import com.enthusiast94.reddit_reader.app.network.AuthManager;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.SubredditsManager;
 import de.greenrobot.event.EventBus;
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private String sort;
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
-    private ProgressDialog fetchingSubredditsProgressDialog;
+    private ProgressDialog progressDialog;
     private ContentViewerFragment contentViewerFragment;
 
     @Override
@@ -86,13 +85,13 @@ public class MainActivity extends AppCompatActivity {
         updateAppBarTitlesWithPostInfo();
 
         /**
-         * Setup progress bar which will be displayed while subreddits are being fetched
+         * Setup progress dialog which will be displayed while network operations are being performed
          */
 
-        fetchingSubredditsProgressDialog = new ProgressDialog(this);
-        fetchingSubredditsProgressDialog.setMessage(getResources().getString(R.string.label_fetching_subreddits));
-        fetchingSubredditsProgressDialog.setCancelable(false);
-        fetchingSubredditsProgressDialog.show();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getResources().getString(R.string.label_fetching_subreddits));
+        progressDialog.show();
 
         /**
          * Setup tabs and viewpager
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(List<Subreddit> data) {
-                fetchingSubredditsProgressDialog.hide();
+                progressDialog.hide();
 
                 // keep selected subreddits only
                 List<Subreddit> selectedSubreddits = new ArrayList<Subreddit>();
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String message) {
-                fetchingSubredditsProgressDialog.hide();
+                progressDialog.hide();
 
                 // TODO display error message
             }
@@ -184,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        fetchingSubredditsProgressDialog.dismiss();
+        progressDialog.dismiss();
 
         super.onDestroy();
     }
@@ -240,6 +239,36 @@ public class MainActivity extends AppCompatActivity {
         fTransaction.commit();
     }
 
+    public void onEventMainThread(OauthCallbackEvent event) {
+        if (event.getError() != null) {
+            Toast.makeText(this, event.getError(), Toast.LENGTH_LONG).show();
+        } else {
+            progressDialog.setMessage(getResources().getString(R.string.label_logging_in));
+            progressDialog.show();
+
+            AuthManager.auth(event.getAccessToken(), event.getState(), event.getExpiresIn(), new Callback<User>() {
+
+                @Override
+                public void onSuccess(User data) {
+                    progressDialog.hide();
+
+                    EventBus.getDefault().post(new AuthenticatedEvent(data));
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    progressDialog.hide();
+
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    public void onEventMainThread(AuthenticatedEvent event) {
+        Toast.makeText(this, event.getUser().getUsername(), Toast.LENGTH_LONG).show();
+    }
+
     private void updateAppBarTitlesWithPostInfo() {
         appBar.setTitle(subreddit);
         appBar.setSubtitle(sort);
@@ -268,7 +297,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_sort_hot || id == R.id.action_sort_new || id == R.id.action_sort_rising ||
+        if (id == R.id.action_login) {
+            EventBus.getDefault().post(new ViewContentEvent(getResources().getString(R.string.action_login),
+                    AuthManager.getAuthUrl()));
+        } else if (id == R.id.action_sort_hot || id == R.id.action_sort_new || id == R.id.action_sort_rising ||
                 id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
             sort = item.getTitle().toString();
             updateAppBarTitlesWithPostInfo();

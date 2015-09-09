@@ -12,8 +12,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.HideContentViewerEvent;
+import com.enthusiast94.reddit_reader.app.events.OauthCallbackEvent;
+import com.enthusiast94.reddit_reader.app.network.AuthManager;
+import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.enthusiast94.reddit_reader.app.utils.OnBackPressedListener;
 import de.greenrobot.event.EventBus;
+
+import java.util.Map;
 
 /**
  * Created by manas on 05-09-2015.
@@ -84,7 +89,20 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+                if (url.contains(AuthManager.REDIRECT_URI)) {
+                    Map<String, String> params = Helpers.parseUrlHashParams(url);
+
+                    EventBus.getDefault().post(new OauthCallbackEvent(
+                            params.get("access_token"),
+                            params.get("expires_in"),
+                            params.get("state"),
+                            params.get("error")
+                    ));
+
+                    EventBus.getDefault().post(new HideContentViewerEvent());
+                } else {
+                    view.loadUrl(url);
+                }
                 return true;
             }
 

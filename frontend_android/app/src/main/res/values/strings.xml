@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="error_parsing">There was an error while parsing the API response.</string>
     <string name="front_page">Front Page</string>
+    <string name="action_login">Login</string>
     <string name="action_sort_hot">Hot</string>
     <string name="action_sort_rising">Rising</string>
     <string name="action_sort_new">New</string>
@@ -33,6 +34,7 @@
     <string name="success_subreddit_preferences_updated">Success! Subreddit preferences updated successfully.</string>
     <string name="label_selected_subreddits">Selected Subreddits</string>
     <string name="label_fetching_subreddits">Fetching subreddits…</string>
+    <string name="label_logging_in">Logging in…</string>
     <string name="label_points">points</string>
     <string name="label_comments">comments</string>
     <string name="solid_circle_symbol">•</string>
