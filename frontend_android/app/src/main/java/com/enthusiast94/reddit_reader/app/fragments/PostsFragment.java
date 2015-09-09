@@ -291,14 +291,19 @@ public class PostsFragment extends Fragment {
                 thumbnailImageView.setVisibility(View.GONE);
             }
 
-            setUpvoteDownvoteColors(post.getLikes());
-
             if (getAdapterPosition() == currentlySelectedPosition) {
                 rootLayout.setBackgroundResource(R.color.selected_item_background);
                 buttonsContainer.setVisibility(View.VISIBLE);
             } else {
                 buttonsContainer.setVisibility(View.GONE);
                 rootLayout.setBackgroundResource(0);
+            }
+
+            if (AuthManager.isUserAuthenticated()) {
+                setUpvoteDownvoteColors(post.getLikes());
+            } else {
+                upvoteButton.setEnabled(false);
+                downvoteButton.setEnabled(false);
             }
 
             // set click listeners
@@ -321,32 +326,22 @@ public class PostsFragment extends Fragment {
                             EventBus.getDefault().post(new ViewContentEvent(post.getTitle(), post.getUrl()));
                             break;
                         case R.id.upvote_button:
-                            if (AuthManager.isUserAuthenticated()) {
-                                if (post.getLikes() == -1 || post.getLikes() == 0) {
-                                    post.setLikes(true);
-                                } else {
-                                    post.setLikes(null);
-                                }
-                                RedditManager.vote(post.getFullName(), post.getLikes(), null);
-                                setUpvoteDownvoteColors(post.getLikes());
+                            if (post.getLikes() == -1 || post.getLikes() == 0) {
+                                post.setLikes(true);
                             } else {
-                                Toast.makeText(context, context.getResources().getString(R.string.error_not_authorized),
-                                        Toast.LENGTH_LONG).show();
+                                post.setLikes(null);
                             }
+                            RedditManager.vote(post.getFullName(), post.getLikes(), null);
+                            setUpvoteDownvoteColors(post.getLikes());
                             break;
                         case R.id.downvote_button:
-                            if (AuthManager.isUserAuthenticated()) {
-                                if (post.getLikes() == 1 || post.getLikes() == 0) {
-                                    post.setLikes(false);
-                                } else {
-                                    post.setLikes(null);
-                                }
-                                RedditManager.vote(post.getFullName(), post.getLikes(), null);
-                                setUpvoteDownvoteColors(post.getLikes());
+                            if (post.getLikes() == 1 || post.getLikes() == 0) {
+                                post.setLikes(false);
                             } else {
-                                Toast.makeText(context, context.getResources().getString(R.string.error_not_authorized),
-                                        Toast.LENGTH_LONG).show();
+                                post.setLikes(null);
                             }
+                            RedditManager.vote(post.getFullName(), post.getLikes(), null);
+                            setUpvoteDownvoteColors(post.getLikes());
                             break;
                     }
                 }
