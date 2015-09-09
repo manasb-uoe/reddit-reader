@@ -20,8 +20,10 @@ import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.models.Comment;
 import com.enthusiast94.reddit_reader.app.models.Post;
+import com.enthusiast94.reddit_reader.app.network.AuthManager;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.CommentsManager;
+import com.enthusiast94.reddit_reader.app.network.RedditManager;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
@@ -126,6 +128,9 @@ public class CommentsFragment extends Fragment {
         private int previouslySelectedPosition;
         private int currentlySelectedPosition;
         private int[] childCommentIndicatorColors;
+        private int upvoteColor;
+        private int downvoteColor;
+        private int primaryTextColor;
 
         public CommentsAdapter(Context context, List<Comment> comments, Post selectedPost, LinearLayoutManager linearLayoutManager) {
             this.context = context;
@@ -136,8 +141,8 @@ public class CommentsFragment extends Fragment {
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
 
-            // retrieve child comment indicator colors
             Resources res = context.getResources();
+
             childCommentIndicatorColors = new int[]{
                     res.getColor(R.color.teal_500),
                     res.getColor(R.color.blue_500),
@@ -145,6 +150,10 @@ public class CommentsFragment extends Fragment {
                     res.getColor(R.color.light_green_500),
                     res.getColor(R.color.deep_orange_500)
             };
+
+            upvoteColor = res.getColor(R.color.reddit_upvote);
+            downvoteColor = res.getColor(R.color.reddit_downvote);
+            primaryTextColor = res.getColor(android.R.color.primary_text_dark);
         }
 
         @Override
@@ -192,7 +201,7 @@ public class CommentsFragment extends Fragment {
             previouslySelectedPosition = currentlySelectedPosition;
         }
 
-        private class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private class CommentViewHolder extends RecyclerView.ViewHolder {
 
             private View rootLayout;
             private TextView authorTextView;
@@ -204,6 +213,8 @@ public class CommentsFragment extends Fragment {
             private Button nextButton;
             private Button previousButton;
             private View buttonsContainerBottom;
+            private Button upvoteButton;
+            private Button downvoteButton;
 
             public CommentViewHolder(View itemView) {
                 super(itemView);
@@ -218,15 +229,11 @@ public class CommentsFragment extends Fragment {
                 nextButton = (Button) buttonsContainerTop.findViewById(R.id.next_parent_comment_button);
                 previousButton = (Button) buttonsContainerTop.findViewById(R.id.previous_parent_comment_button);
                 buttonsContainerBottom = itemView.findViewById(R.id.buttons_container_bottom);
-
-                // set event listeners
-                itemView.setOnClickListener(this);
-                nextButton.setOnClickListener(this);
-                previousButton.setOnClickListener(this);
-                bodyTextView.setOnClickListener(this);
+                upvoteButton = (Button) itemView.findViewById(R.id.upvote_button);
+                downvoteButton = (Button) itemView.findViewById(R.id.downvote_button);
             }
 
-            public void bindItem(Comment comment) {
+            public void bindItem(final Comment comment) {
                 authorTextView.setText(comment.getAuthor());
                 scoreTextView.setText(comment.getScore() + " " + context.getResources().getString(R.string.label_points));
                 createdTextView.setText(comment.getCreated());
@@ -256,6 +263,8 @@ public class CommentsFragment extends Fragment {
                     buttonsContainerBottom.setVisibility(View.GONE);
                 }
 
+                setUpvoteDownvoteColors(comment.getLikes());
+
                 if (getAdapterPosition() <= 1) {
                     previousButton.setEnabled(false);
                 } else {
@@ -274,32 +283,92 @@ public class CommentsFragment extends Fragment {
 
                 // set child comment indicator color based on level
                 childCommentIndicator.setBackgroundColor(childCommentIndicatorColors[comment.getLevel() % 5]);
+
+                // set click listeners
+                View.OnClickListener onClickListener = new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        switch (view.getId()) {
+                            case R.id.root_layout:
+                            case R.id.body_textview:
+                                onItemSelected(getAdapterPosition());
+                                break;
+                            case R.id.next_parent_comment_button:
+                                for (int i=getAdapterPosition()+1; i<=comments.size(); i++) {
+                                    if (comments.get(i-1).getLevel() == 0) {
+                                        onItemSelected(i);
+                                        linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
+                                        break;
+                                    }
+                                }
+                                break;
+                            case R.id.previous_parent_comment_button:
+                                for (int i=getAdapterPosition()-1; i >0; i--) {
+                                    if (comments.get(i-1).getLevel() == 0) {
+                                        onItemSelected(i);
+                                        linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
+                                        break;
+                                    }
+                                }
+                                break;
+                            case R.id.upvote_button:
+                                if (AuthManager.isUserAuthenticated()) {
+                                    if (comment.getLikes() == -1 || comment.getLikes() == 0) {
+                                        comment.setLikes(true);
+                                    } else {
+                                        comment.setLikes(null);
+                                    }
+                                    RedditManager.vote(comment.getFullName(), comment.getLikes(), null);
+                                    setUpvoteDownvoteColors(comment.getLikes());
+                                } else {
+                                    Toast.makeText(context, context.getResources().getString(R.string.error_not_authorized),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                                break;
+                            case R.id.downvote_button:
+                                if (AuthManager.isUserAuthenticated()) {
+                                    if (comment.getLikes() == 1 || comment.getLikes() == 0) {
+                                        comment.setLikes(false);
+                                    } else {
+                                        comment.setLikes(null);
+                                    }
+                                    RedditManager.vote(comment.getFullName(), comment.getLikes(), null);
+                                    setUpvoteDownvoteColors(comment.getLikes());
+                                } else {
+                                    Toast.makeText(context, context.getResources().getString(R.string.error_not_authorized),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                                break;
+                        }
+                    }
+                };
+
+                itemView.setOnClickListener(onClickListener);
+                nextButton.setOnClickListener(onClickListener);
+                previousButton.setOnClickListener(onClickListener);
+                bodyTextView.setOnClickListener(onClickListener);
+                upvoteButton.setOnClickListener(onClickListener);
+                downvoteButton.setOnClickListener(onClickListener);
             }
 
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.root_layout:
-                    case R.id.body_textview:
-                        onItemSelected(getAdapterPosition());
-                        break;
-                    case R.id.next_parent_comment_button:
-                        for (int i=getAdapterPosition()+1; i<=comments.size(); i++) {
-                            if (comments.get(i-1).getLevel() == 0) {
-                                onItemSelected(i);
-                                linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
-                                break;
-                            }
-                        }
-                        break;
-                    case R.id.previous_parent_comment_button:
-                        for (int i=getAdapterPosition()-1; i >0; i--) {
-                            if (comments.get(i-1).getLevel() == 0) {
-                                onItemSelected(i);
-                                linearLayoutManager.scrollToPositionWithOffset(i, itemView.getTop());
-                                break;
-                            }
-                        }
+            /**
+             * Sets colors for various ui elements within viewholder according to comment's current vote status
+             */
+
+            private void setUpvoteDownvoteColors(int likes) {
+                if (likes == 1) {
+                    upvoteButton.setTextColor(upvoteColor);
+                    scoreTextView.setTextColor(upvoteColor);
+                    downvoteButton.setTextColor(primaryTextColor);
+                } else if (likes == -1) {
+                    downvoteButton.setTextColor(downvoteColor);
+                    scoreTextView.setTextColor(downvoteColor);
+                    upvoteButton.setTextColor(primaryTextColor);
+                } else {
+                    upvoteButton.setTextColor(primaryTextColor);
+                    scoreTextView.setTextColor(primaryTextColor);
+                    downvoteButton.setTextColor(primaryTextColor);
                 }
             }
         }
