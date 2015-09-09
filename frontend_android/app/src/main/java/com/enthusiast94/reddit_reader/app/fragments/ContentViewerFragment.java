@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
     private WebView webView;
     private String contentTitle;
     private String contentUrl;
+    private boolean isVisible;
+    private static final String IS_VISIBLE_BUNDLE_KEY = "is_visible_key";
 
     public static ContentViewerFragment newInstance(String contentTitle, String url) {
         Bundle bundle = new Bundle();
@@ -41,6 +44,12 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
         contentViewerFragment.setArguments(bundle);
 
         return contentViewerFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate fragment");
     }
 
     @Nullable
@@ -125,7 +134,33 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
         Bundle bundle = getArguments();
         loadContent(bundle.getString(CONTENT_TITLE_BUNDLE_KEY), bundle.getString(URL_BUNDLE_KEY));
 
+        /**
+         * Restore isVisible from saved instance state and hide this fragment depending if its value is false. This
+         * needs to be done because for some reason the fragment manager shows all hidden fragments on configuration
+         * change. isVisible is set to true initially since onHiddenChanged only starts getting called after the fragment
+         * is hidden for the first time, i.e. when savedInstanceState != null.
+         */
+
+        isVisible = savedInstanceState == null || savedInstanceState.getBoolean(IS_VISIBLE_BUNDLE_KEY);
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // event needs to be posted here because activity registers the eventbus in its onResume() method
+        if (!isVisible) {
+            EventBus.getDefault().post(new HideContentViewerEvent());
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.d(TAG, hidden + ": hidden");
+        isVisible = !hidden;
     }
 
     public void loadContent(String contentTitle, String contentUrl) {
@@ -139,9 +174,17 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_VISIBLE_BUNDLE_KEY, isVisible);
+    }
+
+    @Override
     public void onBackPressed() {
         webView.loadUrl("about:blank");
 
         EventBus.getDefault().post(new HideContentViewerEvent());
+
+        isVisible = false;
     }
 }

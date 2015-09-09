@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
     private ProgressDialog progressDialog;
-    private ContentViewerFragment contentViewerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        contentViewerFragment =
+        ContentViewerFragment contentViewerFragment =
                 (ContentViewerFragment) getSupportFragmentManager().findFragmentByTag(ContentViewerFragment.TAG);
 
         if (contentViewerFragment == null) {
@@ -218,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(HideContentViewerEvent event) {
-        contentViewerFragment =
+        ContentViewerFragment contentViewerFragment =
                 (ContentViewerFragment) getSupportFragmentManager().findFragmentByTag(ContentViewerFragment.TAG);
         getSupportFragmentManager().beginTransaction()
                 .hide(contentViewerFragment)
@@ -410,6 +409,8 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         // if back button is pressed while content viewer fragment is visible, delegate call to its onBackPressed method
         // else, pop back stack (if possible)
+        ContentViewerFragment contentViewerFragment =
+                (ContentViewerFragment) getSupportFragmentManager().findFragmentByTag(ContentViewerFragment.TAG);
         if (contentViewerFragment != null && contentViewerFragment.isVisible()) {
             contentViewerFragment.onBackPressed();
         } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
