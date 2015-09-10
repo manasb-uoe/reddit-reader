@@ -205,10 +205,12 @@ public class MainActivity extends AppCompatActivity {
         if (contentViewerFragment == null) {
             contentViewerFragment = ContentViewerFragment.newInstance(event.getContentTitle(), event.getUrl());
             getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, 0)
                     .add(android.R.id.content, contentViewerFragment, ContentViewerFragment.TAG)
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, 0)
                     .show(contentViewerFragment)
                     .commit();
             contentViewerFragment.loadContent(event.getContentTitle(), event.getUrl());
@@ -220,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
         ContentViewerFragment contentViewerFragment =
                 (ContentViewerFragment) getSupportFragmentManager().findFragmentByTag(ContentViewerFragment.TAG);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(0, R.anim.fade_out)
                 .hide(contentViewerFragment)
                 .commit();
     }
@@ -233,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         CommentsFragment commentsFragment =
                 CommentsFragment.newInstance(event.getSelectedPost());
         FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+        fTransaction.setCustomAnimations(R.anim.fade_in, 0, 0, R.anim.fade_out);
         fTransaction.add(android.R.id.content, commentsFragment);
         fTransaction.addToBackStack(null);
         fTransaction.commit();
@@ -381,6 +385,7 @@ public class MainActivity extends AppCompatActivity {
                                         .show();
                             } else {
                                 FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+                                fTransaction.setCustomAnimations(R.anim.fade_in, 0, 0, R.anim.fade_out);
                                 fTransaction.add(android.R.id.content,
                                         PostsFragment.newInstance(subredditEditText.getText().toString(), sort, true));
                                 fTransaction.addToBackStack(null);
@@ -393,6 +398,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         } else if (id == R.id.action_manage_subreddits) {
             FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+            fTransaction.setCustomAnimations(R.anim.fade_in, 0, 0, R.anim.fade_out);
             fTransaction.add(android.R.id.content, new ManageSubredditsFragment());
             fTransaction.addToBackStack(null);
             fTransaction.commit();
