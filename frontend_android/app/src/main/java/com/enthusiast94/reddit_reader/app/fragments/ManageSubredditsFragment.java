@@ -48,6 +48,12 @@ public class ManageSubredditsFragment extends Fragment {
         subredditsRecyclerView = (RecyclerView) view.findViewById(R.id.subreddits_recyclerview);
 
         /**
+         * Configure recycler view
+         */
+
+        subredditsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        /**
          * Setup toolbar
          */
 
@@ -110,7 +116,6 @@ public class ManageSubredditsFragment extends Fragment {
 
                 subredditsAdapter = new SubredditsAdapter(data);
                 subredditsRecyclerView.setAdapter(subredditsAdapter);
-                subredditsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             }
 
             @Override

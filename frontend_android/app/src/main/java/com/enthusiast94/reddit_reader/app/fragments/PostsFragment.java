@@ -74,6 +74,13 @@ public class PostsFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progress_circular);
 
         /**
+         * Configure recycler view
+         */
+
+        postsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+
+        /**
          * Retrieve info about posts to load from arguments
          */
 
@@ -146,9 +153,6 @@ public class PostsFragment extends Fragment {
                 if (getActivity() != null) {
                     PostsAdapter postsAdapter = new PostsAdapter(getActivity(), data);
                     postsRecyclerView.setAdapter(postsAdapter);
-                    postsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    // disable change animation
-                    postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
                 }
             }
 

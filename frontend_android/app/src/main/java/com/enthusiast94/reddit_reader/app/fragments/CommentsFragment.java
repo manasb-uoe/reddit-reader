@@ -64,6 +64,14 @@ public class CommentsFragment extends Fragment {
         commentsRecyclerView = (RecyclerView) view.findViewById(R.id.comments_recyclerview);
 
         /**
+         * Configure recycler view
+         */
+
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        commentsRecyclerView.setLayoutManager(linearLayoutManager);
+        commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+
+        /**
          * Retrieve selected subreddit from arguments
          */
 
@@ -97,11 +105,7 @@ public class CommentsFragment extends Fragment {
                 commentsRecyclerView.setVisibility(View.VISIBLE);
 
                 if (getActivity() != null) {
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                     commentsRecyclerView.setAdapter(new CommentsAdapter(getActivity(), data, selectedPost, linearLayoutManager));
-                    commentsRecyclerView.setLayoutManager(linearLayoutManager);
-                    // disable change animation
-                    commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
                 }
             }
 
