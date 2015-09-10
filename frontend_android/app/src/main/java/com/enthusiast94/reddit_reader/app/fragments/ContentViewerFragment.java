@@ -86,6 +86,8 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
         settings.setSupportZoom(true);
         // enable local storage
         settings.setDomStorageEnabled(true);
+        // set dark background color
+        webView.setBackgroundColor(getResources().getColor(R.color.background_material_dark));
         // force to load url in the webview itself instead of opening default browser
         webView.setWebViewClient(new WebViewClient() {
 

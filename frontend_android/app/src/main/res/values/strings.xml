@@ -42,5 +42,6 @@
     <string name="label_logging_in">Logging in…</string>
     <string name="label_points">points</string>
     <string name="label_comments">comments</string>
+    <string name="label_no_comments">No comments posted yet…</string>
     <string name="solid_circle_symbol">•</string>
 </resources>

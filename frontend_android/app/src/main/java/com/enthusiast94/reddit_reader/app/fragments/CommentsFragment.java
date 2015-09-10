@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.enthusiast94.reddit_reader.app.R;
@@ -29,6 +29,7 @@ import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
 import de.greenrobot.event.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +38,12 @@ import java.util.List;
 public class CommentsFragment extends Fragment {
 
     private Toolbar toolbar;
-    private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView commentsRecyclerView;
+    private CommentsAdapter commentsAdapter;
+    private LinearLayoutManager linearLayoutManager;
     private static final String SELECTED_POST_BUNDLE_KEY = "selected_subreddit_key";
+    private String sort = "best";
 
     public static CommentsFragment newInstance(Post selectedPost) {
         Bundle bundle = new Bundle();
@@ -60,16 +64,8 @@ public class CommentsFragment extends Fragment {
          */
 
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_circular);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         commentsRecyclerView = (RecyclerView) view.findViewById(R.id.comments_recyclerview);
-
-        /**
-         * Configure recycler view
-         */
-
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        commentsRecyclerView.setLayoutManager(linearLayoutManager);
-        commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
 
         /**
          * Retrieve selected subreddit from arguments
@@ -77,6 +73,27 @@ public class CommentsFragment extends Fragment {
 
         final Post selectedPost = getArguments().getParcelable(SELECTED_POST_BUNDLE_KEY);
 
+        /**
+         * Configure recycler view
+         */
+
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        commentsRecyclerView.setLayoutManager(linearLayoutManager);
+        commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+        commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<Comment>(), selectedPost, linearLayoutManager);
+        commentsRecyclerView.setAdapter(commentsAdapter);
+
+        /**
+         * Configure swipe refresh layout to load posts when swiped
+         */
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                loadComments(selectedPost, sort);
+            }
+        });
 
         /**
          * Setup toolbar
@@ -94,33 +111,51 @@ public class CommentsFragment extends Fragment {
         });
 
         /**
-         * Load comments and set recyclerview adapter
+         * Load comments
          */
 
-        CommentsManager.getComments(selectedPost.getSubreddit(), selectedPost.getId(), "best", new Callback<List<Comment>>() {
+        loadComments(selectedPost, sort);
+
+        return view;
+    }
+
+    private void loadComments(final Post selectedPost, String sort) {
+        setRefreshIndicatorVisiblity(true);
+
+        CommentsManager.getComments(selectedPost.getSubreddit(), selectedPost.getId(), sort, new Callback<List<Comment>>() {
 
             @Override
             public void onSuccess(List<Comment> data) {
-                progressBar.setVisibility(View.INVISIBLE);
-                commentsRecyclerView.setVisibility(View.VISIBLE);
-
                 if (getActivity() != null) {
-                    commentsRecyclerView.setAdapter(new CommentsAdapter(getActivity(), data, selectedPost, linearLayoutManager));
+                    setRefreshIndicatorVisiblity(false);
+
+                    if (data.size() > 0) {
+                        commentsAdapter.setComments(data);
+                    } else {
+                        Toast.makeText(getActivity(), R.string.label_no_comments, Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(String message) {
-                progressBar.setVisibility(View.INVISIBLE);
-                commentsRecyclerView.setVisibility(View.INVISIBLE);
-
                 if (getActivity() != null) {
+                    setRefreshIndicatorVisiblity(false);
+
                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
 
-        return view;
+    private void setRefreshIndicatorVisiblity(final boolean visiblity) {
+        swipeRefreshLayout.post(new Runnable() {
+
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(visiblity);
+            }
+        });
     }
 
     private static class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnItemSelectedListener {
@@ -203,6 +238,11 @@ public class CommentsFragment extends Fragment {
             notifyItemChanged(previouslySelectedPosition);
 
             previouslySelectedPosition = currentlySelectedPosition;
+        }
+
+        public void setComments(List<Comment> comments) {
+            this.comments = new ArrayList<Comment>(comments);
+            notifyDataSetChanged();
         }
 
         private class CommentViewHolder extends RecyclerView.ViewHolder {
