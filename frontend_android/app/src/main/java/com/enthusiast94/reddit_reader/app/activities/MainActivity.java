@@ -326,6 +326,14 @@ public class MainActivity extends AppCompatActivity {
         fTransaction.commit();
     }
 
+    public void onEventMainThread(ShareContentEvent event) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, event.getContent());
+        sendIntent.setType(event.getMimeType());
+        startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.label_share_via)));
+    }
+
     private void updateAppBarTitlesWithPostInfo() {
         appBar.setTitle(subreddit);
         appBar.setSubtitle(sort);

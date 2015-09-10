@@ -1,6 +1,8 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.bumptech.glide.Glide;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.ShareContentEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewSubredditPostsEvent;
@@ -432,6 +435,14 @@ public class PostsFragment extends Fragment {
                                             if (i == 0) {  // View subreddit
                                                 EventBus.getDefault().post(new ViewSubredditPostsEvent(post.getSubreddit(),
                                                         context.getResources().getString(R.string.action_sort_hot)));
+                                            } else if (i == 1) { // Share link
+                                                EventBus.getDefault().post(new ShareContentEvent(post.getUrl(), "text/plain"));
+                                            } else if (i == 2) { // Copy link
+                                                ClipboardManager clipboard =
+                                                        (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                                clipboard.setPrimaryClip(ClipData.newPlainText(null, post.getUrl()));
+                                                Toast.makeText(context, R.string.success_post_link_copied_to_clipboard,
+                                                        Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     })
