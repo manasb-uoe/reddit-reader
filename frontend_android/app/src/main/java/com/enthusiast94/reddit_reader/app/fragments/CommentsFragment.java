@@ -174,6 +174,7 @@ public class CommentsFragment extends Fragment {
         private int upvoteColor;
         private int downvoteColor;
         private int primaryTextColor;
+        private int secondaryTextColor;
 
         public CommentsAdapter(Context context, List<Comment> comments, Post selectedPost, LinearLayoutManager linearLayoutManager) {
             this.context = context;
@@ -196,7 +197,8 @@ public class CommentsFragment extends Fragment {
 
             upvoteColor = res.getColor(R.color.reddit_upvote);
             downvoteColor = res.getColor(R.color.reddit_downvote);
-            primaryTextColor = res.getColor(android.R.color.primary_text_dark);
+            primaryTextColor = res.getColor(R.color.primary_text_default_material_dark);
+            secondaryTextColor = res.getColor(R.color.secondary_text_default_material_dark);
         }
 
         @Override
@@ -410,7 +412,7 @@ public class CommentsFragment extends Fragment {
                     upvoteButton.setTextColor(primaryTextColor);
                 } else {
                     upvoteButton.setTextColor(primaryTextColor);
-                    scoreTextView.setTextColor(primaryTextColor);
+                    scoreTextView.setTextColor(secondaryTextColor);
                     downvoteButton.setTextColor(primaryTextColor);
                 }
             }

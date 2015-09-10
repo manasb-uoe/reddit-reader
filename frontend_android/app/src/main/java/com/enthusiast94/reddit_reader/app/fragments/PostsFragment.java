@@ -325,7 +325,7 @@ public class PostsFragment extends Fragment {
 
             upvoteColor = res.getColor(R.color.reddit_upvote);
             downvoteColor = res.getColor(R.color.reddit_downvote);
-            primaryTextColor = res.getColor(android.R.color.primary_text_dark);
+            primaryTextColor = res.getColor(R.color.primary_text_default_material_dark);
 
             rootLayout = itemView.findViewById(R.id.root_layout);
             scoreTextView = (TextView) itemView.findViewById(R.id.score_textview);
