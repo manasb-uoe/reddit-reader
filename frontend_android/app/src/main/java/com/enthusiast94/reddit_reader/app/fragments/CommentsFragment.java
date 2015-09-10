@@ -84,9 +84,10 @@ public class CommentsFragment extends Fragment {
         commentsRecyclerView.setAdapter(commentsAdapter);
 
         /**
-         * Configure swipe refresh layout to load posts when swiped
+         * Configure swipe refresh layout
          */
 
+        swipeRefreshLayout.setColorSchemeResources(R.color.accent);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -121,6 +122,7 @@ public class CommentsFragment extends Fragment {
 
     private void loadComments(final Post selectedPost, String sort) {
         setRefreshIndicatorVisiblity(true);
+        commentsRecyclerView.setVisibility(View.INVISIBLE);
 
         CommentsManager.getComments(selectedPost.getSubreddit(), selectedPost.getId(), sort, new Callback<List<Comment>>() {
 
@@ -128,6 +130,7 @@ public class CommentsFragment extends Fragment {
             public void onSuccess(List<Comment> data) {
                 if (getActivity() != null) {
                     setRefreshIndicatorVisiblity(false);
+                    commentsRecyclerView.setVisibility(View.VISIBLE);
 
                     if (data.size() > 0) {
                         commentsAdapter.setComments(data);
@@ -141,6 +144,7 @@ public class CommentsFragment extends Fragment {
             public void onFailure(String message) {
                 if (getActivity() != null) {
                     setRefreshIndicatorVisiblity(false);
+                    commentsRecyclerView.setVisibility(View.VISIBLE);
 
                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                 }

@@ -29,7 +29,6 @@
                         android:id="@+id/posts_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="@dimen/spacing_tiny"
                         android:scrollbars="vertical"
                         android:clipToPadding="false"
                         />

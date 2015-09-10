@@ -105,9 +105,10 @@ public class PostsFragment extends Fragment {
         });
 
         /**
-         * Configure swipe refresh layout to load posts when swiped
+         * Configure swipe refresh
          */
 
+        swipeRefreshLayout.setColorSchemeResources(R.color.accent);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
