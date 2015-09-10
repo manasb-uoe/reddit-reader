@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="5"
+                    android:weightSum="4"
                     android:gravity="right"
                     >
 
@@ -120,7 +120,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="5"
+                    android:weightSum="4"
                     >
 
                 <Button
@@ -138,34 +138,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/action_downvote"
-                        style="@style/ButtonCard"
-                        />
-
-                <ImageButton
-                        android:id="@+id/more_button"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_action_navigation_more_vert"
-                        style="@style/ButtonCard"
-                        android:contentDescription="@string/action_more"
-                        />
-
-                <Button
-                        android:id="@+id/share_button"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/action_share"
-                        style="@style/ButtonCard"
-                        />
-
-                <Button
-                        android:id="@+id/hide_button"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/action_hide"
                         style="@style/ButtonCard"
                         />
 
