@@ -80,7 +80,7 @@ public class CommentsFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         commentsRecyclerView.setLayoutManager(linearLayoutManager);
         commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
-        commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<Comment>(), selectedPost, linearLayoutManager);
+        commentsAdapter = new CommentsAdapter(getActivity(), selectedPost, linearLayoutManager);
         commentsRecyclerView.setAdapter(commentsAdapter);
 
         /**
@@ -180,12 +180,14 @@ public class CommentsFragment extends Fragment {
         private int secondaryTextColor;
         private int opHighlightColor;
         private int accentColor;
+        private int lastParentCommentPosition;
 
-        public CommentsAdapter(Context context, List<Comment> comments, Post selectedPost, LinearLayoutManager linearLayoutManager) {
+        public CommentsAdapter(Context context, Post selectedPost, LinearLayoutManager linearLayoutManager) {
             this.context = context;
-            this.comments = comments;
             this.selectedPost = selectedPost;
             this.linearLayoutManager = linearLayoutManager;
+
+            comments = new ArrayList<Comment>();
 
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
@@ -256,6 +258,14 @@ public class CommentsFragment extends Fragment {
         public void setComments(List<Comment> comments) {
             this.comments = new ArrayList<Comment>(comments);
             notifyDataSetChanged();
+
+            // update parent comment position, which will be later used to enable/disable nextButton
+            for (int i=comments.size()-1; i>=0; i--) {
+                if (comments.get(i).getLevel() == 0) {
+                    lastParentCommentPosition = i;
+                    break;
+                }
+            }
         }
 
         private class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -335,7 +345,7 @@ public class CommentsFragment extends Fragment {
                     previousButton.setEnabled(true);
                 }
 
-                if (getAdapterPosition() == comments.size()) {
+                if (getAdapterPosition() > lastParentCommentPosition) {
                     nextButton.setEnabled(false);
                 } else {
                     nextButton.setEnabled(true);
