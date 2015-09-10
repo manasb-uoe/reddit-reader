@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,7 +97,6 @@ public class PostsFragment extends Fragment {
 
             @Override
             public void onLoadMore() {
-                Log.i(TAG, "onLoadMore");
                 loadPosts(subreddit, sort, after);
             }
         });
@@ -165,7 +163,7 @@ public class PostsFragment extends Fragment {
         return view;
     }
 
-    public void loadPosts(String subreddit, String sort, final String after) {
+    private void loadPosts(String subreddit, String sort, final String after) {
         setRefreshIndicatorVisiblity(true);
 
         PostsManager.getPosts(subreddit, sort, after, new Callback<List<Post>>() {
@@ -192,12 +190,23 @@ public class PostsFragment extends Fragment {
             @Override
             public void onFailure(String message) {
                 if (getActivity() != null) {
-                    setRefreshIndicatorVisiblity(true);
+                    setRefreshIndicatorVisiblity(false);
 
                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    /**
+     * This method is called by the host activity when the user chooses a different sort value.
+     */
+
+    public void updateSort(String sort) {
+        this.sort = sort;
+        after = null;
+
+        loadPosts(subreddit, this.sort, after);
     }
 
     private void setRefreshIndicatorVisiblity(final boolean visiblity) {
