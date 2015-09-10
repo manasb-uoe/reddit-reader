@@ -1,6 +1,8 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,14 +16,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.bumptech.glide.Glide;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
 import com.enthusiast94.reddit_reader.app.events.ViewContentEvent;
+import com.enthusiast94.reddit_reader.app.events.ViewSubredditPostsEvent;
 import com.enthusiast94.reddit_reader.app.models.Post;
 import com.enthusiast94.reddit_reader.app.network.AuthManager;
 import com.enthusiast94.reddit_reader.app.network.Callback;
@@ -312,7 +312,7 @@ public class PostsFragment extends Fragment {
         private Button commentsButton;
         private Button upvoteButton;
         private Button downvoteButton;
-
+        private ImageButton moreOptionsButton;
 
         public PostViewHolder(Context context, View itemView, OnItemSelectedListener onItemSelectedListener, boolean shouldShowSelftext) {
             super(itemView);
@@ -337,10 +337,11 @@ public class PostsFragment extends Fragment {
             selftextContainer = itemView.findViewById(R.id.self_text_container);
             selftextTextView = (TextView) itemView.findViewById(R.id.self_text_textview);
             buttonsContainer = itemView.findViewById(R.id.buttons_container);
-            viewButton = (Button) itemView.findViewById(R.id.view_button);
-            commentsButton = (Button) itemView.findViewById(R.id.comments_button);
-            upvoteButton = (Button) itemView.findViewById(R.id.upvote_button);
-            downvoteButton = (Button) itemView.findViewById(R.id.downvote_button);
+            viewButton = (Button) buttonsContainer.findViewById(R.id.view_button);
+            commentsButton = (Button) buttonsContainer.findViewById(R.id.comments_button);
+            upvoteButton = (Button) buttonsContainer.findViewById(R.id.upvote_button);
+            downvoteButton = (Button) buttonsContainer.findViewById(R.id.downvote_button);
+            moreOptionsButton = (ImageButton) buttonsContainer.findViewById(R.id.more_options_button);
         }
 
         public void bindItem(final Post post, int currentlySelectedPosition) {
@@ -422,6 +423,21 @@ public class PostsFragment extends Fragment {
                             RedditManager.vote(post.getFullName(), post.getLikes(), null);
                             setUpvoteDownvoteColors(post.getLikes());
                             break;
+                        case R.id.more_options_button:
+                            AlertDialog moreOptionsDialog = new AlertDialog.Builder(context)
+                                    .setItems(R.array.more_post_options, new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            if (i == 0) {  // View subreddit
+                                                EventBus.getDefault().post(new ViewSubredditPostsEvent(post.getSubreddit(),
+                                                        context.getResources().getString(R.string.action_sort_hot)));
+                                            }
+                                        }
+                                    })
+                                    .create();
+                            moreOptionsDialog.show();
+                            break;
                     }
                 }
             };
@@ -433,6 +449,7 @@ public class PostsFragment extends Fragment {
             thumbnailImageView.setOnClickListener(onClickListener);
             upvoteButton.setOnClickListener(onClickListener);
             downvoteButton.setOnClickListener(onClickListener);
+            moreOptionsButton.setOnClickListener(onClickListener);
         }
 
         /**

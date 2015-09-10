@@ -165,7 +165,7 @@
                                 />
 
                         <ImageButton
-                                android:id="@+id/more_button"
+                                android:id="@+id/more_options_button"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"

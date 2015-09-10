@@ -317,6 +317,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void onEventMainThread(ViewSubredditPostsEvent event) {
+        FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
+        fTransaction.setCustomAnimations(R.anim.fade_in, 0, 0, R.anim.fade_out);
+        fTransaction.add(android.R.id.content,
+                PostsFragment.newInstance(event.getSubreddit(), event.getSort(), true));
+        fTransaction.addToBackStack(null);
+        fTransaction.commit();
+    }
+
     private void updateAppBarTitlesWithPostInfo() {
         appBar.setTitle(subreddit);
         appBar.setSubtitle(sort);
@@ -384,12 +393,8 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, R.string.error_subreddit_name_required, Toast.LENGTH_SHORT)
                                         .show();
                             } else {
-                                FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
-                                fTransaction.setCustomAnimations(R.anim.fade_in, 0, 0, R.anim.fade_out);
-                                fTransaction.add(android.R.id.content,
-                                        PostsFragment.newInstance(subredditEditText.getText().toString(), getResources().getString(R.string.action_sort_hot), true));
-                                fTransaction.addToBackStack(null);
-                                fTransaction.commit();
+                                EventBus.getDefault().post(new ViewSubredditPostsEvent(subredditEditText.getText().toString(),
+                                        getResources().getString(R.string.action_sort_hot)));
                             }
                         }
                     })
