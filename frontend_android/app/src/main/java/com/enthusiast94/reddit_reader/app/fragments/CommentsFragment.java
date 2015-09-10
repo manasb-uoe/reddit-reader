@@ -122,7 +122,10 @@ public class CommentsFragment extends Fragment {
 
     private void loadComments(final Post selectedPost, String sort) {
         setRefreshIndicatorVisiblity(true);
-        commentsRecyclerView.setVisibility(View.INVISIBLE);
+        // only hide recycler view if post item is the only item (i.e. when comments are being loadded for the first time)
+        if (commentsAdapter.getItemCount() == 1) {
+            commentsRecyclerView.setVisibility(View.INVISIBLE);
+        }
 
         CommentsManager.getComments(selectedPost.getSubreddit(), selectedPost.getId(), sort, new Callback<List<Comment>>() {
 
