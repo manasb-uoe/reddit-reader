@@ -400,7 +400,12 @@ public class PostsFragment extends Fragment {
                             onItemSelectedListener.onItemSelected(getAdapterPosition());
                             break;
                         case R.id.view_button:
-                            EventBus.getDefault().post(new ViewContentEvent(post.getTitle(), post.getUrl()));
+                            // if its a self post, open comments directly
+                            if (post.isSelf()) {
+                                EventBus.getDefault().post(new ViewCommentsEvent(post));
+                            } else {
+                                EventBus.getDefault().post(new ViewContentEvent(post.getTitle(), post.getUrl()));
+                            }
                             break;
                         case R.id.comments_button:
                             EventBus.getDefault().post(new ViewCommentsEvent(post));

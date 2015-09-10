@@ -18,13 +18,14 @@ public class Post implements Parcelable {
     private String subreddit;
     private String author;
     private int score;
-    private boolean nsfw;
+    private boolean isNsfw;
     private String thumbnail;
     private String created;
     private String title;
     private String url;
     private int numComments;
     private String permalink;
+    private boolean isSelf;
     private String selftext;
     private int likes;
     private String after;
@@ -82,11 +83,11 @@ public class Post implements Parcelable {
     }
 
     public boolean isNsfw() {
-        return nsfw;
+        return isNsfw;
     }
 
-    public void setNsfw(boolean nsfw) {
-        this.nsfw = nsfw;
+    public void setNsfw(boolean isNsfw) {
+        this.isNsfw = isNsfw;
     }
 
     public String getThumbnail() {
@@ -177,6 +178,14 @@ public class Post implements Parcelable {
         this.after = after;
     }
 
+    public boolean isSelf() {
+        return isSelf;
+    }
+
+    public void setIsSelf(boolean isSelf) {
+        this.isSelf = isSelf;
+    }
+
     /**
      * Parcelable stuff
      */
@@ -207,7 +216,7 @@ public class Post implements Parcelable {
         parcel.writeString(subreddit);
         parcel.writeString(author);
         parcel.writeInt(score);
-        parcel.writeInt(nsfw ? 1 : 0);
+        parcel.writeInt(isNsfw ? 1 : 0);
         parcel.writeString(thumbnail);
         parcel.writeString(created);
         parcel.writeString(title);
@@ -217,6 +226,7 @@ public class Post implements Parcelable {
         parcel.writeString(selftext);
         parcel.writeInt(likes);
         parcel.writeString(after);
+        parcel.writeInt(isSelf ? 1 : 0);
     }
 
     public Post(Parcel source) {
@@ -226,7 +236,7 @@ public class Post implements Parcelable {
         subreddit = source.readString();
         author = source.readString();
         score = source.readInt();
-        nsfw = source.readInt() == 1;
+        isNsfw = source.readInt() == 1;
         thumbnail = source.readString();
         created = source.readString();
         title = source.readString();
@@ -236,5 +246,6 @@ public class Post implements Parcelable {
         selftext = source.readString();
         likes = source.readInt();
         after = source.readString();
+        isSelf = source.readInt() == 1;
     }
 }

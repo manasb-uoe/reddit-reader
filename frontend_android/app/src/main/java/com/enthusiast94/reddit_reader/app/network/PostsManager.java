@@ -66,6 +66,7 @@ public class PostsManager extends RedditManager {
                         post.setTitle(postData.getString("title"));
                         post.setNumComments(postData.getInt("num_comments"));
                         post.setPermalink(postData.getString("permalink"));
+                        post.setIsSelf(postData.getBoolean("is_self"));
                         post.setSelftext(postData.getString("selftext_html"));
 
                         if (i == children.length()-1) {
