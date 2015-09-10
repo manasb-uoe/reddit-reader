@@ -22,7 +22,7 @@ public abstract class EndlessRecyclerScrollListener extends RecyclerView.OnScrol
 
         previousTotal = 0;
         isLoading = false;
-        visibleItemThreshold = 7;
+        visibleItemThreshold = 3;
         loadInterval = 2000;
     }
 
