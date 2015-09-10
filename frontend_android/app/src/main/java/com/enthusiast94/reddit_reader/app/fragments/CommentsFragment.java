@@ -175,6 +175,8 @@ public class CommentsFragment extends Fragment {
         private int downvoteColor;
         private int primaryTextColor;
         private int secondaryTextColor;
+        private int opHighlightColor;
+        private int accentColor;
 
         public CommentsAdapter(Context context, List<Comment> comments, Post selectedPost, LinearLayoutManager linearLayoutManager) {
             this.context = context;
@@ -199,6 +201,8 @@ public class CommentsFragment extends Fragment {
             downvoteColor = res.getColor(R.color.reddit_downvote);
             primaryTextColor = res.getColor(R.color.primary_text_default_material_dark);
             secondaryTextColor = res.getColor(R.color.secondary_text_default_material_dark);
+            accentColor = res.getColor(R.color.accent);
+            opHighlightColor = res.getColor(R.color.blue_700);
         }
 
         @Override
@@ -301,6 +305,15 @@ public class CommentsFragment extends Fragment {
                     childCommentIndicator.setVisibility(View.GONE);
                 } else {
                     childCommentIndicator.setVisibility(View.VISIBLE);
+                }
+
+                // highlight comment author's name if they are also the post's author
+                if (comment.getAuthor().equals(selectedPost.getAuthor())) {
+                    authorTextView.setTextColor(primaryTextColor);
+                    authorTextView.setBackgroundColor(opHighlightColor);
+                } else {
+                    authorTextView.setTextColor(accentColor);
+                    authorTextView.setBackgroundColor(0);
                 }
 
                 if (getAdapterPosition() == currentlySelectedPosition) {

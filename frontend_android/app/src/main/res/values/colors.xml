@@ -10,6 +10,7 @@
     <color name="divider">#5b5b5b</color>
     <color name="selected_item_background">#424242</color>
     <color name="blue_500">#2196F3</color>
+    <color name="blue_700">#1976D2</color>
     <color name="teal_500">#009688</color>
     <color name="purple_500">#9C27B0</color>
     <color name="light_green_500">#8BC34A</color>
