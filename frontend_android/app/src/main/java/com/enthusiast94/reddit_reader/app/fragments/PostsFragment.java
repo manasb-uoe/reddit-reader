@@ -33,6 +33,7 @@ import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
 import de.greenrobot.event.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,6 +94,8 @@ public class PostsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         postsRecyclerView.setLayoutManager(linearLayoutManager);
         postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+        postsAdapter = new PostsAdapter(getActivity(), new ArrayList<Post>());
+        postsRecyclerView.setAdapter(postsAdapter);
         postsRecyclerView.addOnScrollListener(new EndlessRecyclerScrollListener(linearLayoutManager) {
 
             @Override
@@ -155,7 +158,7 @@ public class PostsFragment extends Fragment {
         }
 
         /**
-         * Load posts and setup recycler view adapter
+         * Load posts
          */
 
         loadPosts(subreddit, sort, after);
@@ -176,12 +179,12 @@ public class PostsFragment extends Fragment {
                     setRefreshIndicatorVisiblity(false);
 
                     if (data.size() > 0) {
-                        if (postsAdapter != null && after != null) {
+                        if (after != null) {
                             postsAdapter.addPosts(data);
                         } else {
-                            postsAdapter = new PostsAdapter(getActivity(), data);
-                            postsRecyclerView.setAdapter(postsAdapter);
+                            postsAdapter.setPosts(data);
                         }
+
                         PostsFragment.this.after = data.get(data.size()-1).getFullName();
                     }
                 }
@@ -267,6 +270,11 @@ public class PostsFragment extends Fragment {
 
         public void addPosts(List<Post> posts) {
             this.posts.addAll(posts);
+            this.notifyDataSetChanged();
+        }
+
+        public void setPosts(List<Post> posts) {
+            this.posts = new ArrayList<Post>(posts);
             this.notifyDataSetChanged();
         }
     }
