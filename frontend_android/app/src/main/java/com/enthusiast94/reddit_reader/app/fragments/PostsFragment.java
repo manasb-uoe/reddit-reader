@@ -5,15 +5,20 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.events.ViewCommentsEvent;
@@ -23,6 +28,7 @@ import com.enthusiast94.reddit_reader.app.network.AuthManager;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.PostsManager;
 import com.enthusiast94.reddit_reader.app.network.RedditManager;
+import com.enthusiast94.reddit_reader.app.utils.EndlessRecyclerScrollListener;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
@@ -35,15 +41,17 @@ import java.util.List;
  */
 public class PostsFragment extends Fragment {
 
-    public static final String TAG = Fragment.class.getSimpleName();
+    public static final String TAG = PostsFragment.class.getSimpleName();
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
     private static final String SHOULD_USE_TOOLBAR_BUNDLE_KEY = "should_use_toolbar_key";
     private Toolbar toolbar;
     private RecyclerView postsRecyclerView;
-    private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private PostsAdapter postsAdapter;
     private String subreddit;
     private String sort;
+    private String after;
 
     public static PostsFragment newInstance(String subreddit, String sort, boolean shouldUseToolbar) {
         Bundle bundle = new Bundle();
@@ -62,23 +70,13 @@ public class PostsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_posts, container, false);
 
-        // enable options menu
-        setHasOptionsMenu(true);
-
         /**
          * Find views
          */
 
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         postsRecyclerView = (RecyclerView) view.findViewById(R.id.posts_recyclerview);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_circular);
-
-        /**
-         * Configure recycler view
-         */
-
-        postsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
 
         /**
          * Retrieve info about posts to load from arguments
@@ -88,6 +86,35 @@ public class PostsFragment extends Fragment {
         subreddit = bundle.getString(SUBREDDIT_BUNDLE_KEY);
         sort = bundle.getString(SORT_BUNDLE_KEY);
         boolean shouldUseToolbar = bundle.getBoolean(SHOULD_USE_TOOLBAR_BUNDLE_KEY);
+
+        /**
+         * Configure recycler view
+         */
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        postsRecyclerView.setLayoutManager(linearLayoutManager);
+        postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+        postsRecyclerView.addOnScrollListener(new EndlessRecyclerScrollListener(linearLayoutManager) {
+
+            @Override
+            public void onLoadMore() {
+                Log.i(TAG, "onLoadMore");
+                loadPosts(subreddit, sort, after);
+            }
+        });
+
+        /**
+         * Configure swipe refresh layout to load posts when swiped
+         */
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                after = null;
+                loadPosts(subreddit, sort, after);
+            }
+        });
 
         /**
          * Setup toolbar if it is to be used
@@ -115,8 +142,9 @@ public class PostsFragment extends Fragment {
                     if (id == R.id.action_sort_hot || id == R.id.action_sort_new || id == R.id.action_sort_rising ||
                             id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
                         sort = item.getTitle().toString();
+                        after = null;
                         updateToolbarTitles();
-                        loadPosts(subreddit, sort);
+                        loadPosts(subreddit, sort, after);
 
                         return true;
                     }
@@ -132,38 +160,52 @@ public class PostsFragment extends Fragment {
          * Load posts and setup recycler view adapter
          */
 
-        loadPosts(subreddit, sort);
+        loadPosts(subreddit, sort, after);
 
         return view;
     }
 
-    public void loadPosts(String subreddit, String sort) {
-        progressBar.setVisibility(View.VISIBLE);
-        postsRecyclerView.setVisibility(View.INVISIBLE);
+    public void loadPosts(String subreddit, String sort, final String after) {
+        setRefreshIndicatorVisiblity(true);
 
-        PostsManager.getPosts(subreddit, sort, null, new Callback<List<Post>>() {
+        PostsManager.getPosts(subreddit, sort, after, new Callback<List<Post>>() {
 
             @Override
             public void onSuccess(List<Post> data) {
-                progressBar.setVisibility(View.INVISIBLE);
-                postsRecyclerView.setVisibility(View.VISIBLE);
-
                 // only proceed if fragment is still attached to its parent activity
                 // this would prevent null pointer exception when adapter tries to use activity context
                 if (getActivity() != null) {
-                    PostsAdapter postsAdapter = new PostsAdapter(getActivity(), data);
-                    postsRecyclerView.setAdapter(postsAdapter);
+                    setRefreshIndicatorVisiblity(false);
+
+                    if (data.size() > 0) {
+                        if (postsAdapter != null && after != null) {
+                            postsAdapter.addPosts(data);
+                        } else {
+                            postsAdapter = new PostsAdapter(getActivity(), data);
+                            postsRecyclerView.setAdapter(postsAdapter);
+                        }
+                        PostsFragment.this.after = data.get(data.size()-1).getFullName();
+                    }
                 }
             }
 
             @Override
             public void onFailure(String message) {
-                progressBar.setVisibility(View.INVISIBLE);
-                postsRecyclerView.setVisibility(View.VISIBLE);
-
                 if (getActivity() != null) {
+                    setRefreshIndicatorVisiblity(true);
+
                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+    }
+
+    private void setRefreshIndicatorVisiblity(final boolean visiblity) {
+        swipeRefreshLayout.post(new Runnable() {
+
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(visiblity);
             }
         });
     }
@@ -212,6 +254,11 @@ public class PostsFragment extends Fragment {
             notifyItemChanged(previouslySelectedPosition);
 
             previouslySelectedPosition = currentlySelectedPosition;
+        }
+
+        public void addPosts(List<Post> posts) {
+            this.posts.addAll(posts);
+            this.notifyDataSetChanged();
         }
     }
 

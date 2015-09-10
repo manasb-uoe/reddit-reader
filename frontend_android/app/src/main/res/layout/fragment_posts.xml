@@ -19,31 +19,22 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <FrameLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
-
-                <ProgressBar
-                        android:id="@id/progress_circular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/spacing_large"
-                        />
 
                 <android.support.v7.widget.RecyclerView
                         android:id="@+id/posts_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="invisible"
                         android:padding="@dimen/spacing_tiny"
                         android:scrollbars="vertical"
                         android:clipToPadding="false"
                         />
 
-        </FrameLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

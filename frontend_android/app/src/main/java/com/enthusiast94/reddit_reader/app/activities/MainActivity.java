@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
                 id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
             sort = item.getTitle().toString();
             updateAppBarTitlesWithPostInfo();
-            subredditPagerAdapter.getCurrentFragment().loadPosts(subreddit, sort);
+            subredditPagerAdapter.getCurrentFragment().loadPosts(subreddit, sort, null);
             return true;
         } else if (id == R.id.action_go_to_subreddit) {
             View dialogView = getLayoutInflater().inflate(R.layout.dialog_go_tp_subreddit, null);
