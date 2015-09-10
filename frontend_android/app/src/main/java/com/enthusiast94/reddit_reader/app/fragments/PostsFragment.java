@@ -27,7 +27,6 @@ import com.enthusiast94.reddit_reader.app.network.AuthManager;
 import com.enthusiast94.reddit_reader.app.network.Callback;
 import com.enthusiast94.reddit_reader.app.network.PostsManager;
 import com.enthusiast94.reddit_reader.app.network.RedditManager;
-import com.enthusiast94.reddit_reader.app.utils.EndlessRecyclerScrollListener;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.enthusiast94.reddit_reader.app.utils.OnItemSelectedListener;
 import com.enthusiast94.reddit_reader.app.utils.TextViewLinkHandler;
@@ -47,11 +46,13 @@ public class PostsFragment extends Fragment {
     private static final String SHOULD_USE_TOOLBAR_BUNDLE_KEY = "should_use_toolbar_key";
     private Toolbar toolbar;
     private RecyclerView postsRecyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private PostsAdapter postsAdapter;
     private String subreddit;
     private String sort;
     private String after;
+    private boolean canLoadMorePosts = true;
 
     public static PostsFragment newInstance(String subreddit, String sort, boolean shouldUseToolbar) {
         Bundle bundle = new Bundle();
@@ -91,16 +92,27 @@ public class PostsFragment extends Fragment {
          * Configure recycler view
          */
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new LinearLayoutManager(getActivity());
         postsRecyclerView.setLayoutManager(linearLayoutManager);
         postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         postsAdapter = new PostsAdapter(getActivity(), new ArrayList<Post>());
         postsRecyclerView.setAdapter(postsAdapter);
-        postsRecyclerView.addOnScrollListener(new EndlessRecyclerScrollListener(linearLayoutManager) {
+        // enable endless scrolling of posts
+        postsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
-            public void onLoadMore() {
-                loadPosts(subreddit, sort, after);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemThreshold = 3;
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int lastVisibleItemPos = linearLayoutManager.findLastVisibleItemPosition();
+
+                if (!swipeRefreshLayout.isRefreshing() && (lastVisibleItemPos > (totalItemCount - visibleItemThreshold))
+                        && canLoadMorePosts) {
+
+                    loadPosts(true);
+                }
             }
         });
 
@@ -113,8 +125,7 @@ public class PostsFragment extends Fragment {
 
             @Override
             public void onRefresh() {
-                after = null;
-                loadPosts(subreddit, sort, after);
+                loadPosts(false);
             }
         });
 
@@ -144,9 +155,8 @@ public class PostsFragment extends Fragment {
                     if (id == R.id.action_sort_hot || id == R.id.action_sort_new || id == R.id.action_sort_rising ||
                             id ==R.id.action_sort_controversial || id ==R.id.action_sort_top) {
                         sort = item.getTitle().toString();
-                        after = null;
                         updateToolbarTitles();
-                        loadPosts(subreddit, sort, after);
+                        loadPosts(false);
 
                         return true;
                     }
@@ -162,15 +172,15 @@ public class PostsFragment extends Fragment {
          * Load posts
          */
 
-        loadPosts(subreddit, sort, after);
+        loadPosts(false);
 
         return view;
     }
 
-    private void loadPosts(String subreddit, String sort, final String after) {
+    private void loadPosts(final boolean shouldAppend) {
         setRefreshIndicatorVisiblity(true);
 
-        PostsManager.getPosts(subreddit, sort, after, new Callback<List<Post>>() {
+        PostsManager.getPosts(subreddit, sort, shouldAppend ? this.after : null, new Callback<List<Post>>() {
 
             @Override
             public void onSuccess(List<Post> data) {
@@ -179,15 +189,16 @@ public class PostsFragment extends Fragment {
                 if (getActivity() != null) {
                     setRefreshIndicatorVisiblity(false);
 
-                    if (data.size() > 0) {
-                        if (after != null) {
-                            postsAdapter.addPosts(data);
-                        } else {
-                            postsAdapter.setPosts(data);
-                        }
-
-                        PostsFragment.this.after = data.get(data.size()-1).getFullName();
+                    if (shouldAppend) {
+                        postsAdapter.addPosts(data);
+                    } else {
+                        postsAdapter.setPosts(data);
                     }
+
+                    if (data.size() > 0)
+                        after = data.get(data.size()-1).getAfter();
+
+                    canLoadMorePosts = (after != null);
                 }
             }
 
@@ -208,9 +219,8 @@ public class PostsFragment extends Fragment {
 
     public void updateSort(String sort) {
         this.sort = sort;
-        after = null;
 
-        loadPosts(subreddit, this.sort, after);
+        loadPosts(false);
     }
 
     private void setRefreshIndicatorVisiblity(final boolean visiblity) {

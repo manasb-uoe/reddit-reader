@@ -27,6 +27,7 @@ public class Post implements Parcelable {
     private String permalink;
     private String selftext;
     private int likes;
+    private String after;
 
     public Post() {
         // empty constructor
@@ -168,6 +169,14 @@ public class Post implements Parcelable {
         }
     }
 
+    public String getAfter() {
+        return after;
+    }
+
+    public void setAfter(String after) {
+        this.after = after;
+    }
+
     /**
      * Parcelable stuff
      */
@@ -207,6 +216,7 @@ public class Post implements Parcelable {
         parcel.writeString(permalink);
         parcel.writeString(selftext);
         parcel.writeInt(likes);
+        parcel.writeString(after);
     }
 
     public Post(Parcel source) {
@@ -225,5 +235,6 @@ public class Post implements Parcelable {
         permalink = source.readString();
         selftext = source.readString();
         likes = source.readInt();
+        after = source.readString();
     }
 }

@@ -387,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
                                 FragmentTransaction fTransaction = getSupportFragmentManager().beginTransaction();
                                 fTransaction.setCustomAnimations(R.anim.fade_in, 0, 0, R.anim.fade_out);
                                 fTransaction.add(android.R.id.content,
-                                        PostsFragment.newInstance(subredditEditText.getText().toString(), sort, true));
+                                        PostsFragment.newInstance(subredditEditText.getText().toString(), getResources().getString(R.string.action_sort_hot), true));
                                 fTransaction.addToBackStack(null);
                                 fTransaction.commit();
                             }

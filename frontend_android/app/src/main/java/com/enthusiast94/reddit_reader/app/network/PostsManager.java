@@ -1,5 +1,6 @@
 package com.enthusiast94.reddit_reader.app.network;
 
+import android.util.Log;
 import com.enthusiast94.reddit_reader.app.App;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Post;
@@ -39,7 +40,11 @@ public class PostsManager extends RedditManager {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    JSONArray children = response.getJSONObject("data").getJSONArray("children");
+                    JSONObject data = response.getJSONObject("data");
+
+                    String after = data.getString("after");
+                    Log.i(TAG, after);
+                    JSONArray children = data.getJSONArray("children");
 
                     List<Post> posts = new ArrayList<Post>();
 
@@ -62,6 +67,12 @@ public class PostsManager extends RedditManager {
                         post.setNumComments(postData.getInt("num_comments"));
                         post.setPermalink(postData.getString("permalink"));
                         post.setSelftext(postData.getString("selftext_html"));
+
+                        if (i == children.length()-1) {
+                            post.setAfter(after.equals("null") ? null : after);
+                        } else {
+                            post.setAfter(null);
+                        }
 
                         posts.add(post);
                     }
