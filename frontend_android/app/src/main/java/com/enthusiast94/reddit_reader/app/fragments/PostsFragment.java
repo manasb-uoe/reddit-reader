@@ -148,7 +148,7 @@ public class PostsFragment extends Fragment {
                     getActivity().onBackPressed();
                 }
             });
-            toolbar.inflateMenu(R.menu.menu_post_fragment);
+            toolbar.inflateMenu(R.menu.menu_posts_fragment);
             toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
                 @Override
