@@ -402,7 +402,7 @@ public class PostsFragment extends Fragment {
             }
 
             if (AuthManager.isUserAuthenticated()) {
-                setUpvoteDownvoteColors(post.getLikes());
+                setColorsAccordingToVote(post.getLikes());
             } else {
                 upvoteButton.setEnabled(false);
                 downvoteButton.setEnabled(false);
@@ -435,20 +435,26 @@ public class PostsFragment extends Fragment {
                         case R.id.upvote_button:
                             if (post.getLikes() == -1 || post.getLikes() == 0) {
                                 post.setLikes(true);
+                                post.setScore(post.getScore() + 1);
                             } else {
                                 post.setLikes(null);
+                                post.setScore(post.getScore() - 1);
                             }
                             RedditManager.vote(post.getFullName(), post.getLikes(), null);
-                            setUpvoteDownvoteColors(post.getLikes());
+                            setColorsAccordingToVote(post.getLikes());
+                            scoreTextView.setText(String.valueOf(post.getScore()));
                             break;
                         case R.id.downvote_button:
                             if (post.getLikes() == 1 || post.getLikes() == 0) {
                                 post.setLikes(false);
+                                post.setScore(post.getScore() - 1);
                             } else {
                                 post.setLikes(null);
+                                post.setScore(post.getScore() + 1);
                             }
                             RedditManager.vote(post.getFullName(), post.getLikes(), null);
-                            setUpvoteDownvoteColors(post.getLikes());
+                            setColorsAccordingToVote(post.getLikes());
+                            scoreTextView.setText(String.valueOf(post.getScore()));
                             break;
                         case R.id.more_options_button:
                             AlertDialog moreOptionsDialog = new AlertDialog.Builder(context)
@@ -491,7 +497,7 @@ public class PostsFragment extends Fragment {
          * Sets colors for various ui elements within viewholder according to post's current vote status
          */
 
-        private void setUpvoteDownvoteColors(int likes) {
+        private void setColorsAccordingToVote(int likes) {
             if (likes == 1) {
                 upvoteButton.setTextColor(upvoteColor);
                 scoreTextView.setTextColor(upvoteColor);

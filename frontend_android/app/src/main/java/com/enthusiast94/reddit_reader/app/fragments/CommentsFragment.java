@@ -344,7 +344,8 @@ public class CommentsFragment extends Fragment {
 
             public void bindItem(final Comment comment) {
                 authorTextView.setText(comment.getAuthor());
-                scoreTextView.setText(comment.getScore() + " " + getActivity().getResources().getString(R.string.label_points));
+                scoreTextView.setText(comment.getScore() + " " +
+                        getActivity().getResources().getString(R.string.label_points));
                 createdTextView.setText(comment.getCreated());
                 // the inner fromHtml unescapes html entities, while the outer fromHtml returns a formatted Spannable
                 bodyTextView.setText(
@@ -401,7 +402,7 @@ public class CommentsFragment extends Fragment {
                 childCommentIndicator.setBackgroundColor(childCommentIndicatorColors[comment.getLevel() % 5]);
 
                 if (AuthManager.isUserAuthenticated()) {
-                    setUpvoteDownvoteColors(comment.getLikes());
+                    setColorsAccordingToVote(comment.getLikes());
                 } else {
                     upvoteButton.setEnabled(false);
                     downvoteButton.setEnabled(false);
@@ -438,20 +439,27 @@ public class CommentsFragment extends Fragment {
                             case R.id.upvote_button:
                                 if (comment.getLikes() == -1 || comment.getLikes() == 0) {
                                     comment.setLikes(true);
+                                    comment.setScore(comment.getScore() + 1);
                                 } else {
                                     comment.setLikes(null);
+                                    comment.setScore(comment.getScore() - 1);
                                 }
                                 RedditManager.vote(comment.getFullName(), comment.getLikes(), null);
-                                setUpvoteDownvoteColors(comment.getLikes());
-                                break;
+                                setColorsAccordingToVote(comment.getLikes());
+                                scoreTextView.setText(comment.getScore() + " " +
+                                        getActivity().getResources().getString(R.string.label_points));break;
                             case R.id.downvote_button:
                                 if (comment.getLikes() == 1 || comment.getLikes() == 0) {
                                     comment.setLikes(false);
+                                    comment.setScore(comment.getScore() - 1);
                                 } else {
                                     comment.setLikes(null);
+                                    comment.setScore(comment.getScore() + 1);
                                 }
                                 RedditManager.vote(comment.getFullName(), comment.getLikes(), null);
-                                setUpvoteDownvoteColors(comment.getLikes());
+                                setColorsAccordingToVote(comment.getLikes());
+                                scoreTextView.setText(comment.getScore() + " " +
+                                        getActivity().getResources().getString(R.string.label_points));
                                 break;
                         }
                     }
@@ -469,7 +477,7 @@ public class CommentsFragment extends Fragment {
              * Sets colors for various ui elements within viewholder according to comment's current vote status
              */
 
-            private void setUpvoteDownvoteColors(int likes) {
+            private void setColorsAccordingToVote(int likes) {
                 if (likes == 1) {
                     upvoteButton.setTextColor(upvoteColor);
                     scoreTextView.setTextColor(upvoteColor);
