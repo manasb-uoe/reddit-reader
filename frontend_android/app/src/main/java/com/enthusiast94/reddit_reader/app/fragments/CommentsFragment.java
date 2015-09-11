@@ -222,7 +222,7 @@ public class CommentsFragment extends Fragment {
         private int secondaryTextColor;
         private int opHighlightColor;
         private int accentColor;
-        private int lastParentCommentPosition;
+        private int lastParentCommentPosition; // This is used to disable 'next parent comment' button when there are no parent comments left to jump to
 
         public CommentsAdapter() {
             previouslySelectedPosition = -1;
@@ -244,6 +244,8 @@ public class CommentsFragment extends Fragment {
             secondaryTextColor = res.getColor(R.color.secondary_text_default_material_dark);
             accentColor = res.getColor(R.color.accent);
             opHighlightColor = res.getColor(R.color.blue_700);
+
+            updateLastParentCommentPosition();
         }
 
         @Override
@@ -293,9 +295,13 @@ public class CommentsFragment extends Fragment {
 
         public void setComments(List<Comment> comments) {
             CommentsFragment.this.comments = new ArrayList<Comment>(comments);
-            notifyDataSetChanged();
 
-            // update parent comment position, which will be later used to enable/disable nextButton
+            updateLastParentCommentPosition();
+
+            notifyDataSetChanged();
+        }
+
+        private void updateLastParentCommentPosition() {
             for (int i=comments.size()-1; i>=0; i--) {
                 if (comments.get(i).getLevel() == 0) {
                     lastParentCommentPosition = i;
