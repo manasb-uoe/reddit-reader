@@ -47,6 +47,7 @@ public class PostsFragment extends Fragment {
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
     private static final String SHOULD_USE_TOOLBAR_BUNDLE_KEY = "should_use_toolbar_key";
+    private static final String POSTS_BUNDLE_KEY = "posts_key";
     private Toolbar toolbar;
     private RecyclerView postsRecyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -55,6 +56,7 @@ public class PostsFragment extends Fragment {
     private String subreddit;
     private String sort;
     private String after;
+    private ArrayList<Post> posts;
     private boolean canLoadMorePosts = true;
 
     public static PostsFragment newInstance(String subreddit, String sort, boolean shouldUseToolbar) {
@@ -89,10 +91,13 @@ public class PostsFragment extends Fragment {
         Bundle bundle = getArguments();
         subreddit = bundle.getString(SUBREDDIT_BUNDLE_KEY);
         final boolean shouldUseToolbar = bundle.getBoolean(SHOULD_USE_TOOLBAR_BUNDLE_KEY);
-        if (savedInstanceState != null) {
-            sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
-        } else {
+
+        if (savedInstanceState == null) {
             sort = bundle.getString(SORT_BUNDLE_KEY);
+            posts = new ArrayList<Post>();
+        } else {
+            sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
+            posts = savedInstanceState.getParcelableArrayList(POSTS_BUNDLE_KEY);
         }
 
         /**
@@ -102,7 +107,7 @@ public class PostsFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         postsRecyclerView.setLayoutManager(linearLayoutManager);
         postsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
-        postsAdapter = new PostsAdapter(getActivity(), new ArrayList<Post>());
+        postsAdapter = new PostsAdapter();
         postsRecyclerView.setAdapter(postsAdapter);
         // enable endless scrolling of posts
         postsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -179,7 +184,9 @@ public class PostsFragment extends Fragment {
          * Load posts
          */
 
-        loadPosts(false);
+        if (savedInstanceState == null) {
+            loadPosts(false);
+        }
 
         return view;
     }
@@ -189,6 +196,7 @@ public class PostsFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         outState.putString(SORT_BUNDLE_KEY, sort);
+        outState.putParcelableArrayList(POSTS_BUNDLE_KEY, posts);
     }
 
     private void loadPosts(final boolean shouldAppend) {
@@ -252,25 +260,20 @@ public class PostsFragment extends Fragment {
         toolbar.setSubtitle(sort);
     }
 
-    private static class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> implements OnItemSelectedListener {
+    private class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> implements OnItemSelectedListener {
 
-        private Context context;
-        private List<Post> posts;
         private int previouslySelectedPosition;
         private int currentlySelectedPosition;
 
-        public PostsAdapter(Context context, List<Post> posts)  {
-            this.context = context;
-            this.posts = posts;
-
+        public PostsAdapter()  {
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
         }
 
         @Override
         public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View itemView = LayoutInflater.from(context).inflate(R.layout.row_posts_recyclerview, viewGroup, false);
-            return new PostViewHolder(context, itemView, this, false);
+            View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.row_posts_recyclerview, viewGroup, false);
+            return new PostViewHolder(getActivity(), itemView, this, false);
         }
 
         @Override
@@ -294,12 +297,12 @@ public class PostsFragment extends Fragment {
         }
 
         public void addPosts(List<Post> posts) {
-            this.posts.addAll(posts);
+            PostsFragment.this.posts.addAll(posts);
             this.notifyDataSetChanged();
         }
 
         public void setPosts(List<Post> posts) {
-            this.posts = new ArrayList<Post>(posts);
+            PostsFragment.this.posts = new ArrayList<Post>(posts);
             this.notifyDataSetChanged();
         }
     }
