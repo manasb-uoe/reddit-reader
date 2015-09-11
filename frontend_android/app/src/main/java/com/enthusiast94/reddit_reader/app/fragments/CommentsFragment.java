@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,7 +44,8 @@ public class CommentsFragment extends Fragment {
     private CommentsAdapter commentsAdapter;
     private LinearLayoutManager linearLayoutManager;
     private static final String SELECTED_POST_BUNDLE_KEY = "selected_subreddit_key";
-    private String sort = "best";
+    private static final String SORT_BUNDLE_KEY = "sort_bundle_key";
+    private String sort;
 
     public static CommentsFragment newInstance(Post selectedPost) {
         Bundle bundle = new Bundle();
@@ -68,10 +70,15 @@ public class CommentsFragment extends Fragment {
         commentsRecyclerView = (RecyclerView) view.findViewById(R.id.comments_recyclerview);
 
         /**
-         * Retrieve selected subreddit from arguments
+         * Retrieve info required to load comments
          */
 
         final Post selectedPost = getArguments().getParcelable(SELECTED_POST_BUNDLE_KEY);
+        if (savedInstanceState != null) {
+            sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
+        } else {
+            sort = getResources().getString(R.string.action_sort_best);
+        }
 
         /**
          * Configure recycler view
@@ -100,14 +107,32 @@ public class CommentsFragment extends Fragment {
          * Setup toolbar
          */
 
-        toolbar.setTitle(selectedPost.getTitle());
-        toolbar.setSubtitle(selectedPost.getSubreddit());
+        updateToolbarTitles(selectedPost.getTitle(), sort);
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
+            }
+        });
+        toolbar.inflateMenu(R.menu.menu_comments_fragment);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.action_sort_best || id == R.id.action_sort_top || id == R.id.action_sort_new ||
+                        id == R.id.action_sort_controversial || id == R.id.action_sort_old) {
+                    sort = item.getTitle().toString();
+                    updateToolbarTitles(selectedPost.getTitle(), sort);
+                    loadComments(selectedPost, sort);
+
+                    return true;
+                }
+
+                return false;
             }
         });
 
@@ -118,6 +143,17 @@ public class CommentsFragment extends Fragment {
         loadComments(selectedPost, sort);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SORT_BUNDLE_KEY, sort);
+    }
+
+    private void updateToolbarTitles(String title, String subtitle) {
+        toolbar.setTitle(title);
+        toolbar.setSubtitle(subtitle);
     }
 
     private void loadComments(final Post selectedPost, String sort) {

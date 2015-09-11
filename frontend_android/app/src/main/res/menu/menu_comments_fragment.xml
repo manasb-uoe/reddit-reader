@@ -13,24 +13,27 @@
 
         <menu>
             <item
-                    android:id="@+id/action_sort_hot"
-                    android:title="@string/action_sort_hot"
+                android:id="@+id/action_sort_best"
+                android:title="@string/action_sort_best"
+                />
+
+            <item
+                    android:id="@+id/action_sort_top"
+                    android:title="@string/action_sort_top"
                     />
             <item
                     android:id="@+id/action_sort_new"
                     android:title="@string/action_sort_new"
                     />
-            <item
-                    android:id="@+id/action_sort_rising"
-                    android:title="@string/action_sort_rising"
-                    />
+
             <item
                     android:id="@+id/action_sort_controversial"
                     android:title="@string/action_sort_controversial"
                     />
+
             <item
-                    android:id="@+id/action_sort_top"
-                    android:title="@string/action_sort_top"
+                    android:id="@+id/action_sort_old"
+                    android:title="@string/action_sort_old"
                     />
         </menu>
 
