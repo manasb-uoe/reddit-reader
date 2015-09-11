@@ -27,11 +27,13 @@ public class RedditManager {
         if (authenticationRequired) {
             // add authorization header if user is authenticated and their access token hasn't expired yet
             User user = AuthManager.getUser();
-            if (user != null && !user.hasAccessTokenExpired()) {
-                client.addHeader("Authorization", "bearer " + user.getAccessToken());
-            } else {
-                EventBus.getDefault().post(new AccessTokenExpiredEvent());
-                return null;
+            if (user != null) {
+                if (!user.hasAccessTokenExpired()) {
+                    client.addHeader("Authorization", "bearer " + user.getAccessToken());
+                } else {
+                    EventBus.getDefault().post(new AccessTokenExpiredEvent());
+                    return null;
+                }
             }
         }
 
