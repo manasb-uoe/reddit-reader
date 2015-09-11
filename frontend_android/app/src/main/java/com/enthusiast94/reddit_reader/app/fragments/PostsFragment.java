@@ -48,6 +48,7 @@ public class PostsFragment extends Fragment {
     private static final String SORT_BUNDLE_KEY = "sort_key";
     private static final String SHOULD_USE_TOOLBAR_BUNDLE_KEY = "should_use_toolbar_key";
     private static final String POSTS_BUNDLE_KEY = "posts_key";
+    private static final String AFTER_BUNDLE_KEY = "after_key";
     private Toolbar toolbar;
     private RecyclerView postsRecyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -94,9 +95,11 @@ public class PostsFragment extends Fragment {
 
         if (savedInstanceState == null) {
             sort = bundle.getString(SORT_BUNDLE_KEY);
+            after = null;
             posts = new ArrayList<Post>();
         } else {
             sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
+            after = savedInstanceState.getString(AFTER_BUNDLE_KEY);
             posts = savedInstanceState.getParcelableArrayList(POSTS_BUNDLE_KEY);
         }
 
@@ -196,6 +199,7 @@ public class PostsFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         outState.putString(SORT_BUNDLE_KEY, sort);
+        outState.putString(AFTER_BUNDLE_KEY, after);
         outState.putParcelableArrayList(POSTS_BUNDLE_KEY, posts);
     }
 
