@@ -27,6 +27,7 @@
 
     <style name="TextTitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textSize">@dimen/font_large</item>
     </style>
 
 </resources>
