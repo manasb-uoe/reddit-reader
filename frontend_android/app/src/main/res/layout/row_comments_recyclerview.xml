@@ -27,7 +27,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_7dp"
+
                 >
 
             <LinearLayout
@@ -63,6 +63,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:paddingLeft="@dimen/spacing_7dp"
+                    android:paddingTop="@dimen/spacing_7dp"
+                    android:paddingRight="@dimen/spacing_7dp"
                     >
 
                 <TextView
@@ -112,6 +115,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
+                    android:paddingLeft="@dimen/spacing_7dp"
+                    android:paddingRight="@dimen/spacing_7dp"
+                    android:paddingBottom="@dimen/spacing_7dp"
                     style="@style/TextBodyNormalSmall"
                     />
 
