@@ -30,8 +30,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="vertical"
-                        android:paddingTop="@dimen/spacing_small"
-                        android:paddingBottom="@dimen/spacing_small"
+                        android:paddingTop="@dimen/spacing_7dp"
+                        android:paddingBottom="@dimen/spacing_7dp"
                         android:clipToPadding="false"
                         />
 

@@ -17,17 +17,13 @@
         <item name="android:textSize">@dimen/font_normal</item>
     </style>
 
-    <style name="TextBodyNormalSmall" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">@dimen/font_13sp</item>
-    </style>
-
     <style name="TextCaptionSmall" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">@dimen/font_small</item>
     </style>
 
     <style name="TextTitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:textSize">@dimen/font_large</item>
+        <item name="android:textSize">@dimen/font_larger</item>
     </style>
 
 </resources>

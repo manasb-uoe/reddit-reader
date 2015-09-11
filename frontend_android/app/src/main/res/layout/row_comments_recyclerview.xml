@@ -118,7 +118,7 @@
                     android:paddingLeft="@dimen/spacing_7dp"
                     android:paddingRight="@dimen/spacing_7dp"
                     android:paddingBottom="@dimen/spacing_7dp"
-                    style="@style/TextBodyNormalSmall"
+                    style="@style/TextBodyNormal"
                     />
 
             <LinearLayout
