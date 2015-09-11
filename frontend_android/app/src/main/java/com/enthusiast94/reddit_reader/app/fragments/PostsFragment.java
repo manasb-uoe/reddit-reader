@@ -83,13 +83,17 @@ public class PostsFragment extends Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
 
         /**
-         * Retrieve info about posts to load from arguments
+         * Retrieve info required to load posts
          */
 
         Bundle bundle = getArguments();
         subreddit = bundle.getString(SUBREDDIT_BUNDLE_KEY);
-        sort = bundle.getString(SORT_BUNDLE_KEY);
-        boolean shouldUseToolbar = bundle.getBoolean(SHOULD_USE_TOOLBAR_BUNDLE_KEY);
+        final boolean shouldUseToolbar = bundle.getBoolean(SHOULD_USE_TOOLBAR_BUNDLE_KEY);
+        if (savedInstanceState != null) {
+            sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
+        } else {
+            sort = bundle.getString(SORT_BUNDLE_KEY);
+        }
 
         /**
          * Configure recycler view
@@ -178,6 +182,13 @@ public class PostsFragment extends Fragment {
         loadPosts(false);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(SORT_BUNDLE_KEY, sort);
     }
 
     private void loadPosts(final boolean shouldAppend) {
