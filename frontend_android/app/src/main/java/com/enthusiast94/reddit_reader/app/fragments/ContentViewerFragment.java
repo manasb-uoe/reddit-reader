@@ -94,11 +94,10 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.contains(AuthManager.REDIRECT_URI)) {
-                    Map<String, String> params = Helpers.parseUrlHashParams(url);
+                    Map<String, String> params = Helpers.parseUrlQueryParams(url);
 
                     EventBus.getDefault().post(new OauthCallbackEvent(
-                            params.get("access_token"),
-                            params.get("expires_in"),
+                            params.get("code"),
                             params.get("state"),
                             params.get("error")
                     ));

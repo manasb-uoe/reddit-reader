@@ -194,7 +194,8 @@ public class CommentsFragment extends Fragment {
                     setRefreshIndicatorVisiblity(false);
                     commentsRecyclerView.setVisibility(View.VISIBLE);
 
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    if (message != null)
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                 }
             }
         });

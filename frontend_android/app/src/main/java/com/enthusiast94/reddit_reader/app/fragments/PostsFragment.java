@@ -229,7 +229,8 @@ public class PostsFragment extends Fragment {
                 if (getActivity() != null) {
                     setRefreshIndicatorVisiblity(false);
 
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    if (message != null)
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                 }
             }
         });

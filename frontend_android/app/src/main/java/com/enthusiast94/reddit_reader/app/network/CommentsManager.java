@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import com.enthusiast94.reddit_reader.app.App;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Comment;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -25,7 +26,13 @@ public class CommentsManager extends RedditManager {
         String commentsUrl = AuthManager.isUserAuthenticated() ? AUTH_API_BASE : UNAUTH_API_BASE;
         commentsUrl += "/r/" + subreddit + "/comments/" + postId + "/.json?sort=" + sort;
 
-        getAsyncHttpClient().get(commentsUrl, new JsonHttpResponseHandler() {
+        AsyncHttpClient client = getAsyncHttpClient(true);
+        if (client == null) {
+            if (callback != null) callback.onFailure(null);
+            return;
+        }
+
+        client.get(commentsUrl, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
@@ -33,7 +40,7 @@ public class CommentsManager extends RedditManager {
 
                 try {
                     JSONArray children = jsonArray.getJSONObject(1).getJSONObject("data").getJSONArray("children");
-                    for (int i=0; i<children.length(); i++) {
+                    for (int i = 0; i < children.length(); i++) {
                         parseComments(comments, children.getJSONObject(i), 0);
                     }
                 } catch (JSONException e) {

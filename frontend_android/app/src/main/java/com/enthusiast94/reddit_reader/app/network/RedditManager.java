@@ -2,10 +2,12 @@ package com.enthusiast94.reddit_reader.app.network;
 
 import com.enthusiast94.reddit_reader.app.App;
 import com.enthusiast94.reddit_reader.app.R;
+import com.enthusiast94.reddit_reader.app.events.AccessTokenExpiredEvent;
 import com.enthusiast94.reddit_reader.app.models.User;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import de.greenrobot.event.EventBus;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
@@ -18,17 +20,28 @@ public class RedditManager {
     protected static final String AUTH_API_BASE = "https://oauth.reddit.com";
     protected static final String USER_AGENT = "android:com.enthusiast94.reddit_reader:v1.0.0 (by /u/enthusiast94)";
 
-    protected static AsyncHttpClient getAsyncHttpClient() {
+    protected static AsyncHttpClient getAsyncHttpClient(boolean authenticationRequired) {
         AsyncHttpClient client = new AsyncHttpClient();
         client.setUserAgent(USER_AGENT);
 
-        // add authorization header if user is authenticated
-        User user = AuthManager.getUser();
-        if (user != null) {
-            client.addHeader("Authorization", "bearer " + user.getAccessToken());
+        if (authenticationRequired) {
+            // add authorization header if user is authenticated and their access token hasn't expired yet
+            User user = AuthManager.getUser();
+            if (user != null && !user.hasAccessTokenExpired()) {
+                client.addHeader("Authorization", "bearer " + user.getAccessToken());
+            } else {
+                EventBus.getDefault().post(new AccessTokenExpiredEvent());
+                return null;
+            }
         }
 
         return client;
+    }
+
+    protected static void checkAccessToken(User user, Callback callback) {
+        if (user.hasAccessTokenExpired()) {
+            EventBus.getDefault().post(new AccessTokenExpiredEvent());
+        }
     }
 
     public static void vote(String itemFullName, int voteDir, final Callback<Void> callback) {
@@ -39,7 +52,13 @@ public class RedditManager {
         params.put("dir", voteDir);
 
         if (AuthManager.isUserAuthenticated()) {
-            getAsyncHttpClient().post(AUTH_API_BASE + "/api/vote", params, new JsonHttpResponseHandler() {
+            AsyncHttpClient client = getAsyncHttpClient(true);
+            if (client == null) {
+                if (callback != null) callback.onFailure(null);
+                return;
+            }
+
+            client.post(AUTH_API_BASE + "/api/vote", params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     if (callback != null) callback.onSuccess(null);

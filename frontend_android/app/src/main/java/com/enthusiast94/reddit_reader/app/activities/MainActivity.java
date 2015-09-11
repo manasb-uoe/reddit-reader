@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SUBREDDIT_BUNDLE_KEY = "subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_key";
     private ProgressDialog progressDialog;
+    private boolean isRefreshingAccessToken = false; // Makes sure that multiple 'refresh access token' are not being sent at the same time
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(String message) {
                 progressDialog.hide();
 
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                if (message != null)
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -249,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.setMessage(getResources().getString(R.string.label_logging_in));
             progressDialog.show();
 
-            AuthManager.auth(event.getAccessToken(), event.getState(), event.getExpiresIn(), new Callback<User>() {
+            AuthManager.auth(event.getCode(), event.getState(), new Callback<User>() {
 
                 @Override
                 public void onSuccess(User data) {
@@ -262,7 +264,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onFailure(String message) {
                     progressDialog.hide();
 
-                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                    if (message != null)
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -289,7 +292,8 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(String message) {
                 progressDialog.hide();
 
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                if (message != null)
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -312,7 +316,8 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(String message) {
                 progressDialog.hide();
 
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                if (message != null)
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -332,6 +337,35 @@ public class MainActivity extends AppCompatActivity {
         sendIntent.putExtra(Intent.EXTRA_TEXT, event.getContent());
         sendIntent.setType(event.getMimeType());
         startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.label_share_via)));
+    }
+
+    public void onEventMainThread(AccessTokenExpiredEvent event) {
+        if (!isRefreshingAccessToken) {
+            isRefreshingAccessToken = true;
+
+            progressDialog.setMessage(getResources().getString(R.string.label_refreshing_user_session));
+            progressDialog.show();
+
+            AuthManager.refreshAccessToken(new Callback<Void>() {
+
+                @Override
+                public void onSuccess(Void data) {
+                    progressDialog.hide();
+
+                    isRefreshingAccessToken = false;
+
+                    Toast.makeText(MainActivity.this, R.string.success_user_session_refreshed, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    progressDialog.hide();
+
+                    if (message != null)
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void updateAppBarTitlesWithPostInfo() {

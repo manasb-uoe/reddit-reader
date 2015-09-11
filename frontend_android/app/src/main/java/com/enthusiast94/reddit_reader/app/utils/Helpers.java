@@ -35,8 +35,8 @@ public class Helpers {
         return paramsString;
     }
 
-    public static Map<String, String> parseUrlHashParams(String url) {
-        url = url.substring(url.indexOf("#") + 1, url.length());
+    public static Map<String, String> parseUrlQueryParams(String url) {
+        url = url.substring(url.indexOf("?") + 1, url.length());
         String[] split = url.split("&");
 
         Map<String, String> params = new HashMap<String, String>();

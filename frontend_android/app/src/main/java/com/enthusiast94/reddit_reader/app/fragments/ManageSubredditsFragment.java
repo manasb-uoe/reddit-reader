@@ -120,7 +120,8 @@ public class ManageSubredditsFragment extends Fragment {
 
             @Override
             public void onFailure(String message) {
-                // TODO display error message
+                if (message != null)
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
             }
         });
 

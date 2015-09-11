@@ -4,6 +4,7 @@ import android.util.Log;
 import com.enthusiast94.reddit_reader.app.App;
 import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Post;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -34,8 +35,13 @@ public class PostsManager extends RedditManager {
             postsUrl += "?after=" + after;
         }
 
-        // send request to server
-        getAsyncHttpClient().get(postsUrl, new JsonHttpResponseHandler() {
+        AsyncHttpClient client = getAsyncHttpClient(true);
+        if (client == null) {
+            if (callback != null) callback.onFailure(null);
+            return;
+        }
+
+        client.get(postsUrl, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

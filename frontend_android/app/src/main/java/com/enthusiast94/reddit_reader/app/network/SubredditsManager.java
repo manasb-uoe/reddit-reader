@@ -5,6 +5,7 @@ import com.enthusiast94.reddit_reader.app.R;
 import com.enthusiast94.reddit_reader.app.models.Subreddit;
 import com.enthusiast94.reddit_reader.app.utils.Helpers;
 import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -41,7 +42,13 @@ public class SubredditsManager extends RedditManager {
                 subredditsUrl = UNAUTH_API_BASE + urls.get("defaults");
             }
 
-            getAsyncHttpClient().get(subredditsUrl, new JsonHttpResponseHandler() {
+            AsyncHttpClient client = getAsyncHttpClient(true);
+            if (client == null) {
+                if (callback != null) callback.onFailure(null);
+                return;
+            }
+
+            client.get(subredditsUrl, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -54,7 +61,7 @@ public class SubredditsManager extends RedditManager {
                         subreddits.add(new Subreddit(null,
                                 App.getAppContext().getResources().getString(R.string.front_page), true));
 
-                        for (int i=0; i<children.length(); i++) {
+                        for (int i = 0; i < children.length(); i++) {
                             JSONObject subredditData = children.getJSONObject(i).getJSONObject("data");
 
                             Subreddit subreddit = new Subreddit(subredditData.getString("id"),
