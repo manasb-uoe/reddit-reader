@@ -1,6 +1,5 @@
 package com.enthusiast94.reddit_reader.app.fragments;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -45,7 +44,10 @@ public class CommentsFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private static final String SELECTED_POST_BUNDLE_KEY = "selected_subreddit_key";
     private static final String SORT_BUNDLE_KEY = "sort_bundle_key";
+    private static final String COMMENTS_BUNDLE_KEY = "comments_key";
+    private Post selectedPost;
     private String sort;
+    private ArrayList<Comment> comments;
 
     public static CommentsFragment newInstance(Post selectedPost) {
         Bundle bundle = new Bundle();
@@ -73,11 +75,14 @@ public class CommentsFragment extends Fragment {
          * Retrieve info required to load comments
          */
 
-        final Post selectedPost = getArguments().getParcelable(SELECTED_POST_BUNDLE_KEY);
-        if (savedInstanceState != null) {
-            sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
-        } else {
+        selectedPost = getArguments().getParcelable(SELECTED_POST_BUNDLE_KEY);
+
+        if (savedInstanceState == null) {
             sort = getResources().getString(R.string.action_sort_best);
+            comments = new ArrayList<Comment>();
+        } else {
+            sort = savedInstanceState.getString(SORT_BUNDLE_KEY);
+            comments = savedInstanceState.getParcelableArrayList(COMMENTS_BUNDLE_KEY);
         }
 
         /**
@@ -87,7 +92,7 @@ public class CommentsFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         commentsRecyclerView.setLayoutManager(linearLayoutManager);
         commentsRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
-        commentsAdapter = new CommentsAdapter(getActivity(), selectedPost, linearLayoutManager);
+        commentsAdapter = new CommentsAdapter();
         commentsRecyclerView.setAdapter(commentsAdapter);
 
         /**
@@ -99,7 +104,7 @@ public class CommentsFragment extends Fragment {
 
             @Override
             public void onRefresh() {
-                loadComments(selectedPost, sort);
+                loadComments();
             }
         });
 
@@ -127,7 +132,7 @@ public class CommentsFragment extends Fragment {
                         id == R.id.action_sort_controversial || id == R.id.action_sort_old) {
                     sort = item.getTitle().toString();
                     updateToolbarTitles(selectedPost.getTitle(), sort);
-                    loadComments(selectedPost, sort);
+                    loadComments();
 
                     return true;
                 }
@@ -140,7 +145,9 @@ public class CommentsFragment extends Fragment {
          * Load comments
          */
 
-        loadComments(selectedPost, sort);
+        if (savedInstanceState == null) {
+            loadComments();
+        }
 
         return view;
     }
@@ -148,7 +155,9 @@ public class CommentsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         outState.putString(SORT_BUNDLE_KEY, sort);
+        outState.putParcelableArrayList(COMMENTS_BUNDLE_KEY, comments);
     }
 
     private void updateToolbarTitles(String title, String subtitle) {
@@ -156,7 +165,7 @@ public class CommentsFragment extends Fragment {
         toolbar.setSubtitle(subtitle);
     }
 
-    private void loadComments(final Post selectedPost, String sort) {
+    private void loadComments() {
         setRefreshIndicatorVisiblity(true);
         // only hide recycler view if post item is the only item (i.e. when comments are being loadded for the first time)
         if (commentsAdapter.getItemCount() == 1) {
@@ -201,12 +210,8 @@ public class CommentsFragment extends Fragment {
         });
     }
 
-    private static class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnItemSelectedListener {
+    private class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnItemSelectedListener {
 
-        private Context context;
-        private List<Comment> comments;
-        private Post selectedPost;
-        private LinearLayoutManager linearLayoutManager;
         private int previouslySelectedPosition;
         private int currentlySelectedPosition;
         private int[] childCommentIndicatorColors;
@@ -218,17 +223,11 @@ public class CommentsFragment extends Fragment {
         private int accentColor;
         private int lastParentCommentPosition;
 
-        public CommentsAdapter(Context context, Post selectedPost, LinearLayoutManager linearLayoutManager) {
-            this.context = context;
-            this.selectedPost = selectedPost;
-            this.linearLayoutManager = linearLayoutManager;
-
-            comments = new ArrayList<Comment>();
-
+        public CommentsAdapter() {
             previouslySelectedPosition = -1;
             currentlySelectedPosition = -1;
 
-            Resources res = context.getResources();
+            Resources res = getActivity().getResources();
 
             childCommentIndicatorColors = new int[]{
                     res.getColor(R.color.teal_500),
@@ -257,10 +256,10 @@ public class CommentsFragment extends Fragment {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(context);
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
 
             if (viewType == 0) {
-                return new PostsFragment.PostViewHolder(context,
+                return new PostsFragment.PostViewHolder(getActivity(),
                         inflater.inflate(R.layout.row_posts_recyclerview, parent, false), this, true);
             } else {
                 return new CommentViewHolder(inflater.inflate(R.layout.row_comments_recyclerview, parent, false));
@@ -292,7 +291,7 @@ public class CommentsFragment extends Fragment {
         }
 
         public void setComments(List<Comment> comments) {
-            this.comments = new ArrayList<Comment>(comments);
+            CommentsFragment.this.comments = new ArrayList<Comment>(comments);
             notifyDataSetChanged();
 
             // update parent comment position, which will be later used to enable/disable nextButton
@@ -338,7 +337,7 @@ public class CommentsFragment extends Fragment {
 
             public void bindItem(final Comment comment) {
                 authorTextView.setText(comment.getAuthor());
-                scoreTextView.setText(comment.getScore() + " " + context.getResources().getString(R.string.label_points));
+                scoreTextView.setText(comment.getScore() + " " + getActivity().getResources().getString(R.string.label_points));
                 createdTextView.setText(comment.getCreated());
                 // the inner fromHtml unescapes html entities, while the outer fromHtml returns a formatted Spannable
                 bodyTextView.setText(
@@ -389,7 +388,7 @@ public class CommentsFragment extends Fragment {
 
                 // set child comment left spacing based on level
                 itemView.setPadding((int) (comment.getLevel() *
-                        context.getResources().getDimension(R.dimen.comment_left_spacing)), 0, 0, 0);
+                        getActivity().getResources().getDimension(R.dimen.comment_left_spacing)), 0, 0, 0);
 
                 // set child comment indicator color based on level
                 childCommentIndicator.setBackgroundColor(childCommentIndicatorColors[comment.getLevel() % 5]);
