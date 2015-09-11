@@ -122,11 +122,19 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
         });
 
         /**
-         * Retrieve content info from arguments and load URL
+         * Retrieve content info and load URL
          */
 
-        Bundle bundle = getArguments();
-        loadContent(bundle.getString(CONTENT_TITLE_BUNDLE_KEY), bundle.getString(URL_BUNDLE_KEY));
+        if (savedInstanceState == null) {
+            Bundle bundle = getArguments();
+            contentTitle = bundle.getString(CONTENT_TITLE_BUNDLE_KEY);
+            contentUrl = bundle.getString(URL_BUNDLE_KEY);
+        } else {
+            contentTitle = savedInstanceState.getString(CONTENT_TITLE_BUNDLE_KEY);
+            contentUrl = savedInstanceState.getString(URL_BUNDLE_KEY);
+        }
+
+        loadContent(contentTitle, contentUrl);
 
         /**
          * Restore isVisible from saved instance state and hide this fragment depending if its value is false. This
@@ -171,6 +179,8 @@ public class ContentViewerFragment extends Fragment implements OnBackPressedList
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_VISIBLE_BUNDLE_KEY, isVisible);
+        outState.putString(CONTENT_TITLE_BUNDLE_KEY, contentTitle);
+        outState.putString(URL_BUNDLE_KEY, contentUrl);
     }
 
     @Override
