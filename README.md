@@ -6,12 +6,12 @@ The project is divided into two directories:
 2. **frontend_web** - Single-page web application 
 
 ##1. Android application 
-An Android client for Reddit with an intuitive and sleek UI, targetting Android 4.1 (JELLY_BEAN) and above. *Reddit Reader* allows its users to: 
+An Android client for Reddit with an intuitive and sleek UI, targeting Android 4.1 (JELLY_BEAN) and above. *Reddit Reader* allows its users to: 
 
 - Login to Reddit using OAuth 2.0 - Code flow (*Reddit Reader* will never ask you for your password). Since the access tokens are set to expire in 60 minutes, current user's session is seamlessly refreshed as soon as it expires. 
 - View subscribed subreddits' posts within a swipeable ViewPager, providing quick and easy navigation to all of user's favourite subreddits. Subreddits that appear within this ViewPager can also be customized by the user. 
 - View post listings along with the ability to sort them by 'Hot', 'New', 'Rising', 'Controversial' and 'Top'
-- Quickly view post content within an inbuilt web browser, wihout the need to leave the application at any point (except Youtube videos, which are opened directly in the Youtube app, if installed).
+- Quickly view post content within an inbuilt web browser, without the need to leave the application at any point (except Youtube videos, which are opened directly in the Youtube app, if installed).
 - View comments for any post along with the ability to sort them and jump between threads. 
 
 ####Screenshots: 
