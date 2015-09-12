@@ -40,7 +40,7 @@
     <string name="success_subreddit_preferences_updated">Success! Subreddit preferences updated successfully.</string>
     <string name="success_logged_in_base">Success! Logged in as\u0020</string>
     <string name="success_post_link_copied_to_clipboard">Post link copied to clipboard.</string>
-    <string name="success_user_session_refreshed">User session has been refreshed so that you can continue enjoying Reddit.</string>
+    <string name="success_user_session_refreshed">User session refreshed. Use a vertical swipe gesture to refresh the contents of the current view.</string>
     <string name="label_selected_subreddits">Selected Subreddits</string>
     <string name="label_fetching_subreddits">Fetching subreddits…</string>
     <string name="label_logging_in">Logging in…</string>
