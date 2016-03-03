@@ -14,7 +14,7 @@ var authUrl = unAuthApiBase + "/api/v1/authorize?" + $.param({
         client_id: '2j6Q8QsS8lrckQ',
         response_type: "token",
         state: state,
-        redirect_uri: 'http://enthusiast94.github.io/reddit-reader-backbone/',
+        redirect_uri: 'http://enthusiast94.github.io/reddit-reader/',
         scope: "identity,mysubreddits,read,vote"
     });
 
