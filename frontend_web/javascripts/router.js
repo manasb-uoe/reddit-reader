@@ -3,7 +3,7 @@
  */
 
 var _ = require("underscore");
-var Backbone = require("Backbone");
+var Backbone = require("backbone");
 var reddit = require("./reddit");
 var sidebarView = require("./views/sidebar");
 var navView = require("./views/nav");
